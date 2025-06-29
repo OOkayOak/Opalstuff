@@ -39,17 +39,9 @@ Partner_API.Partner{ -- The Snake
     key = "snake",
     atlas = "partnerAtlas",
     pos = {x = 1, y = 0},
-    config = {extra = {xmult = 2, cards = 3}},
+    config = {extra = {cards = 4}},
     individual_quips = false,
     loc_vars = function(self,info_queue,card)
-        return{vars = {card.ability.extra.xmult, card.ability.extra.cards}}
-    end,
-    calculate = function(self, card, context)
-        if context.joker_main then
-            return{
-                    message = localize{type = "variable", key = "a_xmult", vars = {card.ability.extra.xmult}},
-                    Xmult_mod = card.ability.extra.xmult
-                }
-        end
+        return{vars = {card.ability.extra.cards}}
     end
 }

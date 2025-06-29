@@ -109,8 +109,8 @@ return{
             pnr_opal_snake = {
                 name = "The Snake",
                 text = {
-                    "{X:red,C:white}X#1#{} Mult, always draw",
-                    "{C:attention}#2#{} cards after play or discard"
+                    "Always draw {C:attention}#1#{} cards",
+                    "after Play or Discard"
                 }
             },
             pnr_opal_stack = {
