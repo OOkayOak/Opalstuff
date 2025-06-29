@@ -53,7 +53,7 @@ SMODS.Joker{ --Hardlight
                     trigger = 'after',
                     delay = 0.2,
                     func = function()
-                        local chosen = pseudorandom_element(can_duplicate)
+                        local chosen = pseudorandom_element(can_duplicate, pseudoseed("opal_hardlight"))
                         local addcard = copy_card(chosen, nil, nil, nil, chosen.edition and chosen.edition.negative)
                         addcard:add_to_deck()
                         G.jokers:emplace(addcard)

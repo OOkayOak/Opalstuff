@@ -31,6 +31,13 @@ SMODS.Atlas{
     path = "partners.png"
 }
 
+SMODS.Atlas{
+    key = "partnerAnimAtlas",
+    px = 46,
+    py = 58,
+    path = "animatedpartners.png"
+}
+
 assert(SMODS.load_file("./modules/stickers.lua"))()
 assert(SMODS.load_file("./modules/challenges.lua"))()
 assert(SMODS.load_file("./modules/jokers.lua"))()

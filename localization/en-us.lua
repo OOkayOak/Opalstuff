@@ -106,6 +106,13 @@ return{
             }
         },
         Partner = {
+            pnr_opal_keyhole = {
+                name = "The Keyhole",
+                text = {
+                    "Blind Requirement {X:green,C:white}X#1#",
+                    "Only 1 Hand per round"
+                }
+            },
             pnr_opal_snake = {
                 name = "The Snake",
                 text = {

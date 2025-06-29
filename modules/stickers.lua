@@ -61,7 +61,7 @@ SMODS.Sticker{ -- Overgrown (The Plant)
     atlas = 'stickerAtlas',
     pos = {x = 3, y = 0},
     apply = function(self,card,val)
-        if card:is_face() then
+        if G.GAME and not card:is_face() then
             card.ability.opal_overgrown = false
         end
     end
