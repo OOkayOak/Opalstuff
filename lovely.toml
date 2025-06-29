@@ -1,0 +1,76 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 0
+
+[[patches]]
+[patches.pattern]
+target = "functions/misc_functions.lua"
+pattern = "table.insert(G.playing_cards, _card)"
+position = "before"
+match_indent = true
+payload = '''if control.opal_stickers then
+    if pseudorandom('opal_b') < 0.05 then
+    _card.ability.opal_bound = true
+    end
+    if pseudorandom('opal_c') < 0.2 then
+    _card.ability.opal_chewed = true
+    end
+    if pseudorandom('opal_h') < 0.2 then
+    _card.ability.opal_hooked = true
+    end
+    if pseudorandom('opal_o') < 0.2 and _card:is_face(true) then
+        _card.ability.opal_overgrown = true
+    end
+    if pseudorandom('opal_r') < 0.05 then
+        _card.ability.opal_ringing = true
+    end
+    if pseudorandom('opal_s') < 0.2 then
+        _card.ability.opal_stacked = true
+    end
+    if pseudorandom('opal_t') < 0.1 then
+        _card.ability.opal_trampled = true
+    end
+end'''
+
+[[patches]]
+[patches.pattern]
+target = "blind.lua"
+pattern = "if self.debuff.is_face =='face' and card:is_face(true) then"
+position = "before"
+match_indent = true
+payload = '''if card.ability.opal_overgrown then
+    card:set_debuff(true)
+    return
+end'''
+
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = "if G.GAME.blind.name == 'The Serpent' and"
+position = "before"
+match_indent = true
+payload = '''if G.GAME.selected_partner and G.GAME.selected_partner == "pnr_opal_snake" and
+ (G.GAME.current_round.hands_played > 0 or G.GAME.current_round.discards_used > 0) and 
+ not (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK) then
+    hand_space = math.min(#G.deck.cards, G.GAME.selected_partner_card.ability.extra.cards)
+end'''
+
+[[patches]]
+[patches.pattern]
+target = '=[SMODS partner "partner.lua"]'
+pattern = '''if context.setting_blind and context.blind.boss and G.GAME.round_resets.ante == G.GAME.win_ante then'''
+position = "before"
+match_indent = true
+payload = '''if context.setting_blind and context.blind == G.P_BLINDS["bl_pillar"] and self.config.center.key == 'pnr_opal_stack' then
+    local max_quips = 0
+    G.E_MANAGER:add_event(Event({func = function()
+        for k, v in pairs(G.localization.misc.quips) do
+            if string.find(k, "pnr_opal_pillar_reaction") then
+                max_quips = max_quips + 1
+            end
+        end
+        self:add_partner_speech_bubble("pnr_opal_pillar_reaction_"..math.random(1,max_quips))
+        self:partner_say_stuff(5)
+    return true end}))
+end'''

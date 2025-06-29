@@ -1,0 +1,11 @@
+{
+	"id": "Opalstuff",
+	"name": "Opalstuff",
+	"display_name": "Opalstuff",
+	"author": ["Opal"],
+	"description": "A normal mod.",
+	"prefix": "opal",
+	"priority": 0,
+	"main_file": "main.lua",
+	"version": "0.0.0"
+}
