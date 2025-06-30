@@ -19,7 +19,6 @@ Partner_API.Partner{ -- The Stack
                     unstacked_cards[#unstacked_cards+1] = v
                 end
             end
-            print(#unstacked_cards)
             if #unstacked_cards > 0 then
                 local card_to_stack = pseudorandom_element(unstacked_cards, pseudoseed("pnr_stack"))
                 G.E_MANAGER:add_event(Event({func = function()
@@ -42,7 +41,7 @@ Partner_API.Partner{ -- The Snake
     atlas = "partnerAnimAtlas",
     blind_animated = true,
     pos = {x = 0, y = 1},
-    config = {extra = {cards = 4}},
+    config = {extra = {cards = 3}},
     individual_quips = false,
     loc_vars = function(self,info_queue,card)
         return{vars = {card.ability.extra.cards}}

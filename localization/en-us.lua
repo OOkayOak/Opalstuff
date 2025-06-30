@@ -52,6 +52,14 @@ return{
                     '{X:mult,C:white}X#1# {} Mult',
                     '{C:red} Debuffs all Clubs{}'
                 }
+            },
+            j_opal_kimochi_warui = {
+                name = 'Kimochi Warui',
+                text = {
+                    'When first Hand is drawn, removes a {C:attention}Sticker{} from',
+                    'random {C:attention}Joker{}, {C:green}#1# in #2#{} chance add a {C:attention}Sticker{}',
+                    'to random {C:attention}Playing Card{} held in Hand'
+                }
             }
         },
         Other = {
@@ -131,9 +139,10 @@ return{
     },
     misc = {
         challenge_names = {
-            c_opal_blind_stickers_1 = "Blind Stickers",
             c_opal_debuffs_1 = "Oops! All Debuffs",
             c_opal_dupes_1 = "Mirage",
+            c_opal_stickers_1 = "Blind Stickers",
+            c_opal_stickers_2 = "Stick it to the... Hand",
             c_opal_pillar_1 = "Stack",
             c_opal_pillar_2 = "Pillar",
             c_opal_pillar_3 = "Obelisk",

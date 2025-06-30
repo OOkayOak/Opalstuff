@@ -1,6 +1,7 @@
 
 OPAL = SMODS.current_mod
 Partner_API = SMODS.Mods['partner']
+AKYRS = SMODS.Mods['aikoyorisshenanigans']
 
 local Backapply_to_run_Ref = Back.apply_to_run
 function Back:apply_to_run()
@@ -38,9 +39,10 @@ SMODS.Atlas{
     path = "animatedpartners.png"
 }
 
-assert(SMODS.load_file("./modules/stickers.lua"))()
+assert(SMODS.load_file("./modules/blinds.lua"))()
 assert(SMODS.load_file("./modules/challenges.lua"))()
 assert(SMODS.load_file("./modules/jokers.lua"))()
+assert(SMODS.load_file("./modules/stickers.lua"))()
 
 if (Partner_API or {}).can_load then
     assert(SMODS.load_file("./modules/crossmod/partners.lua"))()

@@ -1,4 +1,5 @@
 local CHDP = SMODS.Mods['ChDp']
+local BUNCO = SMODS.Mods['Bunco']
 
 SMODS.Challenge{
     key = 'debuffs_1',
@@ -117,7 +118,7 @@ if (CHDP or {}).can_load then
 
 
     SMODS.Challenge{
-        key = 'blind_stickers_1',
+        key = 'stickers_1',
         rules = {
             custom = {
                 {id = 'enable_bl_stickers_cards'}
@@ -135,6 +136,27 @@ if (CHDP or {}).can_load then
             banned_cards = {},
             banned_tags = {},
             banned_other = {}
+        },
+    }
+
+    SMODS.Challenge{
+        key = 'stickers_2',
+        rules = {
+            custom = {
+                {id = 'enable_eternal_jokers'},
+                {id = 'enable_rental_jokers'},
+                {id = 'enable_perishable_jokers'},
+                (BUNCO or {}).can_load and {id = 'enable_scattering_jokers'} or {id = 'chdp_nothing'},
+                (BUNCO or {}).can_load and {id = 'enable_reactive_jokers'} or {id = 'chdp_nothing'},
+                (BUNCO or {}).can_load and {id = 'enable_hindered_jokers'} or {id = 'chdp_nothing'},
+                {id = 'anaglyph', value = localize{type = 'name_text', set = 'Tag', key = 'tag_buffoon', nodes = {}}, tag = 'buffoon'},
+                {id = 'cannot_sell_stickered'}
+            }
+        },
+        jokers = (AKYRS or {}).can_load and {
+            {id = 'j_opal_kimochi_warui', akyrs_sigma = true}
+        } or {
+            {id = 'j_opal_kimochi_warui', eternal = true}
         },
     }
 end

@@ -184,19 +184,70 @@ SMODS.Joker {--Wreckless Joker
     cost = 7,
     blueprint_compat = true,
     loc_vars = function(self, info_queue, card)
-      return { vars = { card.ability.extra.Xmult }}
+        return { vars = { card.ability.extra.Xmult }}
     end,
     calculate = function(self, card, context)
-      for k, v in ipairs(G.playing_cards) do
-        if v:is_suit('Clubs') then
-          v.debuff = true
+        for k, v in ipairs(G.playing_cards) do
+            if v:is_suit('Clubs') then
+                v.debuff = true
+            end
         end
-      end
-      if context.joker_main then
-        return {
-          Xmult_mod = card.ability.extra.Xmult,
-          message = localize { type = 'variable', key = 'a_xmult', vars = { card.ability.extra.Xmult } }
-        }
-      end
+        if context.joker_main then
+            return {
+            Xmult_mod = card.ability.extra.Xmult,
+            message = localize { type = 'variable', key = 'a_xmult', vars = { card.ability.extra.Xmult } }
+            }
+        end
+    end
+}
+
+SMODS.Joker {--Kimochi Warui
+    key = 'kimochi_warui',
+    config = {extra = {odds = 3}},
+    rarity = 1,
+    atlas = "jokerAtlas",
+    pos = {x = 2, y = 1},
+    cost = 4,
+    blueprint_compat = true,
+    loc_vars = function(self, info_queue, card)
+      return { vars = {(G.GAME.probabilities.normal or 1), card.ability.extra.odds}}
+    end,
+    calculate = function(self, card, context)
+        if context.first_hand_drawn then
+            local stickersIn = {}
+            local stickersOut = {}
+            for k, v in pairs(SMODS.Stickers) do
+                if v.sets.Joker and not k == 'akyrs_sigma' then -- Sigma cannot be removed (lol)
+                  stickersIn[#stickersIn+1] = k
+                end
+                if v.sets.Default and not string.find(k, '_clip') then -- doesn't even try to add Clips
+                  stickersOut[#stickersOut+1] = k
+                end
+            end
+              G.E_MANAGER:add_event(Event({ trigger = "after", func = function()
+              local stickersFound = {}
+              for k, v in ipairs(G.jokers.cards) do
+                  for k2, v2 in ipairs(stickersIn) do
+                      if v.ability[v2] then
+                          stickersFound[#stickersFound+1] = {joker = v, sticker = v2}
+                      end
+                  end
+              end
+              if #stickersFound > 0 then
+                jokerToUnstick = pseudorandom_element(stickersFound, pseudoseed("kimochi_warui_1"))
+                stickerToRemove = jokerToUnstick.sticker
+                jokerToUnstick = jokerToUnstick.joker
+                jokerToUnstick.ability[stickerToRemove] = false
+                card:juice_up(0.8)
+                jokerToUnstick:juice_up(0.8)
+                if pseudorandom("kimochi_warui_chance") < (G.GAME.probabilities.normal or 1)/card.ability.extra.odds then
+                  cardToStick = pseudorandom_element(G.hand.cards, pseudoseed("kimochi_warui_2"))
+                  stickerToGive = pseudorandom_element(stickersOut, pseudoseed("kimochi_warui_3"))
+                  cardToStick.ability[stickerToGive] = true
+                  cardToStick:juice_up(0.8)
+                end
+              end
+              return true end }))
+        end
     end
 }
