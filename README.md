@@ -2,10 +2,10 @@
 **Opalstuff** is a relatively lightweight Balatro mod containing a collection of items.
 
 Opalstuff currently contains the following stuff: 
-- 7 Jokers
+- 13 Jokers
 - 7 Stickers
 - 6 Challenges (Most Challenges require [Challenger Deep](https://github.com/OOkayOak/Challenger-Deep))
-- 2 Partners (Requires [Partner API by BaiMao](https://github.com/Icecanno/Partner-API/))
+- 6 Partners (Requires [Partner API by BaiMao](https://github.com/Icecanno/Partner-API/))
 
 Please note that this mod is still in development (as many Balatro mods are) and thus objects added by this mod are prone to bugs.
 
