@@ -29,36 +29,79 @@ return{
                 name = 'Intrusive Joker',
                 text = {
                     '{X:mult,C:white}X#1# {} Mult',
-                    '{C:red} Debuffs all Diamonds{}'
+                    '{C:red}Debuffs{} all {C:diamonds}Diamonds'
                 }
             },
             j_opal_egocentric = {
                 name = 'Egocentric Joker',
                 text = {
                     '{X:mult,C:white}X#1# {} Mult',
-                    '{C:red} Debuffs all Hearts{}'
+                    '{C:red}Debuffs{} all {C:hearts}Hearts'
                 }
             },
             j_opal_irritating = {
                 name = 'Irritating Joker',
                 text = {
                     '{X:mult,C:white}X#1# {} Mult',
-                    '{C:red} Debuffs all Spades{}'
+                    '{C:red}Debuffs{} all {C:spades}Spades'
                 }
             },
             j_opal_wreckless = {
                 name = 'Intrusive Joker',
                 text = {
                     '{X:mult,C:white}X#1# {} Mult',
-                    '{C:red} Debuffs all Clubs{}'
+                    '{C:red}Debuffs{} all {C:clubs}Clubs'
+                }
+            },
+            j_opal_indulgent = {
+                name = 'Indulgent Joker',
+                text = {
+                    '{X:mult,C:white}X#1# {} Mult',
+                    '{C:red}Debuffs{} all {C:minty_3s}3s{}'
+                }
+            },
+            j_opal_emulous = {
+                name = 'Emulous Joker',
+                text = {
+                    '{X:mult,C:white}X#1# {} Mult',
+                    '{C:red}Debuffs{} all {C:bunc_fleurons}Fleurons'
+                }
+            },
+            j_opal_flamboyant = {
+                name = 'Flamboyant Joker',
+                text = {
+                    '{X:mult,C:white}X#1# {} Mult',
+                    '{C:red}Debuffs{} all {C:bunc_halberds}Halberds'
+                }
+            },
+            j_opal_dissident = {
+                name = 'Dissident Joker',
+                text = {
+                    '{X:mult,C:white}X#1# {} Mult',
+                    '{C:red}Debuffs{} all {C:paperback_stars}Stars'
+                }
+            },
+            j_opal_deceptive = {
+                name = 'Deceptive Joker',
+                text = {
+                    '{X:mult,C:white}X#1# {} Mult',
+                    '{C:red}Debuffs{} all {C:paperback_crowns}Crowns'
                 }
             },
             j_opal_kimochi_warui = {
                 name = 'Kimochi Warui',
                 text = {
                     'When first Hand is drawn, removes a {C:attention}Sticker{} from',
-                    'random {C:attention}Joker{}, {C:green}#1# in #2#{} chance add a {C:attention}Sticker{}',
+                    'random {C:attention}Joker{}, {C:green}#1# in #2#{} chance to add a {C:attention}Sticker{}',
                     'to random {C:attention}Playing Card{} held in Hand'
+                }
+            },
+            j_opal_holy_holy = {
+                name = 'Holy, Holy',
+                text = {
+                    'Gains {C:chips}+#1#{} Chips when',
+                    '{C:attention,T:c_magician}The Magician{} is used',
+                    '{C:inactive,s:0.8}(Currently {C:chips,s:0.8}+#2#{C:inactive,s:0.8})'
                 }
             }
         },
@@ -111,14 +154,36 @@ return{
                     "When part of {C:attention}#1#,",
                     "{C:money}Money{} multiplied by {X:money,C:white}X#2#"
                 }
+            },
+            opal_pillar_sticker = {
+                name = "Pillar Stake",
+                text = {
+                    "Used this Joker to win",
+                    "on Pillar Stake"
+                }
             }
         },
         Partner = {
+            pnr_opal_branch = {
+                name = "The Branch",
+                text = {
+                    "{C:green}#1# in #2#{} chance to decrease level",
+                    "of played Poker Hand, and gain {X:red,C:white}X#3#{}",
+                    "{C:inactive,s:0.8}(Currently gives {X:red,C:white,s:0.8}X#4#{C:inactive,s:0.8})"
+                }
+            },
             pnr_opal_keyhole = {
                 name = "The Keyhole",
                 text = {
-                    "Blind Requirement {X:green,C:white}X#1#",
+                    "Blind Requirement {C:red}X#1#",
                     "Only 1 Hand per round"
+                }
+            },
+            pnr_opal_rampart = {
+                name = "The Rampart",
+                text = {
+                    "{X:dark_edition,C:white}+#1#{} Joker Slots,",
+                    "{C:red}X#2#{} Blind Requirement"
                 }
             },
             pnr_opal_snake = {
@@ -135,6 +200,24 @@ return{
                     "to a random card in played {C:attention}Hand"
                 }
             },
+            pnr_opal_tariff = {
+                name = "The Tariff",
+                text = {
+                    "Blind Rewards {X:money,C:white}X#1#{},",
+                    "Max score per {C:blue}Hand{} is {C:red}#2#%{} of",
+                    "Blind Requirement"
+                }
+            },
+        },
+        Stake = {
+            stake_opal_pillar = {
+                name = "Pillar Stake",
+                text = {
+                    "Cards previously scored in an Ante",
+                    "are debuffed for that Ante",
+                    "{s:0.8,C:inactive}({C:dark_edition,s:0.8}Opalstuff{s:0.8,C:inactive} Stake)"
+                }
+            }
         }
     },
     misc = {
@@ -158,7 +241,10 @@ return{
             
         },
         v_text = {
-            ch_c_opal_all_pillars = {"Every {C:attention}Boss Blind{} is {C:attention}The Pillar"},
+            ch_c_opal_pillar = {"{C:attention}Played Cards{} are {C:red}debuffed{} until the end of the Ante"},
+            ch_c_pillar_quip = {"{C:inactive,s:0.8}Wait... {C:attention,s:0.8}The Pillar{C:inactive,s:0.8}? Is that you?"},
+            ch_c_pillar_quip_2 = {"{C:attention,s:0.8}The Pillar{C:inactive,s:0.8}! It really is you!"},
+            ch_c_pillar_quip_3 = {"{C:inactive,s:0.8}... What the fuck?"}
         },
         quips = {
             pnr_opal_stack_1 = {
@@ -173,7 +259,22 @@ return{
             pnr_opal_stack_4 = {
                 "Rook"
             },
-            pnr_opal_pillar_reaction_1 = {
+            pnr_opal_tariff_1 = {
+                "Make this quick, I've got",
+                "a meeting in 30, 'kay?"
+            },
+            pnr_opal_tariff_2 = {
+                "Hey, no funny business."
+            },
+            pnr_opal_tariff_3 = {
+                "Y'know Joker stocks are in",
+                "decline, right? No? Ugh..."
+            },
+            pnr_opal_tariff_4 = {
+                "Another run? Really? I don't...",
+                "eh, whatever."
+            },
+            pnr_opal_pillar_reaction_1 = { -- Used for the Stack reacting to the Pillar
                 "What the fuck. No.",
                 "No, no, no. That's not me."
             },
@@ -184,6 +285,27 @@ return{
             },
             pnr_opal_pillar_reaction_3 = {
                 "What."
+            },
+            pnr_opal_tax_reaction_1 = { -- Used for the Tariff, reacting to the Tax
+                "Who the fuck does this",
+                "guy think they are?"
+            },
+            pnr_opal_tax_reaction_2 = {
+                "C'mon, I'm trying to",
+                "do something here!"
+            },
+            pnr_opal_tax_reaction_3 = {
+                "Urgh... I hate this guy."
+            },
+            pnr_opal_hand_decrease_1 = { -- Used for the Branch
+                "Yummers."
+            },
+            pnr_opal_hand_decrease_2 = {
+                "Thanks for the meal!"
+            },
+            pnr_opal_hand_decrease_3 = {
+                "I was so hungry...",
+                "Thank you!"
             }
         }
     }
