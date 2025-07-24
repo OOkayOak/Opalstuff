@@ -160,4 +160,13 @@ if (CHDP or {}).can_load then
             {id = 'j_opal_kimochi_warui', eternal = true}
         },
     }
+
+    SMODS.Challenge{
+        key = 'stuff_1',
+        rules = {
+            custom = {
+                {id = 'every_joker_mod', value = 'Opalstuff', key = 'opal'}
+            }
+        }
+    }
 end

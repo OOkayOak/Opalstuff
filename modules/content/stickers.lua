@@ -5,7 +5,7 @@ SMODS.Sticker{ -- Stacked (The Pillar)
         Default = true,
         Enhanced = true
     },
-    rate = 0.3,
+    rate = 0.5,
     needs_enable_flag = true,
     badge_colour = HEX('7e6752'),
     atlas = 'stickerAtlas',
@@ -19,7 +19,7 @@ SMODS.Sticker{ -- Hooked (The Hook)
         Default = true,
         Enhanced = true
     },
-    rate = 0.3,
+    rate = 0.5,
     needs_enable_flag = true,
     badge_colour = HEX('a84024'),
     atlas = 'stickerAtlas',
@@ -33,7 +33,7 @@ SMODS.Sticker{ -- Chewed (The Tooth)
         Default = true,
         Enhanced = true
     },
-    rate = 0.3,
+    rate = 0.5,
     needs_enable_flag = true,
     badge_colour = HEX('b52d2d'),
     atlas = 'stickerAtlas',
@@ -48,25 +48,6 @@ SMODS.Sticker{ -- Chewed (The Tooth)
     end
 }
 
-SMODS.Sticker{ -- Overgrown (The Plant)
-    key = 'overgrown',
-    sets = {
-        Joker = false,
-        Default = true,
-        Enhanced = true
-    },
-    rate = 0.5,
-    needs_enable_flag = true,
-    badge_colour = HEX('709284'),
-    atlas = 'stickerAtlas',
-    pos = {x = 3, y = 0},
-    apply = function(self,card,val)
-        if G.GAME and not card:is_face() then
-            card.ability.opal_overgrown = false
-        end
-    end
-}
-
 SMODS.Sticker{ -- Trampled (The Ox)
     key = 'trampled',
     sets = {
@@ -74,7 +55,7 @@ SMODS.Sticker{ -- Trampled (The Ox)
         Default = true,
         Enhanced = true
     },
-    rate = 0.1,
+    rate = 0.2,
     needs_enable_flag = true,
     badge_colour = HEX('b95b08'),
     atlas = 'stickerAtlas',
@@ -116,7 +97,7 @@ SMODS.Sticker{ -- Bound (The Manacle)
         Default = true,
         Enhanced = true
     },
-    rate = 0.05,
+    rate = 0.2,
     needs_enable_flag = true,
     badge_colour = HEX('575757'),
     atlas = 'stickerAtlas',

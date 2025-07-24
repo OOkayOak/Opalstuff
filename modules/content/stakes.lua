@@ -1,12 +1,115 @@
-SMODS.Stake{
-    key = 'pillar',
-    prefix_config = { applied_stakes = {mod = false}},
+SMODS.Stake{ -- Travel
+    key = 'travel',
+    prefix_config = {applied_stakes = {mod = false}},
     applied_stakes = {'white'},
+    atlas = 'stakeAtlas',
+    pos = {x=1,y=0},
+    sticker_atlas = 'stakeStickerAtlas',
+    sticker_pos = {x=1,y=0},
+    colour = HEX('78a7e0'),
+    modifiers = function()
+        G.GAME.modifiers.enable_eternals_in_shop = true
+        G.GAME.modifiers.enable_perishables_in_shop = true
+        G.GAME.modifiers.enable_rentals_in_shop = true
+        G.GAME.modifiers.opal_alt_stake = true
+    end,
+}
+
+SMODS.Stake{ -- Sour
+    key = 'sour',
+    applied_stakes = {'opal_travel'},
+    atlas = 'stakeAtlas',
+    pos = {x=2,y=0},
+    sticker_atlas = 'stakeStickerAtlas',
+    sticker_pos = {x=2,y=0},
+    colour = HEX('fdff68'),
+    modifiers = function()
+        G.GAME.modifiers['enable_opal_hooked'] = true
+        G.GAME.modifiers['enable_opal_chewed'] = true
+    end,
+}
+
+SMODS.Stake{ -- Heavy
+    key = 'heavy',
+    applied_stakes = {'opal_sour'},
     atlas = 'stakeAtlas',
     pos = {x=0,y=0},
     sticker_atlas = 'stakeStickerAtlas',
     sticker_pos = {x=0,y=0},
+    colour = HEX('a3a3a3'),
     modifiers = function()
-        G.GAME.modifiers.opal_pillar = true
+        G.GAME.modifiers.opal_no_skipping_big = true
     end,
 }
+
+
+SMODS.Stake{ -- Quantum
+    key = 'quantum',
+    applied_stakes = {'opal_heavy'},
+    atlas = 'stakeAtlas',
+    pos = {x=0,y=1},
+    sticker_atlas = 'stakeStickerAtlas',
+    sticker_pos = {x=3,y=0},
+    colour = quantum_gradient,
+    modifiers = function()
+        G.GAME.win_ante = 9
+    end,
+}
+
+SMODS.Stake{ -- Reject
+    key = 'reject',
+    applied_stakes = {'opal_quantum'},
+    atlas = 'stakeAtlas',
+    pos = {x=1,y=1},
+    sticker_atlas = 'stakeStickerAtlas',
+    sticker_pos = {x=4,y=0},
+    colour = HEX('464646'),
+    modifiers = function()
+        G.GAME.modifiers['enable_opal_trampled'] = true
+        G.GAME.modifiers['enable_opal_bound'] = true
+    end,
+}
+
+SMODS.Stake{ -- Pillar
+    key = 'pillar',
+    applied_stakes = {'opal_reject'},
+    atlas = 'stakeAtlas',
+    pos = {x=2,y=1},
+    sticker_atlas = 'stakeStickerAtlas',
+    sticker_pos = {x=0,y=1},
+    colour = HEX('7e6752'),
+    modifiers = function()
+        G.GAME.modifiers.opal_pillar = true
+        G.GAME.banned_keys["bl_pillar"] = true
+    end,
+}
+
+SMODS.Stake{ -- Double Down
+    key = 'double_down',
+    applied_stakes = {'opal_pillar'},
+    atlas = 'stakeAtlas',
+    pos = {x=0,y=2},
+    sticker_atlas = 'stakeStickerAtlas',
+    sticker_pos = {x=1,y=1},
+    colour = HEX('7e6752'),
+    modifiers = function()
+        G.GAME.win_ante = 10
+        G.GAME.modifiers.disable_skipping = true
+    end,
+}
+
+if (CHDP or {}).can_load then
+SMODS.Stake{ -- Hyperdeath
+    key = 'hyperdeath',
+    prefix_config = {applied_stakes = {mod = false}},
+    applied_stakes = {'opal_double_down'},
+    atlas = 'stakeAtlas',
+    pos = {x=1,y=2},
+    sticker_atlas = 'stakeStickerAtlas',
+    sticker_pos = {x=2,y=0},
+    colour = HEX('ff0000'),
+    modifiers = function()
+        G.GAME.modifiers.chaos_engine_all = true
+    end,
+}
+end

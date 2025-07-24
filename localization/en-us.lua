@@ -1,5 +1,7 @@
 return{
     descriptions = {
+        Blind = {
+        },
         Joker = {
             j_opal_joost = {
                 name = "Joost Joker",
@@ -99,9 +101,17 @@ return{
             j_opal_holy_holy = {
                 name = 'Holy, Holy',
                 text = {
-                    'Gains {C:chips}+#1#{} Chips when',
+                    'Gains {C:chips}+#1#{} Chips and {C:mult}+#2#{} Mult when',
                     '{C:attention,T:c_magician}The Magician{} is used',
-                    '{C:inactive,s:0.8}(Currently {C:chips,s:0.8}+#2#{C:inactive,s:0.8})'
+                    '{C:inactive,s:0.8}(Currently {C:chips,s:0.8}+#3#{C:inactive,s:0.8} and {C:mult,s:0.8}+#4#{C:inactive,s:0.8})'
+                }
+            },
+            j_opal_potluck = {
+                name = 'Oops! All 1/3s',
+                text = {
+                    '{C:green}+#1#{} to all listed',
+                    '{C:green,E:1,S:1.1}probabilities',
+                    '{C:inactive}(ex: {C:green}1 in 3{C:inactive} -> {C:green}1.33 in 3{C:inactive})'
                 }
             }
         },
@@ -155,11 +165,60 @@ return{
                     "{C:money}Money{} multiplied by {X:money,C:white}X#2#"
                 }
             },
+            opal_double_down_sticker = {
+                name = "Double Down Stake",
+                text = {
+                    "Used this Joker to win",
+                    "on Double Down Stake"
+                }
+            },
+            opal_heavy_sticker = {
+                name = "Heavy Stake",
+                text = {
+                    "Used this Joker to win",
+                    "on Heavy Stake"
+                }
+            },
+            opal_hyperdeath_sticker = {
+                name = "Stake of Hyperdeath",
+                text = {
+                    "Used this Joker to win",
+                    "on Stake of Hyperdeath"
+                }
+            },
             opal_pillar_sticker = {
                 name = "Pillar Stake",
                 text = {
                     "Used this Joker to win",
                     "on Pillar Stake"
+                }
+            },
+            opal_reject_sticker = {
+                name = "Reject Stake",
+                text = {
+                    "Used this Joker to win",
+                    "on Reject Stake"
+                }
+            },
+            opal_sour_sticker = {
+                name = "Sour Stake",
+                text = {
+                    "Used this Joker to win",
+                    "on Sour Stake"
+                }
+            },
+            opal_travel_sticker = {
+                name = "Travel Stake",
+                text = {
+                    "Used this Joker to win",
+                    "on Travel Stake"
+                }
+            },
+            opal_quantum_sticker = {
+                name = "Quantum Stake",
+                text = {
+                    "Used this Joker to win",
+                    "on Quantum Stake"
                 }
             }
         },
@@ -210,12 +269,70 @@ return{
             },
         },
         Stake = {
+            stake_opal_double_down = {
+                name = "Double Down Stake",
+                text = {
+                    "Win at {C:attention}Ante 10, {C:red}AND",
+                    "No {C:attention}Skipping Blinds",
+                    "{s:0.8}(Applies Pillar Stake, {C:dark_edition,s:0.8}Opalstuff{s:0.8} Stake)"
+                }
+            },
+            stake_opal_heavy = {
+                name = "Heavy Stake",
+                text = {
+                    "No {C:attention}Skipping Big Blinds",
+                    "{s:0.8}(Applies Sour Stake, {C:dark_edition,s:0.8}Opalstuff{s:0.8} Stake)"
+                }
+            },
+            stake_opal_hyperdeath = {
+                name = 'Stake of Hyperdeath',
+                text = {
+                    "A random {C:attention}Challenge Rule{} is added",
+                    "after a Blind is completed",
+                    "{s:0.8}(Applies Double Down Stake, {C:dark_edition,s:0.8}Opalstuff{s:0.8} Stake)"
+                }
+            },
             stake_opal_pillar = {
                 name = "Pillar Stake",
                 text = {
                     "Cards previously scored in an Ante",
                     "are debuffed for that Ante",
-                    "{s:0.8,C:inactive}({C:dark_edition,s:0.8}Opalstuff{s:0.8,C:inactive} Stake)"
+                    "{s:0.8}(Applies Reject Stake, {C:dark_edition,s:0.8}Opalstuff{s:0.8} Stake)"
+                }
+            },
+            stake_opal_reject = {
+                name = "Reject Stake",
+                text = {
+                    "Shop can have {C:attention}Trampled{} and",
+                    "{C:attention}Bound{} Playing Cards",
+                    "{s:0.6,C:inactive}(Trampled Cards halve money when played with the most played Hand,",
+                    "{s:0.6,C:inactive}Bound Cards reduce hand size by 1 when drawn)",
+                    "{s:0.8}(Applies Quantum Stake, {C:dark_edition,s:0.8}Opalstuff{s:0.8} Stake)"
+                }
+            },
+            stake_opal_sour = {
+                name = 'Sour Stake',
+                text = {
+                    "Shop can have {C:attention}Hooked{} and",
+                    "{C:attention}Chewed{} Playing Cards",
+                    "{s:0.6,C:inactive}(Hooked Cards discard a card held in hand when played,",
+                    "{s:0.6,C:inactive}Chewed Cards lose $1 when scored)",
+                    "{s:0.8}(Applies Travel Stake, {C:dark_edition,s:0.8}Opalstuff{s:0.8} Stake)"
+                }
+            },
+            stake_opal_travel = {
+                name = 'Travel Stake',
+                text = {
+                    "Shop can have {C:attention}Eternal{},",
+                    "{C:attention}Perishable{} and {C:attention}Rental{} Jokers",
+                    "{s:0.8}(Applies White Stake, {C:dark_edition,s:0.8}Opalstuff{s:0.8} Stake)"
+                }
+            },
+            stake_opal_quantum = {
+                name = 'Quantum Stake',
+                text = {
+                    "Win at {C:attention}Ante 9",
+                    "{s:0.8}(Applies Heavy Stake, {C:dark_edition,s:0.8}Opalstuff{s:0.8} Stake)"
                 }
             }
         }
@@ -224,11 +341,12 @@ return{
         challenge_names = {
             c_opal_debuffs_1 = "Oops! All Debuffs",
             c_opal_dupes_1 = "Mirage",
-            c_opal_stickers_1 = "Blind Stickers",
-            c_opal_stickers_2 = "Stick it to the... Hand",
             c_opal_pillar_1 = "Stack",
             c_opal_pillar_2 = "Pillar",
             c_opal_pillar_3 = "Obelisk",
+            c_opal_stickers_1 = "Blind Stickers",
+            c_opal_stickers_2 = "Stick it to the... Hand",
+            c_opal_stuff_1 = "Opal's Stuff"
         },
         labels = {
             opal_bound = "Bound",

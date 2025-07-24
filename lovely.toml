@@ -19,9 +19,6 @@ payload = '''if control.opal_stickers then
     if pseudorandom('opal_h') < 0.2 then
     _card.ability.opal_hooked = true
     end
-    if pseudorandom('opal_o') < 0.2 and _card:is_face(true) then
-        _card.ability.opal_overgrown = true
-    end
     if pseudorandom('opal_r') < 0.05 then
         _card.ability.opal_ringing = true
     end
@@ -31,17 +28,6 @@ payload = '''if control.opal_stickers then
     if pseudorandom('opal_t') < 0.1 then
         _card.ability.opal_trampled = true
     end
-end'''
-
-[[patches]]
-[patches.pattern]
-target = "blind.lua"
-pattern = "if self.debuff.is_face =='face' and card:is_face(true) then"
-position = "before"
-match_indent = true
-payload = '''if card.ability.opal_overgrown then
-    card:set_debuff(true)
-    return
 end'''
 
 [[patches]]
@@ -136,3 +122,21 @@ if card.ability.opal_stacked and card.ability.played_this_ante then
     card:set_debuff(true)
     return
 end'''
+
+# disable skipping blinds
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = "if not G.GAME.round_resets.blind_tags[blind_choice] then return nil end"
+position = "at"
+match_indent = true
+payload = "if G.GAME.modifiers.disable_skipping or (G.GAME.modifiers.opal_no_skipping_big and blind_choice == 'Big') or not G.GAME.round_resets.blind_tags[blind_choice] then return nil end"
+
+# disable skipping blinds
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = "if G.GAME.modifiers.disable_skipping or not G.GAME.round_resets.blind_tags[blind_choice] then return nil end"
+position = "at"
+match_indent = true
+payload = "if G.GAME.modifiers.disable_skipping or (G.GAME.modifiers.opal_no_skipping_big and blind_choice == 'Big') or not G.GAME.round_resets.blind_tags[blind_choice] then return nil end"

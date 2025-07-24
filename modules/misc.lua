@@ -25,3 +25,11 @@ function Back:apply_to_run()
     G.GAME.modifiers.opal_chewed_loss = 1
     G.GAME.modifiers.opal_trampled_multiplier = 0.5
 end
+
+quantum_gradient = SMODS.Gradient{ --Quantum Gradient
+    key = 'quantum_gradient',
+    colours = {
+        HEX('7a3aab'),
+        HEX('2a7dc6')
+    }
+}

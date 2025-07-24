@@ -46,3 +46,12 @@ SMODS.Atlas{
     py = 58,
     path = "animatedpartners.png"
 }
+
+SMODS.Atlas{
+    key = 'blindAtlas',
+    px = 34,
+    py = 34,
+    atlas_table = 'ANIMATION_ATLAS',
+    path = "blinds.png",
+    frames = 21
+}

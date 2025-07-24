@@ -97,6 +97,161 @@ SMODS.Joker { --Shiny Rock
     end
   }
 
+SMODS.Joker {--Kimochi Warui
+    key = 'kimochi_warui',
+    config = {extra = {odds = 3}},
+    rarity = 1,
+    atlas = "jokerAtlas",
+    pos = {x = 2, y = 1},
+    cost = 4,
+    blueprint_compat = true,
+    loc_vars = function(self, info_queue, card)
+        return { vars = {(G.GAME.probabilities.normal or 1), card.ability.extra.odds}}
+    end,
+    calculate = function(self, card, context)
+        if context.first_hand_drawn then
+            local stickersIn = {}
+            local stickersOut = {}
+            for k, v in pairs(SMODS.Stickers) do
+                if v.sets.Joker then -- Sigma cannot be removed (lol)
+                    if k ~= 'akyrs_sigma' then
+                        stickersIn[#stickersIn+1] = k
+                    end
+                end
+                if v.sets.Default and not string.find(k, '_clip') then -- doesn't even try to add Clips
+                    stickersOut[#stickersOut+1] = k
+                end
+            end
+            G.E_MANAGER:add_event(Event({ trigger = "after", func = function()
+                local stickersFound = {}
+                for k, v in ipairs(G.jokers.cards) do
+                    for k2, v2 in ipairs(stickersIn) do
+                        if v.ability[v2] then
+                            stickersFound[#stickersFound+1] = {joker = v, sticker = v2}
+                        end
+                    end
+                end
+                if #stickersFound > 0 then
+                    jokerToUnstick = pseudorandom_element(stickersFound, pseudoseed("kimochi_warui_1"))
+                    stickerToRemove = jokerToUnstick.sticker
+                    jokerToUnstick = jokerToUnstick.joker
+                    jokerToUnstick.ability[stickerToRemove] = false
+                    card:juice_up(0.8)
+                    jokerToUnstick:juice_up(0.8)
+                    if pseudorandom("kimochi_warui_chance") < (G.GAME.probabilities.normal or 1)/card.ability.extra.odds then
+                        cardToStick = pseudorandom_element(G.hand.cards, pseudoseed("kimochi_warui_2"))
+                        stickerToGive = pseudorandom_element(stickersOut, pseudoseed("kimochi_warui_3"))
+                        cardToStick.ability[stickerToGive] = true
+                        cardToStick:juice_up(0.8)
+                    end
+                end
+            return true end }))
+        end
+    end
+}
+
+SMODS.Joker {--Holy, Holy
+    key = 'holy_holy',
+    config = {extra = {count = 0, chip_mod = 20, mult_mod = 5}},
+    rarity = 1,
+    atlas = "jokerAtlas",
+    pos = {x = 3, y = 1},
+    cost = 4,
+    blueprint_compat = true,
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue+1] = {key = "c_magician", set = "Tarot", vars = {2,'Lucky Card'}}
+        return { vars = {card.ability.extra.chip_mod, card.ability.extra.mult_mod, card.ability.extra.count*card.ability.extra.chip_mod, card.ability.extra.count*card.ability.extra.mult_mod}}
+    end,
+    calculate = function(self, card, context)
+        if context.using_consumeable and context.consumeable.ability.name == "The Magician" then
+            card.ability.extra.count = card.ability.extra.count + to_big(1)
+            return {
+                message = "Holy, Holy!"
+            }
+        end
+        if context.joker_main and to_big(card.ability.extra.count) > to_big(0) then
+            return {
+                chip_mod = card.ability.extra.count*card.ability.extra.chip_mod,
+                mult_mod = card.ability.extra.count*card.ability.extra.mult_mod,
+                message = "+"..card.ability.extra.count*card.ability.extra.chip_mod.." Chips, +"..card.ability.extra.count*card.ability.extra.mult_mod.." Mult"
+            }
+        end
+    end
+}
+
+SMODS.Joker { --Oops! All 1/3s
+    key = 'potluck',
+    config = {extra = {prob_mod = 1/3}},
+    rarity = 1,
+    atlas = "jokerAtlas",
+    pos = {x = 4, y = 1},
+    cost = 4,
+    blueprint_compat = true,
+    loc_vars = function(self, info_queue, card)
+        return { vars = {card.ability.extra.prob_mod}}
+    end,
+    add_to_deck = function(self, card, from_debuff)
+        local oops_count = 0
+        for k, v in ipairs(G.jokers.cards) do
+            if v.ability.name == 'Oops! All 6s' then
+                oops_count = oops_count + 1
+            end
+        end
+        for k, v in pairs(G.GAME.probabilities) do 
+            G.GAME.probabilities[k] = v + (card.ability.extra.prob_mod * (2 ^ oops_count))
+        end
+    end,
+    remove_from_deck = function(self, card, from_debuff)
+        local oops_count = 0
+        for k, v in ipairs(G.jokers.cards) do
+            if v.ability.name == 'Oops! All 6s' then
+                oops_count = oops_count + 1
+            end
+        end
+        for k, v in pairs(G.GAME.probabilities) do 
+            G.GAME.probabilities[k] = v - (card.ability.extra.prob_mod * (2 ^ oops_count))
+        end
+    end,
+}
+
+--[[SMODS.Joker { --
+    key = 'a',
+    config = {extra = {prob_mod = 30/3}},
+    rarity = 1,
+    atlas = "jokerAtlas",
+    pos = {x = 4, y = 1},
+    cost = 4,
+    blueprint_compat = true,
+    loc_vars = function(self, info_queue, card)
+        return { vars = {card.ability.extra.prob_mod}}
+    end,
+    add_to_deck = function(self, card, from_debuff)
+    end,
+    remove_from_deck = function(self, card, from_debuff)
+    end,
+    calculate = function(self, card, context)
+    end
+}]]
+
+
+-- LEGENDARIES
+
+
+--[[SMODS.Joker {--uhh... i'd like to buy a vowel please
+    key = 'opal',
+    config = { extra = {}},
+    rarity = 4,
+    atlas = 'jokerAtlas',
+    pos = { x = 0, y = 4},
+    soul_pos = {x=1, y=4},
+    cost = 20,
+    blueprint_compat = true
+}]]
+
+
+-- ANNOYING SUIT JOKERS
+
+
 SMODS.Joker { --Intrusive Joker
     key = 'intrusive',
     config = { extra = { Xmult = 2 }},
@@ -357,97 +512,3 @@ if (PAPERBACK or {}).can_load then
     end
     }
 end
-
-SMODS.Joker {--Kimochi Warui
-    key = 'kimochi_warui',
-    config = {extra = {odds = 3}},
-    rarity = 1,
-    atlas = "jokerAtlas",
-    pos = {x = 2, y = 1},
-    cost = 4,
-    blueprint_compat = true,
-    loc_vars = function(self, info_queue, card)
-        return { vars = {(G.GAME.probabilities.normal or 1), card.ability.extra.odds}}
-    end,
-    calculate = function(self, card, context)
-        if context.first_hand_drawn then
-            local stickersIn = {}
-            local stickersOut = {}
-            for k, v in pairs(SMODS.Stickers) do
-                if v.sets.Joker then -- Sigma cannot be removed (lol)
-                    if k ~= 'akyrs_sigma' then
-                        stickersIn[#stickersIn+1] = k
-                    end
-                end
-                if v.sets.Default and not string.find(k, '_clip') then -- doesn't even try to add Clips
-                    stickersOut[#stickersOut+1] = k
-                end
-            end
-            G.E_MANAGER:add_event(Event({ trigger = "after", func = function()
-                local stickersFound = {}
-                for k, v in ipairs(G.jokers.cards) do
-                    for k2, v2 in ipairs(stickersIn) do
-                        if v.ability[v2] then
-                            stickersFound[#stickersFound+1] = {joker = v, sticker = v2}
-                        end
-                    end
-                end
-                if #stickersFound > 0 then
-                    jokerToUnstick = pseudorandom_element(stickersFound, pseudoseed("kimochi_warui_1"))
-                    stickerToRemove = jokerToUnstick.sticker
-                    jokerToUnstick = jokerToUnstick.joker
-                    jokerToUnstick.ability[stickerToRemove] = false
-                    card:juice_up(0.8)
-                    jokerToUnstick:juice_up(0.8)
-                    if pseudorandom("kimochi_warui_chance") < (G.GAME.probabilities.normal or 1)/card.ability.extra.odds then
-                        cardToStick = pseudorandom_element(G.hand.cards, pseudoseed("kimochi_warui_2"))
-                        stickerToGive = pseudorandom_element(stickersOut, pseudoseed("kimochi_warui_3"))
-                        cardToStick.ability[stickerToGive] = true
-                        cardToStick:juice_up(0.8)
-                    end
-                end
-            return true end }))
-        end
-    end
-}
-
-SMODS.Joker {--Holy, Holy
-    key = 'holy_holy',
-    config = {extra = {chips = 0, chip_mod = 20}},
-    rarity = 1,
-    atlas = "jokerAtlas",
-    pos = {x = 3, y = 1},
-    cost = 4,
-    blueprint_compat = true,
-    loc_vars = function(self, info_queue, card)
-        info_queue[#info_queue+1] = {key = "c_magician", set = "Tarot", vars = {}}
-        return { vars = {card.ability.extra.chip_mod, card.ability.extra.chips}}
-    end,
-    calculate = function(self, card, context)
-        if context.using_consumeable and context.consumeable.ability.name == "The Magician" then
-            card.ability.extra.chips = card.ability.extra.chips + card.ability.extra.chip_mod
-            return {
-                message = localize { type = 'variable', key = 'a_chips', vars = { card.ability.extra.chip_mod } },
-                colour = G.C.CHIPS,
-            }
-        end
-        if context.joker_main then
-            return {
-                chip_mod = card.ability.extra.chips,
-                message = localize { type = 'variable', key = 'a_chips', vars = { card.ability.extra.chips } },
-                colour = G.C.CHIPS,
-            }
-        end
-    end
-}
-
---[[SMODS.Joker {--uhh... i'd like to buy a vowel please
-    key = 'opal',
-    config = { extra = {}},
-    rarity = 4,
-    atlas = 'jokerAtlas',
-    pos = { x = 0, y = 4},
-    soul_pos = {x=1, y=4},
-    cost = 20,
-    blueprint_compat = true
-}]]
