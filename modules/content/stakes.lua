@@ -52,7 +52,7 @@ SMODS.Stake{ -- Quantum
     sticker_pos = {x=3,y=0},
     colour = quantum_gradient,
     modifiers = function()
-        G.GAME.win_ante = 9
+        G.GAME.win_ante = G.GAME.win_ante + 1
     end,
 }
 
@@ -93,7 +93,7 @@ SMODS.Stake{ -- Double Down
     sticker_pos = {x=1,y=1},
     colour = HEX('7e6752'),
     modifiers = function()
-        G.GAME.win_ante = 10
+        G.GAME.win_ante = G.GAME.win_ante + 1
         G.GAME.modifiers.disable_skipping = true
     end,
 }
@@ -106,10 +106,11 @@ SMODS.Stake{ -- Hyperdeath
     atlas = 'stakeAtlas',
     pos = {x=1,y=2},
     sticker_atlas = 'stakeStickerAtlas',
-    sticker_pos = {x=2,y=0},
+    sticker_pos = {x=4,y=2},
     colour = HEX('ff0000'),
     modifiers = function()
         G.GAME.modifiers.chaos_engine_all = true
+        CHDP.setup_chaos_run()
     end,
 }
 end

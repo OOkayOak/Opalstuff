@@ -49,7 +49,7 @@ return{
                 }
             },
             j_opal_wreckless = {
-                name = 'Intrusive Joker',
+                name = 'Wreckless Joker',
                 text = {
                     '{X:mult,C:white}X#1# {} Mult',
                     '{C:red}Debuffs{} all {C:clubs}Clubs'
@@ -113,7 +113,14 @@ return{
                     '{C:green,E:1,S:1.1}probabilities',
                     '{C:inactive}(ex: {C:green}1 in 3{C:inactive} -> {C:green}1.33 in 3{C:inactive})'
                 }
-            }
+            },
+            j_opal_cultist = {
+                name = 'Cultist',
+                text = {
+                    'A Bonus {C:attention}Spectral{} Card will',
+                    'appear in every {C:attention}Arcana Pack'
+                }
+            },
         },
         Other = {
             opal_bound = {

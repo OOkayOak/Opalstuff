@@ -214,12 +214,30 @@ SMODS.Joker { --Oops! All 1/3s
     end,
 }
 
+SMODS.Joker { -- Cultist
+    key = 'cultist',
+    rarity = 2,
+    atlas = "jokerAtlas",
+    pos = {x = 3, y = 4},
+    cost = 7,
+    blueprint_compat = true,
+    calculate = function(self, card, context)
+        if context.open_booster and context.card.ability.name:find('Arcana') then
+            G.E_MANAGER:add_event(Event({ trigger = "after", func = function()
+                extra_card = create_card("Spectral", G.pack_cards, nil, nil, true, true, nil, 'cultist')
+                extra_card:start_materialize()
+                G.pack_cards:emplace(extra_card)
+            return true end }))
+        end
+    end
+}
+
 --[[SMODS.Joker { --
     key = 'a',
     config = {extra = {prob_mod = 30/3}},
     rarity = 1,
     atlas = "jokerAtlas",
-    pos = {x = 4, y = 1},
+    pos = {x = 3, y = 4},
     cost = 4,
     blueprint_compat = true,
     loc_vars = function(self, info_queue, card)
@@ -264,9 +282,11 @@ SMODS.Joker { --Intrusive Joker
         return { vars = { card.ability.extra.Xmult }}
     end,
     calculate = function(self, card, context)
-        for k, v in ipairs(G.playing_cards) do
-            if v:is_suit('Diamonds') then
-                v.debuff = true
+        if not context.check_enhancement then
+            for k, v in ipairs(G.playing_cards) do
+                if v:is_suit('Diamonds') then
+                    v.debuff = true
+                end
             end
         end
         if context.joker_main then
@@ -290,10 +310,12 @@ SMODS.Joker { --Egocentric Joker
         return { vars = { card.ability.extra.Xmult }}
     end,
     calculate = function(self, card, context)
+        if not context.check_enhancement then
         for k, v in ipairs(G.playing_cards) do
             if v:is_suit('Hearts') then
                 v.debuff = true
             end
+        end
         end
         if context.joker_main then
             return {
@@ -316,10 +338,12 @@ SMODS.Joker {--Irritating Joker
         return { vars = { card.ability.extra.Xmult }}
     end,
     calculate = function(self, card, context)
+        if not context.check_enhancement then
         for k, v in ipairs(G.playing_cards) do
             if v:is_suit('Spades') then
                 v.debuff = true
             end
+        end
         end
         if context.joker_main then
             return {
@@ -342,9 +366,11 @@ SMODS.Joker {--Wreckless Joker
         return { vars = { card.ability.extra.Xmult }}
     end,
     calculate = function(self, card, context)
-        for k, v in ipairs(G.playing_cards) do
-            if v:is_suit('Clubs') then
-                v.debuff = true
+        if not context.check_enhancement then
+            for k, v in ipairs(G.playing_cards) do
+                if v:is_suit('Clubs') then
+                    v.debuff = true
+                end
             end
         end
         if context.joker_main then
@@ -372,10 +398,12 @@ if (MINTY or {}).can_load then
         return MINTY.threeSuit_in_pool()
     end,
     calculate = function(self, card, context)
+        if not context.check_enhancement then
         for k, v in ipairs(G.playing_cards) do
             if v:is_3() then
                 v.debuff = true
             end
+        end
         end
         if context.joker_main then
             return {
@@ -407,10 +435,12 @@ if (BUNCO or {}).can_load then
         end
     end,
     calculate = function(self, card, context)
+        if not context.check_enhancement then
         for k, v in ipairs(G.playing_cards) do
             if v:is_suit("bunc_Fleurons") then
                 v.debuff = true
             end
+        end
         end
         if context.joker_main then
             return {
@@ -439,10 +469,12 @@ if (BUNCO or {}).can_load then
         end
     end,
     calculate = function(self, card, context)
+        if not context.check_enhancement then
         for k, v in ipairs(G.playing_cards) do
             if v:is_suit("bunc_Halberds") then
                 v.debuff = true
             end
+        end
         end
         if context.joker_main then
             return {
@@ -470,10 +502,12 @@ if (PAPERBACK or {}).can_load then
         requires_stars = true,
     },
     calculate = function(self, card, context)
+        if not context.check_enhancement then
         for k, v in ipairs(G.playing_cards) do
             if v:is_suit("paperback_Stars") then
                 v.debuff = true
             end
+        end
         end
         if context.joker_main then
             return {
@@ -498,10 +532,12 @@ if (PAPERBACK or {}).can_load then
         requires_crowns = true,
     },
     calculate = function(self, card, context)
+        if not context.check_enhancement then
         for k, v in ipairs(G.playing_cards) do
             if v:is_suit("paperback_Crowns") then
                 v.debuff = true
             end
+        end
         end
         if context.joker_main then
             return {
