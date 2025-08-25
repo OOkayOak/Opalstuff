@@ -1,6 +1,36 @@
 return{
     descriptions = {
+        Back = {
+            b_opal_opals_stuff = {
+                name = "Opal's Stuff",
+                text = {
+                    "When a {C:attention}Blind{} is defeated,",
+                    "obtain a random {C:opal_pink}Opalstuff{C:attention} Joker{}",
+                    "or {C:attention}Consumable",
+                    "{C:inactive,s:0.8}(Must have room)"
+                }
+            },
+            b_opal_cookie = {
+                name = "Cookie Deck",
+                text = {
+                    "When a {C:attention}Blind{} is defeated,",
+                    "creates {C:attention}#1# {C:attention,T:m_opal_cookie}#2#{}{C:attention}s",
+                }
+            }
+        },
         Blind = {
+        },
+        Enhanced = {
+            m_opal_cookie = {
+                name = 'Cookie Card',
+                text = {
+                    'When played, {C:green}#1# in #2#{} chance to',
+                    "{C:attention}rescore{} played cards",
+                    '{C:inactive}(except #5#s){}, destroys',
+                    'in {C:attention}#3#{C:inactive} (#4#){} triggers'
+                    
+                }
+            }
         },
         Joker = {
             j_opal_joost = {
@@ -119,6 +149,21 @@ return{
                 text = {
                     'A Bonus {C:attention}Spectral{} Card will',
                     'appear in every {C:attention}Arcana Pack'
+                }
+            },
+            j_opal_high_roller = {
+                name = 'High Roller',
+                text = {
+                    '{C:attention}+1{} Hand Size every',
+                    '{C:attention}#1# {C:inactive}(#2#){} Shop Rerolls this Ante',
+                    '{C:inactive}(Currently {C:attention}+#3#{C:inactive} Hand Size)'
+                }
+            },
+            j_opal_corkboard = {
+                name = 'Corkboard',
+                text = {
+                    '{C:attention}Jokers{} with {C:attention}Stickers',
+                    'each give {X:mult,C:white}X#1#{} Mult'
                 }
             },
         },
@@ -275,6 +320,48 @@ return{
                 }
             },
         },
+        Sleeve = {
+            sleeve_opal_opals = {
+                name = "Starry Sleeve",
+                text = {
+                    "When a {C:attention}Blind{} is defeated,",
+                    "obtain a random {C:opal_pink}Opalstuff{C:attention} Joker{}",
+                    "or {C:attention}Consumable",
+                    "{C:inactive,s:0.8}(Must have room)"
+                }
+            },
+            sleeve_opal_opals_alt = {
+                name = "Starry Sleeve",
+                text = {
+                    "{C:opal_pink}Opal's Stuff{C:attention} does not",
+                    "require room to give an item"
+                }
+            },
+            sleeve_opal_cookie = {
+                name = "Cookie Sleeve",
+                text = {
+                    "When a {C:attention}Blind{} is defeated,",
+                    "creates {C:attention}#1# {C:attention,T:m_opal_cookie}#2#{}{C:attention}s",
+                }
+            },
+            sleeve_opal_cookie_alt = {
+                name = "Cookie Sleeve",
+                text = {
+                    "Start with {C:green}#1# in #3#{} Playing Cards",
+                    "converted into {C:attention,T:m_opal_cookie}#2#{}{C:attention}s",
+                }
+            }
+        },
+        Spectral = {
+            c_opal_voodoo = {
+                name = 'Voodoo',
+                text = {
+                    'Apply {C:dark_edition}Polychrome{} and',
+                    '{C:attention}Pinned{} to a',
+                    'random {C:attention}Joker',
+                }
+            }
+        },
         Stake = {
             stake_opal_double_down = {
                 name = "Double Down Stake",
@@ -342,6 +429,16 @@ return{
                     "{s:0.8}(Applies Heavy Stake, {C:dark_edition,s:0.8}Opalstuff{s:0.8} Stake)"
                 }
             }
+        },
+        Tarot = {
+            c_opal_churn = {
+                name = 'The Milk Churn',
+                text = {
+                    "Enhances {C:attention}#1#",
+                    "selected cards to",
+                    "{C:attention}#2#s"
+                }
+            }
         }
     },
     misc = {
@@ -354,6 +451,10 @@ return{
             c_opal_stickers_1 = "Blind Stickers",
             c_opal_stickers_2 = "Stick it to the... Hand",
             c_opal_stuff_1 = "Opal's Stuff"
+        },
+        dictionary = {
+            k_opal_chomp = 'Chomp!',
+            k_opal_eaten = 'Eaten!',
         },
         labels = {
             opal_bound = "Bound",

@@ -1,12 +1,21 @@
-assert(SMODS.load_file("./modules/atlasses.lua"))() -- atlasses
-assert(SMODS.load_file("./modules/misc.lua"))() -- other mods, talisman funcs, etc 
+-- loader
+OPAL = SMODS.current_mod
+local mod_path = SMODS.current_mod.path
 
-assert(SMODS.load_file("./modules/content/blinds.lua"))()
-assert(SMODS.load_file("./modules/content/challenges.lua"))()
-assert(SMODS.load_file("./modules/content/jokers.lua"))()
-assert(SMODS.load_file("./modules/content/stakes.lua"))()
-assert(SMODS.load_file("./modules/content/stickers.lua"))()
-
-if (Partner_API or {}).can_load then
-    assert(SMODS.load_file("./modules/content/crossmod/partners.lua"))()
+function OPAL.load_files(path)
+    local files = NFS.getDirectoryItems(mod_path..path)
+    for _, filename in ipairs(files) do
+        file_path = path.."/"..filename
+        local dir_success, dir_files = pcall(NFS.getDirectoryItems, file_path)
+        if dir_success and not(filename:match(".lua$")) then -- this is a directory
+            sendTraceMessage('Loading directory '..filename, 'Opalstuff')
+            OPAL.load_files(file_path)
+        end
+        if filename:match(".lua$") then --this is a lua file
+            sendTraceMessage('Loading file '..filename..' in directory '..path, 'Opalstuff')
+            assert(SMODS.load_file(file_path))()
+        end
+    end
 end
+
+OPAL.load_files('src')
