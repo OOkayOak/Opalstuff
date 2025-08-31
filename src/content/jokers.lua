@@ -314,6 +314,35 @@ SMODS.Joker { --Corkboard
     end
 }
 
+SMODS.Joker { -- Grandma
+    key = 'grandma',
+    config = {extra = {mult = 4, count = 0}},
+    rarity = 1,
+    atlas = "jokerAtlas",
+    pos = {x = 3, y = 4},
+    cost = 4,
+    blueprint_compat = true,
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue+1] = G.P_CENTERS.m_opal_cookie
+        return { vars = {card.ability.extra.mult, localize{type = 'name_text', set = 'Enhanced', key = 'm_opal_cookie'}, card.ability.extra.mult*card.ability.extra.count}}
+    end,
+    calculate = function(self, card, context)
+        if context.individual and context.cardarea == G.play and context.other_card.cookie_trigger then
+            card.ability.extra.count = card.ability.extra.count + 1
+            return{
+                message = localize('k_upgrade_ex'),
+                card = card
+            }
+        end
+        if context.joker_main and to_big(card.ability.extra.count) > to_big(0) then
+            return {
+                mult_mod = card.ability.extra.count*card.ability.extra.mult,
+                message = localize{type='variable',key='a_mult',vars={card.ability.extra.count*card.ability.extra.mult}}
+            }
+        end
+    end
+}
+
 --[[SMODS.Joker { --
     key = 'a',
     config = {extra = {prob_mod = 30/3}},

@@ -8,7 +8,9 @@ SMODS.Enhancement{ -- Cookie
     end,
     calculate = function(self, card, context)
         if context.main_scoring and context.cardarea == G.play then
+            card.cookie_trigger = false
             if SMODS.pseudorandom_probability(card, 'opal_cookie', 1, card.ability.extra.odds) then
+                card.cookie_trigger = true
 
                 local cards_to_score = {}
                 local thisCard = nil
@@ -35,7 +37,7 @@ SMODS.Enhancement{ -- Cookie
                 }
             end
         end
-        if context.destroy_card and context.destroying_card == card and card.ability.extra.bites_left == 1 then
+        if context.destroy_card and context.destroying_card == card and card.ability.extra.bites_left <= 1 then
             return { remove = true }
         end
     end,
