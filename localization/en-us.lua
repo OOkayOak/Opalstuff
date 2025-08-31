@@ -151,8 +151,8 @@ return{
                     'appear in every {C:attention}Arcana Pack'
                 }
             },
-            j_opal_high_roller = {
-                name = 'High Roller',
+            j_opal_rolodex = {
+                name = 'Rolodex',
                 text = {
                     '{C:attention}+1{} Hand Size every',
                     '{C:attention}#1# {C:inactive}(#2#){} Shop Rerolls this Ante',
@@ -445,12 +445,9 @@ return{
         challenge_names = {
             c_opal_debuffs_1 = "Oops! All Debuffs",
             c_opal_dupes_1 = "Mirage",
-            c_opal_pillar_1 = "Stack",
-            c_opal_pillar_2 = "Pillar",
-            c_opal_pillar_3 = "Obelisk",
-            c_opal_stickers_1 = "Blind Stickers",
-            c_opal_stickers_2 = "Stick it to the... Hand",
-            c_opal_stuff_1 = "Opal's Stuff"
+            c_opal_pillar_1 = "Pillar",
+            c_opal_stickers_1 = "Decorated Cards",
+            c_opal_stickers_2 = "Restoration Project",
         },
         dictionary = {
             k_opal_chomp = 'Chomp!',
@@ -468,9 +465,8 @@ return{
         },
         v_text = {
             ch_c_opal_pillar = {"{C:attention}Played Cards{} are {C:red}debuffed{} until the end of the Ante"},
-            ch_c_pillar_quip = {"{C:inactive,s:0.8}Wait... {C:attention,s:0.8}The Pillar{C:inactive,s:0.8}? Is that you?"},
-            ch_c_pillar_quip_2 = {"{C:attention,s:0.8}The Pillar{C:inactive,s:0.8}! It really is you!"},
-            ch_c_pillar_quip_3 = {"{C:inactive,s:0.8}... What the fuck?"}
+            ch_c_opal_disable_skipping = {"{C:attention}Skipping Blinds{} is {C:red}disabled"},
+            ch_c_opal_enable_bl_stickers_cards = {"Every {C:attention}Blind Sticker{} for {C:attention}Cards{} is enabled{C:inactive}"},
         },
         quips = {
             pnr_opal_stack_1 = {

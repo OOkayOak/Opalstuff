@@ -1,4 +1,4 @@
-SMODS.Challenge{
+SMODS.Challenge{ -- Oops! All Debuffs
     key = 'debuffs_1',
     rules = {
         custom = {
@@ -17,28 +17,63 @@ SMODS.Challenge{
         banned_tags = {},
         banned_other = {}
     },
+    button_colour = OPAL.badge_colour
 }
 
-    SMODS.Challenge{
-        key = 'pillar_1',
-        rules = {
-            custom = {
-                {id = 'opal_pillar'},
-                {id = 'pillar_quip'}
-            },
-            modifiers = {
-            },
+SMODS.Challenge{ -- Pillar
+    key = 'pillar_1',
+    rules = {
+        custom = {
+            {id = 'opal_pillar'},
+            {id = 'opal_disable_skipping'}
         },
-        jokers = {
+        modifiers = {
         },
-        restrictions = {
-            banned_cards = {},
-            banned_tags = {},
-            banned_other = {
-                {type = "blind", id = "bl_pillar"}
-            }
+    },
+    jokers = {
+    },
+    restrictions = {
+        banned_cards = {},
+        banned_tags = {},
+        banned_other = {
+            {type = "blind", id = "bl_pillar"}
+        }
+    },
+    button_colour = OPAL.badge_colour
+}
+
+local DeckWithStickers = {}
+local suits = {'S', 'D', 'C', 'H'}
+local ranks = {'2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'}
+for k, v in ipairs(suits) do
+    for k2, v2 in ipairs(ranks) do
+        table.insert(DeckWithStickers,{s=v,r=v2,opal_stickers=true})
+    end
+end
+
+
+SMODS.Challenge{
+    key = 'stickers_1',
+    rules = {
+        custom = {
+            {id = 'opal_enable_bl_stickers_cards'}
         },
-    }
+        modifiers = {
+        },
+    },
+    jokers = {
+    },
+    deck = {
+        cards = DeckWithStickers,
+        type = "Challenge Deck"
+    },
+    restrictions = {
+        banned_cards = {},
+        banned_tags = {},
+        banned_other = {}
+    },
+    button_colour = OPAL.badge_colour
+}
 
 if (CHDP or {}).can_load then 
     SMODS.Challenge{
@@ -59,83 +94,8 @@ if (CHDP or {}).can_load then
         banned_tags = {},
         banned_other = {}
     },
+    button_colour = OPAL.badge_colour
 }
-    SMODS.Challenge{
-        key = 'pillar_2',
-        rules = {
-            custom = {
-                {id = 'chdp_pillar'},
-                {id = 'disable_skipping'},
-                {id = 'pillar_quip_2'}
-            },
-            modifiers = {
-            },
-        },
-        jokers = {
-        },
-        restrictions = {
-            banned_cards = {},
-            banned_tags = {},
-            banned_other = {
-                {type = "blind", id = "bl_pillar"}
-            }
-        },
-    }
-    SMODS.Challenge{
-        key = 'pillar_3',
-        rules = {
-            custom = {
-                {id = 'chdp_pillar'},
-                {id = 'disable_skipping'},
-                {id = 'chdp_third_boss'},
-                {id = 'pillar_quip_3'}
-            },
-            modifiers = {
-            },
-        },
-        jokers = {
-            {id = 'j_obelisk'}
-        },
-        restrictions = {
-            banned_cards = {},
-            banned_tags = {},
-            banned_other = {
-                {type = "blind", id = "bl_pillar"}
-            }
-        },
-    }
-
-    local DeckWithStickers = {}
-    local suits = {'S', 'D', 'C', 'H'}
-    local ranks = {'2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'}
-    for k, v in ipairs(suits) do
-        for k2, v2 in ipairs(ranks) do
-            table.insert(DeckWithStickers,{s=v,r=v2,opal_stickers=true})
-        end
-    end
-
-
-    SMODS.Challenge{
-        key = 'stickers_1',
-        rules = {
-            custom = {
-                {id = 'enable_bl_stickers_cards'}
-            },
-            modifiers = {
-            },
-        },
-        jokers = {
-        },
-        deck = {
-            cards = DeckWithStickers,
-            type = "Challenge Deck"
-        },
-        restrictions = {
-            banned_cards = {},
-            banned_tags = {},
-            banned_other = {}
-        },
-    }
 
     local AKYRS = SMODS.Mods['aikoyorisshenanigans']
     SMODS.Challenge{
@@ -157,14 +117,6 @@ if (CHDP or {}).can_load then
         } or {
             {id = 'j_opal_kimochi_warui', eternal = true}
         },
-    }
-
-    SMODS.Challenge{
-        key = 'stuff_1',
-        rules = {
-            custom = {
-                {id = 'every_joker_mod', value = 'Opalstuff', key = 'opal'}
-            }
-        }
+        button_colour = OPAL.badge_colour
     }
 end

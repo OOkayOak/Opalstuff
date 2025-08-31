@@ -236,8 +236,8 @@ SMODS.Joker { -- Cultist
     end
 }
 
-SMODS.Joker { --High Roller
-    key = 'high_roller',
+SMODS.Joker { --Rolodex
+    key = 'rolodex',
     config = {extra = {rerolls_required = 3, rerolls_left = 3, handsize_mod = 0}},
     rarity = 1,
     atlas = "jokerAtlas",

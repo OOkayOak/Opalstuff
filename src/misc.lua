@@ -21,7 +21,7 @@ quantum_gradient = SMODS.Gradient{ --Quantum Gradient
         HEX('7a3aab'),
         HEX('2a7dc6')
     }
-
 }
 
--- test
+loc_colour()
+G.ARGS.LOC_COLOURS["opal_pink"] = OPAL.badge_colour

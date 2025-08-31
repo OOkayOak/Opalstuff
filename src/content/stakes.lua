@@ -7,6 +7,7 @@ SMODS.Stake{ -- Travel
     sticker_atlas = 'stakeStickerAtlas',
     sticker_pos = {x=1,y=0},
     colour = HEX('78a7e0'),
+    opalstuff_alt = true,
     modifiers = function()
         G.GAME.modifiers.enable_eternals_in_shop = true
         G.GAME.modifiers.enable_perishables_in_shop = true
@@ -23,6 +24,7 @@ SMODS.Stake{ -- Sour
     sticker_atlas = 'stakeStickerAtlas',
     sticker_pos = {x=2,y=0},
     colour = HEX('fdff68'),
+    opalstuff_alt = true,
     modifiers = function()
         G.GAME.modifiers['enable_opal_hooked'] = true
         G.GAME.modifiers['enable_opal_chewed'] = true
@@ -37,6 +39,7 @@ SMODS.Stake{ -- Heavy
     sticker_atlas = 'stakeStickerAtlas',
     sticker_pos = {x=0,y=0},
     colour = HEX('a3a3a3'),
+    opalstuff_alt = true,
     modifiers = function()
         G.GAME.modifiers.opal_no_skipping_big = true
     end,
@@ -51,6 +54,7 @@ SMODS.Stake{ -- Quantum
     sticker_atlas = 'stakeStickerAtlas',
     sticker_pos = {x=3,y=0},
     colour = quantum_gradient,
+    opalstuff_alt = true,
     modifiers = function()
         G.GAME.win_ante = G.GAME.win_ante + 1
     end,
@@ -64,6 +68,7 @@ SMODS.Stake{ -- Reject
     sticker_atlas = 'stakeStickerAtlas',
     sticker_pos = {x=4,y=0},
     colour = HEX('464646'),
+    opalstuff_alt = true,
     modifiers = function()
         G.GAME.modifiers['enable_opal_trampled'] = true
         G.GAME.modifiers['enable_opal_bound'] = true
@@ -78,6 +83,7 @@ SMODS.Stake{ -- Pillar
     sticker_atlas = 'stakeStickerAtlas',
     sticker_pos = {x=0,y=1},
     colour = HEX('7e6752'),
+    opalstuff_alt = true,
     modifiers = function()
         G.GAME.modifiers.opal_pillar = true
         G.GAME.banned_keys["bl_pillar"] = true
@@ -92,9 +98,10 @@ SMODS.Stake{ -- Double Down
     sticker_atlas = 'stakeStickerAtlas',
     sticker_pos = {x=1,y=1},
     colour = HEX('7A3AAB'),
+    opalstuff_alt = true,
     modifiers = function()
         G.GAME.win_ante = G.GAME.win_ante + 1
-        G.GAME.modifiers.disable_skipping = true
+        G.GAME.modifiers.opal_disable_skipping = true
     end,
 }
 
@@ -108,6 +115,7 @@ SMODS.Stake{ -- Hyperdeath
     sticker_atlas = 'stakeStickerAtlas',
     sticker_pos = {x=4,y=2},
     colour = HEX('ff0000'),
+    opalstuff_alt = true,
     modifiers = function()
         G.GAME.modifiers.chaos_engine_all = true
         CHDP.setup_chaos_run()
