@@ -19,6 +19,13 @@ return{
             }
         },
         Blind = {
+            bl_opal_stinger = {
+                name = 'The Stinger',
+                text = {
+                    "Destroys a random card",
+                    "in played Hand",
+                }
+            }
         },
         Enhanced = {
             m_opal_cookie = {
@@ -175,6 +182,22 @@ return{
                     '{C:inactive}(Currently {C:mult}#3#{C:inactive} Mult)'
                 }
             },
+            j_opal_approaching_thunder = {
+                name = 'Approaching Thunder',
+                text = {
+                    'Gives {C:white,X:mult}X#1#{} Mult for',
+                    'each {C:attention}Dark Suit',
+                    'held in hand'
+                }
+            },
+            j_opal_receding_daylight = {
+                name = 'Receding Daylight',
+                text = {
+                    'Gives {C:white,X:chips}X#1#{} Chips for',
+                    'each {C:attention}Light Suit',
+                    'held in hand'
+                }
+            }
         },
         Other = {
             opal_bound = {

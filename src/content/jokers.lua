@@ -220,10 +220,10 @@ SMODS.Joker { --Oops! All 1/3s
 
 SMODS.Joker { -- Cultist
     key = 'cultist',
-    rarity = 2,
+    rarity = 1,
     atlas = "jokerAtlas",
-    pos = {x = 3, y = 4},
-    cost = 7,
+    pos = {x = 5, y = 1},
+    cost = 5,
     blueprint_compat = true,
     calculate = function(self, card, context)
         if context.open_booster and context.card.ability.name:find('Arcana') then
@@ -239,10 +239,10 @@ SMODS.Joker { -- Cultist
 SMODS.Joker { --Rolodex
     key = 'rolodex',
     config = {extra = {rerolls_required = 3, rerolls_left = 3, handsize_mod = 0}},
-    rarity = 1,
+    rarity = 2,
     atlas = "jokerAtlas",
-    pos = {x = 3, y = 4},
-    cost = 4,
+    pos = {x = 0, y = 2},
+    cost = 7,
     blueprint_compat = true,
     loc_vars = function(self, info_queue, card)
         return { vars = {card.ability.extra.rerolls_required, card.ability.extra.rerolls_left, card.ability.extra.handsize_mod}}
@@ -319,7 +319,7 @@ SMODS.Joker { -- Grandma
     config = {extra = {mult = 4, count = 0}},
     rarity = 1,
     atlas = "jokerAtlas",
-    pos = {x = 3, y = 4},
+    pos = {x = 2, y = 2},
     cost = 4,
     blueprint_compat = true,
     loc_vars = function(self, info_queue, card)
@@ -338,6 +338,74 @@ SMODS.Joker { -- Grandma
             return {
                 mult_mod = card.ability.extra.count*card.ability.extra.mult,
                 message = localize{type='variable',key='a_mult',vars={card.ability.extra.count*card.ability.extra.mult}}
+            }
+        end
+    end
+}
+
+SMODS.Joker { -- Approaching Thunder
+    key = 'approaching_thunder',
+    config = {extra = {xmult = 0.25, count = 0, already_used = {}}},
+    rarity = 1,
+    atlas = "jokerAtlas",
+    pos = {x = 3, y = 4},
+    cost = 4,
+    blueprint_compat = true,
+    loc_vars = function(self, info_queue, card)
+        return { vars = {card.ability.extra.xmult}}
+    end,
+    calculate = function(self, card, context)
+        if context.individual and context.cardarea == G.hand then
+            local dark_suits = {'Spades', 'Clubs', 'paperback_Crowns', 'gb_Eyes'}
+            for k, v in ipairs(dark_suits) do
+                if context.other_card:is_suit(v) and not (card.ability.extra.already_used and card.ability.extra.already_used[v]) then
+                    card.ability.extra.count = card.ability.extra.count + 1
+                    card.ability.extra.already_used = card.ability.extra.already_used or {}
+                    card.ability.extra.already_used[v] = true
+                end
+            end
+        end
+        if context.joker_main and to_big(card.ability.extra.count) > to_big(0) then
+            card.ability.extra.already_used = {}
+            local finalCount = card.ability.extra.count
+            card.ability.extra.count = 0
+            return {
+                Xmult_mod = 1 + (finalCount*card.ability.extra.xmult),
+                message = localize{type='variable',key='a_xmult',vars={1 + finalCount*card.ability.extra.xmult}}
+            }
+        end
+    end
+}
+
+SMODS.Joker { -- Receding Daylight
+    key = 'receding_daylight',
+    config = {extra = {xchips = 0.25, count = 0, already_used = {}}},
+    rarity = 1,
+    atlas = "jokerAtlas",
+    pos = {x = 3, y = 4},
+    cost = 4,
+    blueprint_compat = true,
+    loc_vars = function(self, info_queue, card)
+        return { vars = {card.ability.extra.xchips}}
+    end,
+    calculate = function(self, card, context)
+        if context.individual and context.cardarea == G.hand then
+            local light_suits = {'Hearts', 'Diamonds', 'paperback_Stars', 'minty_3s'}
+            for k, v in ipairs(light_suits) do
+                if context.other_card:is_suit(v) and not (card.ability.extra.already_used and card.ability.extra.already_used[v]) then
+                    card.ability.extra.count = card.ability.extra.count + 1
+                    card.ability.extra.already_used = card.ability.extra.already_used or {}
+                    card.ability.extra.already_used[v] = true
+                end
+            end
+        end
+        if context.joker_main and to_big(card.ability.extra.count) > to_big(0) then
+            card.ability.extra.already_used = {}
+            local finalCount = card.ability.extra.count
+            card.ability.extra.count = 0
+            return {
+                Xchip_mod = 1 + (finalCount*card.ability.extra.xchips),
+                message = localize{type='variable',key='a_xchips',vars={1 + finalCount*card.ability.extra.xchips}}
             }
         end
     end
