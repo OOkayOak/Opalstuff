@@ -47,10 +47,12 @@ SMODS.Enhancement{ -- Cookie
 }
 
 function OPAL.cookie_rescore_cards(cookie, cards, context)
+    G.GAME.opal_cookie_rescoring = true
     for k, v in ipairs(cards) do
         G.E_MANAGER:add_event(Event({trigger = 'immediate', func = function()
             context.scoring_hand[cookie]:juice_up()
         return true end}))
         SMODS.score_card(context.scoring_hand[v], context)
     end
+    G.GAME.opal_cookie_rescoring = false
 end

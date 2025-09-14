@@ -25,6 +25,3 @@ quantum_gradient = SMODS.Gradient{ --Quantum Gradient
 
 loc_colour()
 G.ARGS.LOC_COLOURS["opal_pink"] = OPAL.badge_colour
-
-OPAL.light_suits = {'Hearts', 'Diamonds', 'paperback_Stars', 'minty_3s'}
-OPAL.dark_suits = {'Spades', 'Clubs', 'paperback_Crowns', 'gb_Eyes'}

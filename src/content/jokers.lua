@@ -343,70 +343,83 @@ SMODS.Joker { -- Grandma
     end
 }
 
-SMODS.Joker { -- Approaching Thunder
-    key = 'approaching_thunder',
-    config = {extra = {xmult = 0.25, count = 0, already_used = {}}},
-    rarity = 1,
+SMODS.Joker { -- Biscuit Tin
+    key = 'biscuit_tin',
+    config = {extra = {repetitions = 1}},
+    rarity = 3,
     atlas = "jokerAtlas",
     pos = {x = 3, y = 4},
-    cost = 4,
+    cost = 9,
     blueprint_compat = true,
     loc_vars = function(self, info_queue, card)
-        return { vars = {card.ability.extra.xmult}}
+        info_queue[#info_queue+1] = G.P_CENTERS.m_opal_cookie
+        return { vars = {localize{type = 'name_text', set = 'Enhanced', key = 'm_opal_cookie'}}}
+    end,
+    add_to_deck = function(self, card, from_debuff)
+    end,
+    remove_from_deck = function(self, card, from_debuff)
     end,
     calculate = function(self, card, context)
-        if context.individual and context.cardarea == G.hand then
-            local dark_suits = {'Spades', 'Clubs', 'paperback_Crowns', 'gb_Eyes'}
-            for k, v in ipairs(dark_suits) do
-                if context.other_card:is_suit(v) and not (card.ability.extra.already_used and card.ability.extra.already_used[v]) then
-                    card.ability.extra.count = card.ability.extra.count + 1
-                    card.ability.extra.already_used = card.ability.extra.already_used or {}
-                    card.ability.extra.already_used[v] = true
-                end
+        if context.repetition and context.cardarea == G.play then
+            local other_card_enhancements = SMODS.get_enhancements(context.other_card)
+            if other_card_enhancements["m_opal_cookie"] then
+                return {
+                    message = localize ("k_again_ex"),
+                    repetitions = 1,
+                    card = card
+                }
             end
-        end
-        if context.joker_main and to_big(card.ability.extra.count) > to_big(0) then
-            card.ability.extra.already_used = {}
-            local finalCount = card.ability.extra.count
-            card.ability.extra.count = 0
-            return {
-                Xmult_mod = 1 + (finalCount*card.ability.extra.xmult),
-                message = localize{type='variable',key='a_xmult',vars={1 + finalCount*card.ability.extra.xmult}}
-            }
         end
     end
 }
 
-SMODS.Joker { -- Receding Daylight
-    key = 'receding_daylight',
-    config = {extra = {xchips = 0.25, count = 0, already_used = {}}},
-    rarity = 1,
+SMODS.Joker { -- Flat White
+    key = 'coffee',
+    config = {extra = {count = 5}},
+    rarity = 2,
     atlas = "jokerAtlas",
     pos = {x = 3, y = 4},
-    cost = 4,
-    blueprint_compat = true,
+    cost = 7,
+    blueprint_compat = false,
+    eternal_compat = false,
     loc_vars = function(self, info_queue, card)
-        return { vars = {card.ability.extra.xchips}}
+        info_queue[#info_queue+1] = G.P_CENTERS.m_opal_cookie
+        return { vars = {card.ability.extra.count, localize{type = 'name_text', set = 'Enhanced', key = 'm_opal_cookie'}, (card.ability.extra.count > 1 and 's' or '')}}
     end,
     calculate = function(self, card, context)
-        if context.individual and context.cardarea == G.hand then
-            local light_suits = {'Hearts', 'Diamonds', 'paperback_Stars', 'minty_3s'}
-            for k, v in ipairs(light_suits) do
-                if context.other_card:is_suit(v) and not (card.ability.extra.already_used and card.ability.extra.already_used[v]) then
-                    card.ability.extra.count = card.ability.extra.count + 1
-                    card.ability.extra.already_used = card.ability.extra.already_used or {}
-                    card.ability.extra.already_used[v] = true
+        if context.individual and context.cardarea == G.play and SMODS.has_enhancement(context.other_card, 'm_opal_cookie') 
+        and not (G.GAME.opal_cookie_rescoring or context.other_card.opal_coffee_kill or context.blueprint) then
+
+            --create a random Tag
+            local tags = {}
+            for k, v in pairs(SMODS.Tags) do
+                if string.find(k,'tag_') and not string.find(k,'constellation') then
+                    tags[#tags+1] = k
                 end
             end
+            G.E_MANAGER:add_event(Event({
+                delay = 0.2,
+                func = function()
+                    add_tag(Tag(pseudorandom_element(tags, pseudoseed('opal_coffee'))), false)
+                    play_sound('generic1', 0.9 + math.random() * 0.1, 0.8)
+                    play_sound('holo1', 1.2 + math.random() * 0.1, 0.4)
+                    return true end}))
+
+            context.other_card.opal_coffee_kill = true
+
+            if card.ability.extra.count > 1 then -- mark the cards for death
+                card.ability.extra.count = card.ability.extra.count - 1
+            else -- card.ability.extra.count must == 1
+                SMODS.destroy_cards(card, nil, nil, true)
+                return{
+                    message = localize('k_eaten_ex'),
+                    colour = G.C.RED,
+                    message_card = card
+                }
+            end
         end
-        if context.joker_main and to_big(card.ability.extra.count) > to_big(0) then
-            card.ability.extra.already_used = {}
-            local finalCount = card.ability.extra.count
-            card.ability.extra.count = 0
-            return {
-                Xchip_mod = 1 + (finalCount*card.ability.extra.xchips),
-                message = localize{type='variable',key='a_xchips',vars={1 + finalCount*card.ability.extra.xchips}}
-            }
+        if context.destroy_card and context.destroy_card.opal_coffee_kill then -- KILL cards
+            return {remove = true}
         end
     end
 }

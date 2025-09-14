@@ -182,22 +182,25 @@ return{
                     '{C:inactive}(Currently {C:mult}#3#{C:inactive} Mult)'
                 }
             },
-            j_opal_approaching_thunder = {
-                name = 'Approaching Thunder',
+            j_opal_biscuit_tin = {
+                name = 'Biscuit Tin',
                 text = {
-                    'Gives {C:white,X:mult}X#1#{} Mult for',
-                    'each {C:attention}Dark Suit',
-                    'held in hand'
+                    'Retrigger all',
+                    '{C:attention,T:m_opal_cookie}#1#{}{C:attention}s',
                 }
             },
-            j_opal_receding_daylight = {
-                name = 'Receding Daylight',
-                text = {
-                    'Gives {C:white,X:chips}X#1#{} Chips for',
-                    'each {C:attention}Light Suit',
-                    'held in hand'
-                }
-            }
+            j_opal_coffee = {
+                name = 'Flat White',
+                text = {{
+                            'The next {C:attention}#1# {C:attention,T:m_opal_cookie}#2#{}{C:attention}#3#',
+                            'are {C:red}destroyed{} after scoring'
+                        },
+                        {
+                            'For each {C:attention}#2#{} destroyed', 
+                            'by this Joker, create a',
+                            'random {C:attention}Tag'
+                        }}
+            },
         },
         Other = {
             opal_bound = {

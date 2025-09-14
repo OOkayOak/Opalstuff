@@ -43,7 +43,7 @@ SMODS.Consumable{
 SMODS.Consumable{ -- The Milk Churn
     key = 'churn',
     set = 'Tarot',
-    atlas = 'jokerAtlas', pos = {x=2, y=2},
+    atlas = 'spectralAtlas', pos = {x=1,y=0},
     config = {max_highlighted = 2, mod_conv = 'm_opal_cookie'},
     loc_vars = function(self, info_queue, card)
         info_queue[#info_queue+1] = G.P_CENTERS[card.ability.mod_conv]
