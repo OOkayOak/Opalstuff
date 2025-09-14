@@ -68,28 +68,28 @@ return{
                 name = 'Intrusive Joker',
                 text = {
                     '{X:mult,C:white}X#1# {} Mult',
-                    '{C:red}Debuffs{} all {C:diamonds}Diamonds'
+                    '{X:mult,C:white}-X#2#{} for each {C:diamonds}Diamond{} drawn'
                 }
             },
             j_opal_egocentric = {
                 name = 'Egocentric Joker',
                 text = {
                     '{X:mult,C:white}X#1# {} Mult',
-                    '{C:red}Debuffs{} all {C:hearts}Hearts'
+                    '{X:mult,C:white}-X#2#{} for each {C:hearts}Heart{} drawn'
                 }
             },
             j_opal_irritating = {
                 name = 'Irritating Joker',
                 text = {
                     '{X:mult,C:white}X#1# {} Mult',
-                    '{C:red}Debuffs{} all {C:spades}Spades'
+                    '{X:mult,C:white}-X#2#{} for each {C:spades}Spade{} drawn'
                 }
             },
             j_opal_wreckless = {
                 name = 'Wreckless Joker',
                 text = {
                     '{X:mult,C:white}X#1# {} Mult',
-                    '{C:red}Debuffs{} all {C:clubs}Clubs'
+                    '{X:mult,C:white}-X#2#{} for each {C:clubs}Club{} drawn'
                 }
             },
             j_opal_indulgent = {

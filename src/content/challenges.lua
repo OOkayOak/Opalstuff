@@ -1,25 +1,3 @@
-SMODS.Challenge{ -- Oops! All Debuffs
-    key = 'debuffs_1',
-    rules = {
-        custom = {
-        },
-        modifiers = {
-        },
-    },
-    jokers = {
-        {id = 'j_opal_intrusive', eternal = true},
-        {id = 'j_opal_egocentric', eternal = true},
-        {id = 'j_opal_wreckless', eternal = true},
-        {id = 'j_opal_irritating', eternal = true}
-    },
-    restrictions = {
-        banned_cards = {},
-        banned_tags = {},
-        banned_other = {}
-    },
-    button_colour = OPAL.badge_colour
-}
-
 SMODS.Challenge{ -- Pillar
     key = 'pillar_1',
     rules = {
