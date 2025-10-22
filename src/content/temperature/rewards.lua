@@ -194,7 +194,7 @@ function OPAL.generate_modifier_UI(modifier, _size)
 
     local modifier_sprite_tab = nil
 
-    local modifier_sprite = Sprite(0,0,_size*1,_size*1,G.ASSET_ATLAS["opal_modifierAtlas"], (modifier.hide_ability) and G.modifier_undiscovered.pos or modifier.pos)
+    local modifier_sprite = Sprite(0,0,_size*1,_size*1,G.ASSET_ATLAS[modifier.atlas], (modifier.hide_ability) and G.modifier_undiscovered.pos or modifier.pos)
     modifier_sprite.T.scale = 1
     modifier_sprite_tab = {n= G.UIT.C, config={align = "cm", ref_table = modifier, group = modifier.tally}, nodes={
         {n=G.UIT.O, config={w=_size*1,h=_size*1, colour = G.C.BLUE, object = modifier_sprite, focus_with_object = true}},
