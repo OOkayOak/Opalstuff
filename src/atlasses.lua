@@ -10,3 +10,4 @@ SMODS.Atlas{ key = "stakeStickerAtlas", px = 71, py = 95, path = "stakestickers.
 SMODS.Atlas{ key = "partnerAtlas", px = 46, py = 58, path = "partners.png" }
 SMODS.Atlas{ key = "partnerAnimAtlas", px = 46, py = 58, path = "animatedpartners.png" }
 SMODS.Atlas{ key = 'blindAtlas', px = 34, py = 34, atlas_table = 'ANIMATION_ATLAS', path = "blinds.png", frames = 21 }
+SMODS.Atlas{ key = "modifierAtlas", px = 34, py = 34, path = "modifiers.png" }

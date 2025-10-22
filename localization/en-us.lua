@@ -92,48 +92,18 @@ return{
                     '{X:mult,C:white}-X#2#{} for each {C:clubs}Club{} drawn'
                 }
             },
-            j_opal_indulgent = {
-                name = 'Indulgent Joker',
-                text = {
-                    '{X:mult,C:white}X#1# {} Mult',
-                    '{C:red}Debuffs{} all {C:minty_3s}3s{}'
-                }
-            },
-            j_opal_emulous = {
-                name = 'Emulous Joker',
-                text = {
-                    '{X:mult,C:white}X#1# {} Mult',
-                    '{C:red}Debuffs{} all {C:bunc_fleurons}Fleurons'
-                }
-            },
-            j_opal_flamboyant = {
-                name = 'Flamboyant Joker',
-                text = {
-                    '{X:mult,C:white}X#1# {} Mult',
-                    '{C:red}Debuffs{} all {C:bunc_halberds}Halberds'
-                }
-            },
-            j_opal_dissident = {
-                name = 'Dissident Joker',
-                text = {
-                    '{X:mult,C:white}X#1# {} Mult',
-                    '{C:red}Debuffs{} all {C:paperback_stars}Stars'
-                }
-            },
-            j_opal_deceptive = {
-                name = 'Deceptive Joker',
-                text = {
-                    '{X:mult,C:white}X#1# {} Mult',
-                    '{C:red}Debuffs{} all {C:paperback_crowns}Crowns'
-                }
-            },
             j_opal_kimochi_warui = {
                 name = 'Kimochi Warui',
-                text = {
-                    'When first Hand is drawn, removes a {C:attention}Sticker{} from',
-                    'random {C:attention}Joker{}, {C:green}#1# in #2#{} chance to add a {C:attention}Sticker{}',
-                    'to random {C:attention}Playing Card{} held in Hand'
-                }
+                text = {{
+                    'When first Hand is drawn, removes',
+                    'a {C:attention}Sticker{} from a random',
+                    'owned {C:attention}Joker'
+                },
+                {
+                    'When triggered, {C:green}#1# in #2#{} chance to',
+                    'add a {C:attention}Sticker{} to a random',
+                    '{C:attention}Playing Card{} held in Hand'
+                }}
             },
             j_opal_holy_holy = {
                 name = 'Holy, Holy',
@@ -201,6 +171,49 @@ return{
                             'random {C:attention}Tag'
                         }}
             },
+            j_opal_sombre = {
+                name = 'Sombre Joker',
+                text = {
+
+                }
+            }
+        },
+        OpalModifier = {
+            md_opal_recycler = {
+                name = 'Recycler',
+                text = {
+                    '{C:money}+$#1#{} per {C:attention}Discard',
+                    'at end of round'
+                }
+            },
+            md_opal_handheld = {
+                name = 'Handheld',
+                text = {
+                    '{C:money}+$#1#{} per {C:attention}Hand',
+                    'at end of round'
+                }
+            },
+            md_opal_hilarious = {
+                name = 'Punchline',
+                text = {
+                    '{C:attention}+1{} Joker Slot'
+                }
+            },
+            md_opal_astronomy = {
+                name = 'Astronomy',
+                text = {
+                    'Level up {C:attention}first{} played',
+                    '{C:attention}poker hand{} in round'
+                }
+            },
+            md_opal_experimental = {
+                name = 'Experimental',
+                text = {
+                    'Every card in {C:attention}played hand',
+                    'increases or decreases rank',
+                    'when {C:attention}scored'
+                }
+            }
         },
         Other = {
             opal_bound = {
@@ -485,8 +498,17 @@ return{
             c_opal_stickers_2 = "Restoration Project",
         },
         dictionary = {
+            b_temperature = 'Heat',
+            b_opal_modifiers = 'Modifiers',
+            b_opal_temp_info = 'Set Score on fire to gain Heat!',
+            b_opal_open_temp = 'TAB to open Heat',
             k_opal_chomp = 'Chomp!',
             k_opal_eaten = 'Eaten!',
+            k_opalmodifier = 'Modifier',
+
+            opal_optional_features = 'OPTIONAL FEATURES',
+            opal_heat_system = 'Heat System',
+            opal_modifiers = 'Modifiers',
         },
         labels = {
             opal_bound = "Bound",
@@ -501,7 +523,9 @@ return{
         v_text = {
             ch_c_opal_pillar = {"{C:attention}Played Cards{} are {C:red}debuffed{} until the end of the Ante"},
             ch_c_opal_disable_skipping = {"{C:attention}Skipping Blinds{} is {C:red}disabled"},
-            ch_c_opal_enable_bl_stickers_cards = {"Every {C:attention}Blind Sticker{} for {C:attention}Cards{} is enabled{C:inactive}"},
+            ch_c_opal_enable_bl_stickers_cards = {"Every {C:attention}Blind Sticker{} for {C:attention}Cards{} is enabled{C:inactive} (Opalstuff)"},
+            ch_c_opal_no_heat = {"Heat is{C:red} disabled{C:inactive} (Opalstuff)"},
+            ch_c_opal_no_mods = {"Modifiers are {C:red}disabled{C:inactive} (Opalstuff)"},
         },
         quips = {
             pnr_opal_stack_1 = {

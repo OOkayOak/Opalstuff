@@ -1,0 +1,128 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 1
+
+# Temperature 1/ - Game:init_game_object()
+[[patches]]
+[patches.pattern]
+target = 'game.lua'
+pattern = 'inflation = 0,'
+position = 'after'
+match_indent = true
+payload = '''opal_temperature = 0,'''
+
+# Temperature 2/ - Game:start_run(args)
+[[patches]]
+[patches.pattern]
+target = 'game.lua'
+pattern = 'self.GAME.dollars = self.GAME.starting_params.dollars'
+position = 'after'
+match_indent = true
+payload = '''self.GAME.opal_temperature = self.GAME.starting_params.opal_temperature
+self.GAME.modifiers.opal_no_heat = self.GAME.modifiers.opal_no_heat or (not OPAL.config.heat_system)
+self.GAME.modifiers.opal_no_mods = self.GAME.modifiers.opal_no_mods or (not OPAL.config.modifiers)'''
+
+# Temperature 3/ - get_starting_params()
+[[patches]]
+[patches.pattern]
+target = 'functions/misc_functions.lua'
+pattern = 'dollars = 4,'
+position = 'after'
+match_indent = true
+payload = '''opal_temperature = 0,'''
+
+# Temperature 4/ - Create temperature UI at start of game
+[[patches]]
+[patches.pattern]
+target = 'game.lua'
+pattern = 'G.playing_cards = {}'
+position = 'before'
+match_indent = true
+payload = '''if not (G.GAME.modifiers.opal_no_heat and G.GAME.modifiers.opal_no_mods) then
+G.E_MANAGER:add_event(Event({
+            trigger = 'immediate',
+            func = function()
+                G.opal_temperature_UI = UIBox{
+                    definition = create_uibox_opal_temperature(), 
+                    config = {align="cli", offset = {x=-5,y=-3.5}, major = G.ROOM_ATTACH, bond = 'Weak', instance_type = 'CARD'}
+                }
+            return true
+            end}))
+end'''
+
+# Temperature 5/ - Create Heat for hands above blind requirement
+[[patches]]
+[patches.pattern]
+target = 'functions/state_events.lua'
+pattern = '''if G.GAME.modifiers.debuff_played_cards then'''
+position = 'before'
+match_indent = true
+payload = '''if (not(G.GAME.modifiers.opal_no_heat)) and hand_chips*mult > G.GAME.blind.chips then
+    OPAL.ease_temp(math.floor(math.log((hand_chips*mult / G.GAME.blind.chips), 2)+1))
+end'''
+
+# Temperature 6/ - Remove Temperature when run is kill...
+[[patches]]
+[patches.pattern]
+target = 'game.lua'
+pattern = '''if self.GAME_OVER_UI then self.GAME_OVER_UI:remove(); self.GAME_OVER_UI = nil end'''
+position = 'before'
+match_indent = true
+payload = '''if self.opal_temperature_UI then self.opal_temperature_UI:remove(); self.opal_temperature_UI = nil end'''
+
+# Temperature 7/ - saving
+[[patches]]
+[patches.pattern]
+target = 'functions/misc_functions.lua'
+position = 'before'
+pattern = '''local tags = {}'''
+payload = '''local mods = {}
+if G.opal_heat_mods then
+for k, v in ipairs(G.opal_heat_mods.cards) do
+    if (type(v) == "table") then 
+        local modSer = v.config.center.key
+        if modSer then mods[k] = modSer end
+    end
+end
+end'''
+match_indent = true
+
+# Temperature 8/ - saving
+[[patches]]
+[patches.pattern]
+target = 'functions/misc_functions.lua'
+position = 'before'
+pattern = '''tags = tags,'''
+payload = '''mods = mods,'''
+match_indent = true
+
+# Rewards 1/ - eval_card()
+[[patches]]
+[patches.pattern]
+target = 'functions/common_events.lua'
+position = 'before'
+pattern = '''-- TARGET: evaluate your own general effects'''
+payload = '''if context.cardarea == G.opal_heat_mods and card.ability.set == 'OpalModifier' then
+        local jokers = nil
+        if context.other_joker then
+            jokers = context.other_joker:calculate(context)
+        else
+            jokers = card:calculate(context)
+        end
+        if jokers then 
+            ret.jokers = jokers
+        end
+    end'''
+match_indent = true
+
+# Rewards 2/ - add modifiers to joker calcs
+[[patches]]
+[patches.pattern]
+target = """=[SMODS _ "src/utils.lua"]"""
+position = 'after'
+pattern = '''-- TARGET: add your own CardAreas for joker evaluation'''
+payload = '''
+if G.opal_heat_mods and G.opal_heat_mods.cards then table.insert(t, G.opal_heat_mods) end
+'''
+match_indent = true

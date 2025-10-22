@@ -106,10 +106,10 @@ SMODS.Joker { --Shiny Rock
 SMODS.Joker {--Kimochi Warui
     key = 'kimochi_warui',
     config = {extra = {odds = 3}},
-    rarity = 1,
+    rarity = 2,
     atlas = "jokerAtlas",
     pos = {x = 2, y = 1},
-    cost = 4,
+    cost = 7,
     blueprint_compat = true,
     loc_vars = function(self, info_queue, card)
         local numerator, denominator = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, 'opal_kw1')
@@ -166,7 +166,10 @@ SMODS.Joker {--Kimochi Warui
                 end
             return true end }))
         end
-    end
+    end,
+    in_pool = function(self, args)
+        return (G.GAME.modifiers.enable_eternals_in_shop or G.GAME.modifiers.enable_rentals_in_shop or G.GAME.modifiers.enable_perishables_in_shop)
+    end,
 }
 
 SMODS.Joker {--Holy, Holy
@@ -421,6 +424,24 @@ SMODS.Joker { -- Flat White
         if context.destroy_card and context.destroy_card.opal_coffee_kill then -- KILL cards
             return {remove = true}
         end
+    end
+}
+
+SMODS.Joker { --Sombre Joker
+    key = 'sombre',
+    config = {extra = {}},
+    rarity = 2,
+    atlas = "jokerAtlas",
+    pos = {x = 0, y = 3},
+    cost = 6,
+    blueprint_compat = true,
+    loc_vars = function(self, info_queue, card)
+    end,
+    add_to_deck = function(self, card, from_debuff)
+    end,
+    remove_from_deck = function(self, card, from_debuff)
+    end,
+    calculate = function(self, card, context)
     end
 }
 
