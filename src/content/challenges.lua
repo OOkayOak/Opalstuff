@@ -53,28 +53,6 @@ SMODS.Challenge{
     button_colour = OPAL.badge_colour
 }
 
-SMODS.Challenge{
-    key = 'testing_1',
-    rules = {
-        custom = {
-            {id = 'opal_no_heat'},
-            {id = 'opal_no_mods'}
-        },
-        modifiers = {
-        },
-    },
-    jokers = {
-    },
-    restrictions = {
-        banned_cards = {},
-        banned_tags = {},
-        banned_other = {
-            {type = "blind", id = "bl_pillar"}
-        }
-    },
-    button_colour = OPAL.badge_colour
-}
-
 if (CHDP or {}).can_load then 
     SMODS.Challenge{
     key = 'dupes_1',

@@ -120,6 +120,7 @@ OPAL.Modifier{ -- Astronomy
     end,
 }
 
+--[[
 OPAL.Modifier{ -- Experimental (does random shit)
     key = "experimental",
     name = 'Experimental',
@@ -153,7 +154,7 @@ OPAL.Modifier{ -- Experimental (does random shit)
             context.other_card.opal_experimental_used = false
         end
     end
-}
+}]]
 
 local start_run_ref = Game.start_run
 function Game:start_run(args)

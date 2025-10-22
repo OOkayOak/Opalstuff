@@ -427,7 +427,7 @@ SMODS.Joker { -- Flat White
     end
 }
 
-SMODS.Joker { --Sombre Joker
+--[[SMODS.Joker { --Sombre Joker
     key = 'sombre',
     config = {extra = {}},
     rarity = 2,
@@ -443,7 +443,7 @@ SMODS.Joker { --Sombre Joker
     end,
     calculate = function(self, card, context)
     end
-}
+}]]
 
 --[[SMODS.Joker { --
     key = 'a',
