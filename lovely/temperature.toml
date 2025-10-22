@@ -10,7 +10,8 @@ target = 'game.lua'
 pattern = 'inflation = 0,'
 position = 'after'
 match_indent = true
-payload = '''opal_temperature = 0,'''
+payload = '''opal_temperature = 0,
+opal_temp_level = 0,'''
 
 # Temperature 2/ - Game:start_run(args)
 [[patches]]
@@ -20,6 +21,7 @@ pattern = 'self.GAME.dollars = self.GAME.starting_params.dollars'
 position = 'after'
 match_indent = true
 payload = '''self.GAME.opal_temperature = self.GAME.starting_params.opal_temperature
+self.GAME.opal_temp_level = self.GAME.starting_params.opal_temp_level
 self.GAME.modifiers.opal_no_heat = self.GAME.modifiers.opal_no_heat or (not OPAL.config.heat_system)
 self.GAME.modifiers.opal_no_mods = self.GAME.modifiers.opal_no_mods or (not OPAL.config.modifiers)'''
 
@@ -30,7 +32,8 @@ target = 'functions/misc_functions.lua'
 pattern = 'dollars = 4,'
 position = 'after'
 match_indent = true
-payload = '''opal_temperature = 0,'''
+payload = '''opal_temperature = 0,
+opal_temp_level = 0,'''
 
 # Temperature 4/ - Create temperature UI at start of game
 [[patches]]

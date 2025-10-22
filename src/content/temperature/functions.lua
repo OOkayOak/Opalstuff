@@ -1,4 +1,4 @@
-OPAL.level_thresholds = {0, 10, 25, 50, 75}
+OPAL.level_thresholds = {10, 25, 50, 75}
 
 SMODS.Keybind{ -- Show the opal_temperature UI
     key_pressed = 'tab',
@@ -65,8 +65,7 @@ function OPAL.ease_temp(mod, instant)
           align = 'cm',
           })
 
-        --Play a chip sound
-        --play_sound('coin1')
+        OPAL.check_heat()
     end
     if instant then
         _mod(mod)
@@ -79,6 +78,13 @@ function OPAL.ease_temp(mod, instant)
         end
         }))
     end
+    end
+end
+
+function OPAL.check_heat() -- Checks if you need a modifier/level up
+    while OPAL.level_thresholds[G.GAME.opal_temp_level + 1] and G.GAME.opal_temperature >= OPAL.level_thresholds[G.GAME.opal_temp_level + 1] do
+        G.GAME.opal_temp_level = G.GAME.opal_temp_level + 1
+        OPAL.random_modifier()
     end
 end
 
