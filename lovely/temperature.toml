@@ -129,3 +129,17 @@ payload = '''
 if G.opal_heat_mods and G.opal_heat_mods.cards then table.insert(t, G.opal_heat_mods) end
 '''
 match_indent = true
+
+# Rewards 3/ - show badges in collection
+[[patches]]
+[patches.pattern]
+target = 'functions/UI_definitions.lua'
+pattern = """if card.config and card.config.tag then
+              SMODS.create_mod_badges(SMODS.Tags[card.config.tag.key], badges)
+          end"""
+position = 'after'
+payload = """
+if card.config and card.config.modifier then
+    SMODS.create_mod_badges(OPAL.Modifiers[card.config.modifier.key], badges)
+end"""
+match_indent = true

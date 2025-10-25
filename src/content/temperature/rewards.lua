@@ -1,3 +1,4 @@
+OPAL.Modifiers = {}
 OPAL.Modifier = SMODS.Center:extend{
     class_prefix = 'md',
     set = 'OpalModifier',
@@ -13,9 +14,8 @@ OPAL.Modifier = SMODS.Center:extend{
             G.P_CENTER_POOLS[self.set] = {}
     end,
     inject = function(self)
-        G.P_MODIFIERS = G.P_MODIFIERS or {}
-        self.order = #G.P_MODIFIERS + 1
-        G.P_MODIFIERS[self.key] = self
+        OPAL.Modifiers[self.key] = self
+        self.order = #OPAL.Modifiers
         SMODS.Center.inject(self)
     end,
     get_obj = function(self, key)
@@ -228,7 +228,7 @@ function OPAL.generate_modifier_UI(modifier, _size)
                 if _modifier.children.alert then 
                     _modifier.children.alert:remove()
                     _modifier.children.alert = nil
-                    if modifier.key and G.P_MODIFIERS[modifier.key] then G.P_MODIFIERS[modifier.key].alerted = true end
+                    if modifier.key and OPAL.Modifiers[modifier.key] then OPAL.Modifiers[modifier.key].alerted = true end
                     G:save_progress()
                 end
             end
@@ -245,7 +245,7 @@ end
 function OPAL.random_modifier()
     if not G.GAME.modifiers.opal_no_mods then
     mod_keys = {}
-    for k, v in pairs(G.P_MODIFIERS) do
+    for k, v in pairs(OPAL.Modifiers) do
         mod_keys[#mod_keys+1] = k
     end
     local modifier_chosen = pseudorandom_element(mod_keys, pseudoseed('add_opal_modifier'))
@@ -263,6 +263,6 @@ end
 function OPAL.Modifier:get_uibox_table(modifier_sprite)
     modifier_sprite = modifier_sprite or self.modifier_sprite
     local name_to_check, loc_vars = self.name, {}
-    modifier_sprite.ability_UIBox_table = generate_card_ui(G.P_MODIFIERS[self.key], nil, loc_vars, (self.hide_ability) and 'Undiscovered' or 'Modifier', nil, (self.hide_ability))
+    modifier_sprite.ability_UIBox_table = generate_card_ui(OPAL.Modifiers[self.key], nil, loc_vars, (self.hide_ability) and 'Undiscovered' or 'Modifier', nil, (self.hide_ability))
     return modifier_sprite
 end

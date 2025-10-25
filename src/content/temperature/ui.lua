@@ -35,7 +35,7 @@ function create_UIBox_your_collection_modifiers()
     }
 
     local modifier_tab = {}
-    for k, v in pairs(G.P_MODIFIERS) do
+    for k, v in pairs(OPAL.Modifiers) do
         modifier_tab[#modifier_tab+1] = v
     end
 
