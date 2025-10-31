@@ -5,7 +5,7 @@ OPAL.Modifier = SMODS.Center:extend{
     discovered = true,
     unlocked = true,
     available = true,
-    atlas = 'modifierAtlas',
+    atlas = 'opal_modifierAtlas',
     pos = {x = 0, y = 0},
     display_size = {w = 22, h = 22},
     config = {},
@@ -118,6 +118,29 @@ OPAL.Modifier{ -- Astronomy
             }
         end
     end,
+}
+
+OPAL.running_yolk_modifiers = {
+    {item = {'mult'}, text = localize('k_mult'), colour = G.C.MULT},
+    {item = {'chips'}, text = 'Chips', colour = G.C.CHIPS},
+    {item = {'xmult', 'Xmult', 'x_mult'}, text = 'XMult', colour = G.C.MULT}
+}
+
+OPAL.Modifier{ -- Running Yolk
+    key = "running_yolk",
+    name = 'Running Yolk',
+    atlas = 'modifierAtlas',
+    pos = {x = 4, y = 0},
+    config = {extra = {item = nil, text = 'value', colour = G.C.SECONDARY_SET.Tarot}},
+    loc_vars = function(self, info_queue, card)
+        return{vars = {card.ability.extra.text, colours = {card.ability.extra.colour}}}
+    end,
+    apply = function(self, card)
+        card.ability.extra = pseudorandom_element(OPAL.running_yolk_modifiers, pseudoseed('op_ry'))
+        for k, v in ipairs(card.ability.extra.item) do
+            G.GAME.opal_ry_scaling[v] = G.GAME.opal_ry_scaling[v] and G.GAME.opal_ry_scaling[v]+1 or 1
+        end
+    end
 }
 
 --[[

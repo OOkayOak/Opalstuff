@@ -206,6 +206,13 @@ return{
                     '{C:attention}poker hand{} in round'
                 }
             },
+            md_opal_running_yolk = {
+                name = 'Running Yolk',
+                text = {
+                    'Jokers with Scaling {V:1}#1#{}',
+                    'gain {C:attention}twice{} as much'
+                }
+            },
             md_opal_experimental = {
                 name = 'Experimental',
                 text = {

@@ -23,7 +23,8 @@ match_indent = true
 payload = '''self.GAME.opal_temperature = self.GAME.starting_params.opal_temperature
 self.GAME.opal_temp_level = self.GAME.starting_params.opal_temp_level
 self.GAME.modifiers.opal_no_heat = self.GAME.modifiers.opal_no_heat or (not OPAL.config.heat_system)
-self.GAME.modifiers.opal_no_mods = self.GAME.modifiers.opal_no_mods or (not OPAL.config.modifiers)'''
+self.GAME.modifiers.opal_no_mods = self.GAME.modifiers.opal_no_mods or (not OPAL.config.modifiers)
+self.GAME.opal_ry_scaling = {}'''
 
 # Temperature 3/ - get_starting_params()
 [[patches]]
@@ -142,4 +143,13 @@ payload = """
 if card.config and card.config.modifier then
     SMODS.create_mod_badges(OPAL.Modifiers[card.config.modifier.key], badges)
 end"""
+match_indent = true
+
+# Rewards 4/ - Running Yolk
+[[patches]]
+[patches.pattern]
+target = """=[SMODS _ "src/utils.lua"]"""
+pattern = """local scalar_value = args.scalar_table[args.scalar_value]"""
+position = 'after'
+payload = """if G.GAME.opal_ry_scaling[args.ref_value] and scalar_value > 0 then scalar_value = scalar_value * (2^G.GAME.opal_ry_scaling[args.ref_value]) end"""
 match_indent = true

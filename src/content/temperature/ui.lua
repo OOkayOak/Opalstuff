@@ -29,45 +29,94 @@ function create_uibox_opal_temperature() -- Temperature UI
     return {n = G.UIT.ROOT, config = {colour = G.C.CLEAR, align = "cr", padding = 0.2, r = 0.1, maxh = 1.6}, nodes = heat_UI}
 end
 
-function create_UIBox_your_collection_modifiers()
+function create_UIBox_your_collection_modifiers_contents(page)
+    page = page or 1
     local modifier_matrix = {
-        {}
     }
 
     local modifier_tab = {}
+    local counter = 0
     for k, v in pairs(OPAL.Modifiers) do
         modifier_tab[#modifier_tab+1] = v
+        counter = counter + 1
+    end
+
+    for i = 1, math.ceil(counter/6) do
+        table.insert(modifier_matrix, {})
     end
 
     table.sort(modifier_tab, function (a, b) return a.order < b.order end)
 
     for k, v in ipairs(modifier_tab) do
-    local discovered = v.discovered
-    local _T = {x = G.ROOM.T.w/2 - G.CARD_W/2, y = G.ROOM.T.h/2 - G.CARD_H/2}
-    local temp_modifier = G.P_CENTERS[v.key]
-    if not v.discovered then temp_modifier.hide_ability = true end
-    local temp_modifier_ui, temp_modifier_sprite = OPAL.generate_modifier_UI(temp_modifier)
-    modifier_matrix[math.ceil((k-1)/6+0.001)][1+((k-1)%6)] = {n=G.UIT.C, config={align = "cm", padding = 0.1}, nodes={
-      temp_modifier_ui,
-    }}
+        if k <= 24*(page-1) then elseif k > 24*page then break else
+            local discovered = v.discovered
+            local _T = {x = G.ROOM.T.w/2 - G.CARD_W/2, y = G.ROOM.T.h/2 - G.CARD_H/2}
+            local temp_modifier = G.P_CENTERS[v.key]
+            if not v.discovered then temp_modifier.hide_ability = true end
+            local temp_modifier_ui, temp_modifier_sprite = OPAL.generate_modifier_UI(temp_modifier)
+            modifier_matrix[math.ceil((k-1)/6+0.001)][1+((k-1)%6)] = {n=G.UIT.C, config={align = "cm", padding = 0.1}, nodes={
+            temp_modifier_ui,
+            }}
+        end
+    end
+
+    local table_nodes = {}
+    for i = 1, math.ceil(counter/6) do
+        table.insert(table_nodes, {n=G.UIT.R, config={align = "cm"}, nodes=modifier_matrix[i]})
+    end
+
+    local page_options = {}
+    for i = 1, math.ceil(counter/24) do
+        table.insert(page_options, localize('k_page')..' '..tostring(i)..'/'..tostring(math.ceil(counter/24)))
     end
 
     local t = create_UIBox_generic_options({ back_func = 'your_collection_other_gameobjects', contents = {
-    {n=G.UIT.C, config={align = "cm", r = 0.1, colour = G.C.BLACK, padding = 0.1, emboss = 0.05}, nodes={
+    {n=G.UIT.R, config={align = "cm", r = 0.1, colour = G.C.BLACK, padding = 0.1, emboss = 0.05}, nodes={
       {n=G.UIT.C, config={align = "cm"}, nodes={
-        {n=G.UIT.R, config={align = "cm"}, nodes={
-          {n=G.UIT.R, config={align = "cm"}, nodes=modifier_matrix[1]},
-        }}
-      }} 
-    }}  
+        {n=G.UIT.R, config={align = "cm"}, nodes=table_nodes}
+      }},
+    }},
+    {n=G.UIT.R, config = {align = 'cm'}, nodes = {
+        create_option_cycle({
+            options = page_options,
+            w = 4.5,
+            cycle_shoulders = true,
+            opt_callback = 'your_collection_modifiers_page',
+            focus_args = {snap_to = true, nav = 'wide'},
+            current_option = page,
+            no_pips = true
+        })
+      }}
   }})
   return t
+end
+
+function create_UIBox_your_collection_modifiers()
+    return{
+        n = G.UIT.O,
+        config = { object = UIBox{
+            definition = create_UIBox_your_collection_modifiers_contents(),
+            config = { offset = {x=0,y=0}, align = 'cm'}
+        }, id = 'your_collection_modifiers', align = 'cm'},
+    }
 end
 
 G.FUNCS.your_collection_modifiers = function(e)
     G.SETTINGS.paused = true
     G.FUNCS.overlay_menu{
-        definition = create_UIBox_your_collection_modifiers(),
+        definition = create_UIBox_your_collection_modifiers()
+    }
+end
+
+G.FUNCS.your_collection_modifiers_page = function(args)
+    print(args.cycle_config.current_option)
+    local page = args.cycle_config.current_option or 1
+    local t = create_UIBox_your_collection_modifiers_contents(page)
+    local e = G.OVERLAY_MENU:get_UIE_by_ID('your_collection_modifiers')
+    if e.config.object then e.config.object:remove() end
+    e.config.object = UIBox{
+        definition = t,
+        config = {offset = {x=0,y=0}, align = 'cm', parent = e}
     }
 end
 
