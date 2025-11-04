@@ -123,3 +123,55 @@ end
 OPAL.custom_collection_tabs = function()
     return {UIBox_button({button = "your_collection_modifiers", label = {localize("b_opal_modifiers")}, minw = 5, id = "your_collection_modifiers"})}
 end
+
+function OPAL.generate_modifier_UI(modifier, _size)
+    _size = _size or 0.8
+
+    local modifier_sprite_tab = nil
+
+    local modifier_sprite = Sprite(0,0,_size*1,_size*1,G.ASSET_ATLAS[modifier.atlas], (modifier.hide_ability) and G.modifier_undiscovered.pos or modifier.pos)
+    modifier_sprite.T.scale = 1
+    modifier_sprite_tab = {n= G.UIT.C, config={align = "cm", ref_table = modifier, group = modifier.tally}, nodes={
+        {n=G.UIT.O, config={w=_size*1,h=_size*1, colour = G.C.BLUE, object = modifier_sprite, focus_with_object = true}},
+    }}
+    modifier_sprite:define_draw_steps({
+        {shader = 'dissolve', shadow_height = 0.05},
+        {shader = 'dissolve'},
+    })
+    modifier_sprite.float = true
+    modifier_sprite.states.hover.can = true
+    modifier_sprite.states.drag.can = false
+    modifier_sprite.states.collide.can = true
+    modifier_sprite.config = {modifier = modifier, force_focus = true}
+
+    modifier_sprite.hover = function(_modifier)
+        if not G.CONTROLLER.dragging.target or G.CONTROLLER.using_touch then 
+            if not _modifier.hovering and _modifier.states.visible then
+                _modifier.hovering = true
+                if _modifier == modifier_sprite then
+                    _modifier.hover_tilt = 3
+                    _modifier:juice_up(0.05, 0.02)
+                    play_sound('paper1', math.random()*0.1 + 0.55, 0.42)
+                    play_sound('tarot2', math.random()*0.1 + 0.55, 0.09)
+                end
+
+                modifier:get_uibox_table(modifier_sprite)
+                _modifier.config.h_popup =  G.UIDEF.card_h_popup(_modifier)
+                _modifier.config.h_popup_config ={align = 'cl', offset = {x=-0.1,y=0},parent = _modifier}
+                Node.hover(_modifier)
+                if _modifier.children.alert then 
+                    _modifier.children.alert:remove()
+                    _modifier.children.alert = nil
+                    if modifier.key and OPAL.Modifiers[modifier.key] then OPAL.Modifiers[modifier.key].alerted = true end
+                    G:save_progress()
+                end
+            end
+        end
+    end
+    modifier_sprite.stop_hover = function(_modifier) _modifier.hovering = false; Node.stop_hover(_modifier); _modifier.hover_tilt = 0 end
+
+    modifier_sprite:juice_up()
+    modifier.modifier_sprite = modifier_sprite
+
+    return modifier_sprite_tab, modifier_sprite
+end

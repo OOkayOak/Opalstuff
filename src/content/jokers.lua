@@ -351,7 +351,7 @@ SMODS.Joker { -- Biscuit Tin
     config = {extra = {repetitions = 1}},
     rarity = 3,
     atlas = "jokerAtlas",
-    pos = {x = 3, y = 4},
+    pos = {x = 3, y = 2},
     cost = 9,
     blueprint_compat = true,
     loc_vars = function(self, info_queue, card)
@@ -381,7 +381,7 @@ SMODS.Joker { -- Flat White
     config = {extra = {count = 5}},
     rarity = 2,
     atlas = "jokerAtlas",
-    pos = {x = 3, y = 4},
+    pos = {x = 4, y = 2},
     cost = 7,
     blueprint_compat = false,
     eternal_compat = false,
