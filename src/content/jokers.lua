@@ -352,6 +352,7 @@ SMODS.Joker { -- Biscuit Tin
     rarity = 3,
     atlas = "jokerAtlas",
     pos = {x = 3, y = 2},
+    pixel_size = {h = 79},
     cost = 9,
     blueprint_compat = true,
     loc_vars = function(self, info_queue, card)
