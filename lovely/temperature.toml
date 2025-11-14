@@ -44,15 +44,10 @@ pattern = 'G.playing_cards = {}'
 position = 'before'
 match_indent = true
 payload = '''if not (G.GAME.modifiers.opal_no_heat and G.GAME.modifiers.opal_no_mods) then
-G.E_MANAGER:add_event(Event({
-            trigger = 'immediate',
-            func = function()
                 G.opal_temperature_UI = UIBox{
                     definition = create_uibox_opal_temperature(), 
                     config = {align="cli", offset = {x=-5,y=-3.5}, major = G.ROOM_ATTACH, bond = 'Weak', instance_type = 'CARD'}
                 }
-            return true
-            end}))
 end'''
 
 # Temperature 5/ - Create Heat for hands above blind requirement
@@ -109,9 +104,9 @@ position = 'before'
 pattern = '''-- TARGET: evaluate your own general effects'''
 payload = '''if context.cardarea == G.opal_heat_mods and card.ability.set == 'OpalModifier' then
         local jokers = nil
-        if context.other_joker then
+        if context.other_joker and type(context.other_joker.calculate) == 'function' then
             jokers = context.other_joker:calculate(context)
-        else
+        elseif type(card.calculate) == 'function' then
             jokers = card:calculate(context)
         end
         if jokers then 
@@ -153,3 +148,32 @@ pattern = """local scalar_value = args.scalar_table[args.scalar_value]"""
 position = 'after'
 payload = """if G.GAME.opal_ry_scaling[args.ref_value] and scalar_value > 0 then scalar_value = scalar_value * (2^G.GAME.opal_ry_scaling[args.ref_value]) end"""
 match_indent = true
+
+# Rewards 5/ - Check for debuff
+[[patches]]
+[patches.pattern]
+target = "blind.lua"
+pattern = """for _, v in ipairs(G.playing_cards) do
+        self:debuff_card(v)
+    end"""
+position = 'after'
+match_indent = true
+payload = """for _, v in ipairs(G.opal_heat_mods.cards) do
+        self:debuff_card(v)
+end"""
+
+# Rewards 6/ - Debuff stuff
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = """if self.area == G.jokers then if should_debuff then self:remove_from_deck(true) else self:add_to_deck(true) end end"""
+position = 'after'
+match_indent = true
+payload = """if self.area == G.opal_heat_mods then 
+    _center = self.config.center
+    if should_debuff then
+        _center:unapply(self)
+    else
+        _center:apply(self)
+    end
+end"""

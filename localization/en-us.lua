@@ -25,6 +25,13 @@ return{
                     "Destroys a random card",
                     "in played Hand",
                 }
+            },
+            bl_opal_overload = {
+                name = 'The Overload',
+                text = {
+                    "Disables a random Modifier",
+                    "per Hand"
+                }
             }
         },
         Enhanced = {

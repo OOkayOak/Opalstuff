@@ -43,7 +43,11 @@ end
 function OPAL.Modifier:apply(card)
 end
 
-function OPAL.Modifier:remove(self, card)
+function OPAL.Modifier:unapply(card)
+end
+
+function OPAL.Modifier:remove(card)
+    OPAL.Modifier.unapply(self, card)
 end
 
 
@@ -54,9 +58,10 @@ function OPAL.copy_funcs(card)
     end
     function card:calculate(context)
         local _center = card.config.center
-        OPAL.Modifier.calculate(_center, card, context)
+        if type(card.calculate) == "function" then
+            OPAL.Modifier.calculate(_center, card, context)
+        end
     end
-    print(type(card.calculate))
 end
 
 OPAL.Modifier{ -- Recycler
@@ -72,7 +77,7 @@ OPAL.Modifier{ -- Recycler
         G.GAME.modifiers.money_per_discard = G.GAME.modifiers.money_per_discard or 0
         G.GAME.modifiers.money_per_discard = G.GAME.modifiers.money_per_discard + card.ability.extra
     end,
-    remove = function(self, card)
+    unapply = function(self, card)
         G.GAME.modifiers.money_per_discard = G.GAME.modifiers.money_per_discard - card.ability.extra
     end
 }
@@ -90,7 +95,7 @@ OPAL.Modifier{ -- Handheld
         G.GAME.modifiers.money_per_hand = G.GAME.modifiers.money_per_hand or 1
         G.GAME.modifiers.money_per_hand = G.GAME.modifiers.money_per_hand + card.ability.extra
     end,
-    remove = function(self, card)
+    unapply = function(self, card)
         G.GAME.modifiers.money_per_hand = G.GAME.modifiers.money_per_hand - card.ability.extra
     end
 }
@@ -107,7 +112,7 @@ OPAL.Modifier{ -- Hilarious
     apply = function(self, card)
         G.jokers.config.card_limit = G.jokers.config.card_limit + card.ability.extra
     end,
-    remove = function(self, card)
+    unapply = function(self, card)
         G.jokers.config.card_limit = G.jokers.config.card_limit - card.ability.extra
     end
 }
@@ -153,7 +158,7 @@ OPAL.Modifier{ -- Running Yolk
             G.GAME.opal_ry_scaling[v] = G.GAME.opal_ry_scaling[v] and G.GAME.opal_ry_scaling[v]+1 or 1
         end
     end,
-    remove = function(self, card)
+    unapply = function(self, card)
         for k, v in ipairs(card.ability.extra.item) do
             G.GAME.opal_ry_scaling[v] = G.GAME.opal_ry_scaling[v] - 1
         end
@@ -196,7 +201,7 @@ OPAL.Modifier{ -- Experimental (does random shit)
     end
 }]]
 
-local start_run_ref = Game.start_run
+--[[local start_run_ref = Game.start_run
 function Game:start_run(args)
     local result = start_run_ref(self, args)
     if args and args.savetext and not G.GAME.modifiers.opal_no_mods then
@@ -212,7 +217,7 @@ function Game:start_run(args)
             }))
         end
     end
-end
+end]]
 
 function OPAL.add_modifier(modifier, apply, silent)
     if not G.GAME.modifiers.opal_no_mods then
@@ -221,7 +226,6 @@ function OPAL.add_modifier(modifier, apply, silent)
     local card = Card(_T.x, _T.y, G.CARD_W, G.CARD_H, G.P_CARDS.empty, G.P_CENTERS[modifier],{discover = true, bypass_discovery_center = true, bypass_discovery_ui = true, bypass_back = G.GAME.selected_back.pos })
     card:start_materialize(nil, silent)
     OPAL.copy_funcs(card)
-    print(type(card.apply))
     if apply then card:apply() end
     if _area and card.ability.set == 'OpalModifier' then _area:emplace(card) end
     card.created_on_pause = nil
