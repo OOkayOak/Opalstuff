@@ -2,7 +2,7 @@ SMODS.Blind{
     key = 'stinger',
     atlas = 'blindAtlas', pos = {x=0, y=1},
     boss_colour = HEX('8c5d8d'),
-    boss = ({min = 2}),
+    boss = ({min = 4}),
     press_play = function(self)
         local killThisCard = pseudorandom_element(G.hand.highlighted, pseudoseed('opal_stinger'))
         G.E_MANAGER:add_event(Event({trigger = 'after', func = function()
@@ -13,8 +13,8 @@ SMODS.Blind{
 
 SMODS.Blind{
     key = 'overload',
-    atlas = 'blindAtlas', pos = {x=0, y=1},
-    boss_colour = HEX('8c5d8d'),
+    atlas = 'blindAtlas', pos = {x=0, y=2},
+    boss_colour = HEX('b43117'),
     boss = ({min = 2}),
     calculate = function(self, blind, context)
         if not blind.disabled then
@@ -36,4 +36,14 @@ SMODS.Blind{
     recalc_debuff = function(self, card, from_blind)
         return card.ability.opal_overload_chosen
     end,
+    in_pool = function(self)
+        if G.GAME then
+            if G.GAME.round_resets.ante > 2 then
+                if G.opal_heat_mods and G.opal_heat_mods[1] then
+                    return true
+                end
+            end
+        end
+        return false
+    end
 }
