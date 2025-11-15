@@ -23,7 +23,7 @@ OPAL.config_tab = function()
         }},
         {n = G.UIT.R, config = {colour = G.C.BLACK, align = "cm", r = 0.2, emboss = 0.05}, nodes = {
             create_toggle({
-                label = localize('opal_heat_system'),
+                label = localize('opal_heat'),
                 ref_table = OPAL.config,
                 ref_value = 'heat_system',
                 callback = function()

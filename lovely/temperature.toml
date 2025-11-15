@@ -103,7 +103,7 @@ match_indent = true
 target = 'functions/common_events.lua'
 position = 'before'
 pattern = '''-- TARGET: evaluate your own general effects'''
-payload = '''if context.cardarea == G.opal_heat_mods and card.ability.set == 'OpalModifier' then
+payload = '''if G.opal_heat_mods and context.cardarea == G.opal_heat_mods and card.ability.set == 'OpalModifier' then
         local jokers = nil
         if context.other_joker and type(context.other_joker.calculate) == 'function' then
             jokers = context.other_joker:calculate(context)
@@ -159,8 +159,10 @@ pattern = """for _, v in ipairs(G.playing_cards) do
     end"""
 position = 'after'
 match_indent = true
-payload = """for _, v in ipairs(G.opal_heat_mods.cards) do
+payload = """if G.opal_heat_mods and G.opal_heat_mods.cards then
+    for _, v in ipairs(G.opal_heat_mods.cards) do
         self:debuff_card(v)
+    end
 end"""
 
 # Rewards 6/ - Debuff stuff
@@ -170,7 +172,7 @@ target = "card.lua"
 pattern = """if self.area == G.jokers then if should_debuff then self:remove_from_deck(true) else self:add_to_deck(true) end end"""
 position = 'after'
 match_indent = true
-payload = """if self.area == G.opal_heat_mods then 
+payload = """if G.opal_heat_mods and self.area == G.opal_heat_mods then 
     _center = self.config.center
     if should_debuff then
         _center:unapply(self)
@@ -236,3 +238,14 @@ pattern = '''self.config.card_count = 0'''
 position = 'after'
 match_indent = true
 payload = '''self.config.opal_per_row = config.opal_per_row or 4'''
+
+# Localization shenanigans 1/
+[[patches]]
+[patches.pattern]
+target = 'functions/misc_functions.lua'
+pattern = '''elseif args.type == 'descriptions' or args.type == 'unlocks' then'''
+position = 'before'
+match_indent = true
+payload = '''elseif args.type == 'opal_info' then
+    loc_target = G.localization.opal_info[args.set][args.key]
+    return loc_target'''

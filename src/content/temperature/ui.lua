@@ -1,24 +1,95 @@
 function create_uibox_opal_temperature() -- Temperature UI reworked
-    G.opal_heat_mods = G.opal_heat_mods or CardArea(0,0,2.1,0.5,{card_limit = 1, highlight_limit = 0, type = 'opal_mods', lr_padding = 0, opal_per_row = 4})
     local heat_UI = {}
+    local top_row = {}
     if not G.GAME.modifiers.opal_no_heat then
-    local heat_stat = {n=G.UIT.R, config = {colour = G.C.CLEAR, align = "cm", r = 0.1}, nodes = {
-                        {n = G.UIT.C, config = {colour = G.C.UI.TRANSPARENT_DARK, align = "cm", padding = 0.2, r = 0.1, minw = 1}, nodes = {
+    local heat_stat = {n = G.UIT.C, config = {colour = G.C.UI.TRANSPARENT_DARK, align = "cm", padding = 0.2, r = 0.1, minw = 1}, nodes = {
                             {n=G.UIT.O, config={object = DynaText({string = {{ref_table = G.GAME, ref_value = 'opal_temperature', suffix = '°'}}, colours = {OPAL.get_temp_colour()}, font = G.LANGUAGES['en-us'].font, shadow = false,spacing = 2, bump = true, scale = 0.3 }), id = 'opal_temperature_text_UI', }},
-                        }},
-                    }}
-    table.insert(heat_UI, heat_stat)
+                        }}
+    table.insert(top_row, heat_stat)
     end
+    local button = {n = G.UIT.C, config = {colour = G.C.CLEAR, align = "cm", padding = 0, r = 0.1}, nodes = {
+                            UIBox_button{button = 'opal_mod_info', label = {'?'}, minh = 0.4, minw = 0.4, scale = 0.3},
+                        }}
+    table.insert(top_row, button)
+    local top_row = {n=G.UIT.R, config = {colour = G.C.CLEAR, align = "cm", padding = 0.1, r = 0.1}, nodes = top_row}
+    table.insert(heat_UI, top_row)
     
     if not G.GAME.modifiers.opal_no_mods then
-    local heat_mods = {n=G.UIT.R, config = {colour = G.C.CLEAR, r = 0.1}, nodes = {
+        G.opal_heat_mods = G.opal_heat_mods or CardArea(0,0,2.1,0.5,{card_limit = 1, highlight_limit = 0, type = 'opal_mods', opal_per_row = 4})
+        local heat_mods = {n=G.UIT.R, config = {colour = G.C.CLEAR, r = 0.1}, nodes = {
                         {n=G.UIT.C, config = {colour = G.C.UI.TRANSPARENT_DARK, r = 0.1}, nodes = {
                             {n=G.UIT.O, config={object = G.opal_heat_mods}}
                         }},
                     }}
-    table.insert(heat_UI, heat_mods)            
+        table.insert(heat_UI, heat_mods)            
     end
-    return {n = G.UIT.ROOT, config = {colour = G.C.CLEAR, align = "cm", padding = 0, r = 0.1}, nodes = heat_UI}
+    return {n = G.UIT.ROOT, config = {colour = G.C.CLEAR, align = "cm", padding = 0.05, r = 0.1}, nodes = heat_UI}
+end
+
+function create_UIBox_opal_info(args)
+    local back_func = args.back_func or 'exit_overlay_menu'
+    local set = args.set or 'heat'
+    local r = {}
+        local heat_info = {{n = G.UIT.R, config = {colour = G.C.CLEAR, align = 'cm'}, nodes = {
+            {n=G.UIT.T, config = {text = localize('opal_'..set), scale = 0.5, colour = G.C.WHITE}}
+        }}}
+        local text_holder = {n = G.UIT.R, config = {colour = G.C.BLACK, r = 0.1, padding = 0.1, align = 'cm'}, nodes = {}}
+        for i = 1, #(G.localization.opal_info[set]) do
+            local small = args.small_lines and (args.small_lines <= i) or false
+            new_line = {n = G.UIT.R, config = {colour = G.C.CLEAR, align = 'cm'}, nodes = {
+                {n=G.UIT.T, config = {text = localize({type = 'opal_info', set = set, key = i}), scale = small and args.small_size or 0.35, colour = G.C.WHITE}}
+            }}
+            table.insert(text_holder.nodes, new_line)
+        end
+        table.insert(heat_info, text_holder)
+        for i = 1, #heat_info do
+            table.insert(r, heat_info[i])
+        end
+
+    local t = create_UIBox_generic_options({ back_func = back_func, minw = 0, contents = {
+        {n = G.UIT.C, config = {colour = G.C.CLEAR, align = 'cm', padding = 0.1}, nodes = r}
+    }})
+    return t
+end
+
+function create_UIBox_opal_mod_info()
+    local r = {}
+    if not G.GAME.modifiers.opal_no_heat then
+        local new_button = {n = G.UIT.R, config = {colour = G.C.CLEAR}, nodes = {
+            UIBox_button{button = 'opal_heat_info', label = {localize('opal_heat')}}
+        }}
+        table.insert(r,new_button)
+    end
+    if not G.GAME.modifiers.opal_no_mods then
+        local new_button = {n = G.UIT.R, config = {colour = G.C.CLEAR}, nodes = {UIBox_button{button = 'opal_modifier_info', label = {localize('opal_mods')}}}}
+        table.insert(r,new_button)
+    end
+
+    local t = create_UIBox_generic_options({ back_func = 'exit_overlay_menu', contents = {
+        {n = G.UIT.C, config = {colour = G.C.CLEAR, align = 'cm', padding = 0.1}, nodes = r}
+    }})
+    return t
+end
+
+function G.FUNCS.opal_mod_info()
+    G.SETTINGS.paused = true
+    G.FUNCS.overlay_menu{
+        definition = create_UIBox_opal_mod_info()
+    }
+end
+
+function G.FUNCS.opal_heat_info()
+    G.SETTINGS.paused = true
+    G.FUNCS.overlay_menu{
+        definition = create_UIBox_opal_info({back_func = 'opal_mod_info', set = 'heat', small_lines = 4, small_size = 0.25})
+    }
+end
+
+function G.FUNCS.opal_modifier_info()
+    G.SETTINGS.paused = true
+    G.FUNCS.overlay_menu{
+        definition = create_UIBox_opal_info({back_func = 'opal_mod_info', set = 'mods', small_lines = 3, small_size = 0.5})
+    }
 end
 
 function create_UIBox_your_collection_modifiers_contents(page)

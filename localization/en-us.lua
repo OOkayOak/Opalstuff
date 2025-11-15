@@ -503,6 +503,19 @@ return{
             }
         }
     },
+    opal_info = {
+        heat = {
+            'Heat is a new metric, rewarded for winning a blind.',
+            'If your hand beats the blind, you will receive one Heat',
+            'for every multiple of 2 it beats the blind by.',
+            '(e.g: if a Blind requires 300 Score, you would receive 2 Heat for a Hand that scores 600.)'
+        },
+        mods = {
+            'Modifiers are passively earned as Heat increases.',
+            'You can gain 4 in normal gameplay, one at each of these Heat values:',
+            '10, 25, 50, 75.'
+        }
+    },
     misc = {
         challenge_names = {
             c_opal_debuffs_1 = "Oops! All Debuffs",
@@ -521,8 +534,8 @@ return{
             k_opalmodifier = 'Modifier',
 
             opal_optional_features = 'OPTIONAL FEATURES',
-            opal_heat_system = 'Heat System',
-            opal_modifiers = 'Modifiers',
+            opal_heat = 'Heat System',
+            opal_mods = 'Modifiers',
         },
         labels = {
             opal_bound = "Bound",
