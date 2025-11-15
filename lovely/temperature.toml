@@ -46,8 +46,9 @@ match_indent = true
 payload = '''if not (G.GAME.modifiers.opal_no_heat and G.GAME.modifiers.opal_no_mods) then
                 G.opal_temperature_UI = UIBox{
                     definition = create_uibox_opal_temperature(), 
-                    config = {align="cli", offset = {x=-5,y=-3.5}, major = G.ROOM_ATTACH, bond = 'Weak', instance_type = 'CARD'}
+                    config = {align="cli", offset = {x=17.55,y=2.1}, major = G.ROOM_ATTACH, bond = 'Weak', instance_type = 'CARD'}
                 }
+                G.E_MANAGER:add_event(Event({trigger = 'after', func = function() G.opal_temperature_UI.alignment.offset.y = 2.1 - 0.6*math.floor(math.max(#G.opal_heat_mods.cards - 1, 0)/4) ;return true end }))
 end'''
 
 # Temperature 5/ - Create Heat for hands above blind requirement
@@ -177,3 +178,61 @@ payload = """if self.area == G.opal_heat_mods then
         _center:apply(self)
     end
 end"""
+
+# Rewards 7/ - cardarea shenanigans
+[[patches]]
+[patches.pattern]
+target = 'cardarea.lua'
+pattern = '''if self.config.type == 'deck' then 
+            for i = #self.cards, 1, -1 do'''
+position = 'before'
+match_indent = true
+payload = '''if self.config.type == 'opal_mods' then
+    for i = #self.cards, 1, -1 do 
+        if self.cards[i] ~= G.CONTROLLER.focused.target then
+            if G.CONTROLLER.dragging.target ~= self.cards[i] then self.cards[i]:draw(v) end
+        end
+    end
+end'''
+
+# Rewards 8/ - cardarea shenanigans
+[[patches]]
+[patches.pattern]
+target = 'cardarea.lua'
+pattern = '''(self.config.type == 'deck' and self ~= G.deck) or'''
+position = 'before'
+match_indent = true
+payload = '''(self.config.type == 'opal_mods') or'''
+
+# Rewards 9/ - cardarea shenanigans
+[[patches]]
+[patches.pattern]
+target = 'cardarea.lua'
+pattern = '''if self.config.type == 'deck' then
+            local deck_height = (self.config.deck_height or 0.15)/52'''
+position = 'before'
+match_indent = true
+payload = '''if self.config.type == 'opal_mods' then
+    local card_count = 0
+    for k, card in ipairs(self.cards) do
+        card.opal_count = card_count
+        card_count = card_count + 1
+    end
+    for k, card in ipairs(self.cards) do
+        if (not card.states.drag.is) or card == G.lock_in_card then 
+            card.T.r = 0
+            card.T.x = self.T.x + (0.55)*(math.fmod(card.opal_count, self.config.opal_per_row)) - 0.1
+            card.T.y = self.T.y + self.T.h/2 - card.T.h/2 + 0.6*(math.floor(card.opal_count/self.config.opal_per_row))
+            card.shadow_parrallax = {x=0, y=0}
+        end
+    end
+end'''
+
+# Rewards 10/ - cardarea shenanigans
+[[patches]]
+[patches.pattern]
+target = 'cardarea.lua'
+pattern = '''self.config.card_count = 0'''
+position = 'after'
+match_indent = true
+payload = '''self.config.opal_per_row = config.opal_per_row or 4'''

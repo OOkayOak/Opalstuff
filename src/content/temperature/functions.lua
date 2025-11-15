@@ -1,41 +1,5 @@
 OPAL.level_thresholds = {10, 25, 50, 75}
 
-SMODS.Keybind{ -- Show the opal_temperature UI
-    key_pressed = 'tab',
-    action = function(self)
-        if G.opal_temperature_UI and G.GAME then
-            G.E_MANAGER:add_event(Event({
-            trigger = 'immediate',
-            force_pause = true,
-            blockable = false,
-            blocking = false,
-            func = function()
-                G.opal_temperature_UI.alignment.offset.x = -1.5
-            return true
-            end}))
-        end
-    end,
-    event = 'pressed',
-}
-
-SMODS.Keybind{ -- hide the opal_temperature UI
-    key_pressed = 'tab',
-    action = function(self)
-        if G.opal_temperature_UI and G.GAME then
-            G.E_MANAGER:add_event(Event({
-            trigger = 'immediate',
-            force_pause = true,
-            blockable = false,
-            blocking = false,
-            func = function()
-                G.opal_temperature_UI.alignment.offset.x = -8
-            return true
-            end}))
-        end
-    end,
-    event = 'released'
-}
-
 function OPAL.ease_temp(mod, instant)
     if not G.GAME.modifiers.opal_no_heat then
     local function _mod(mod)

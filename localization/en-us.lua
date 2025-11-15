@@ -209,8 +209,8 @@ return{
             md_opal_astronomy = {
                 name = 'Astronomy',
                 text = {
-                    'Level up {C:attention}first{} played',
-                    '{C:attention}poker hand{} in round'
+                    'Level up played {C:attention}poker hand',
+                    'every {C:attention}#1#{C:inactive} (#2#){} hands played'
                 }
             },
             md_opal_running_yolk = {

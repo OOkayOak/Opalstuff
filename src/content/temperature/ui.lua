@@ -1,32 +1,24 @@
-function create_uibox_opal_temperature() -- Temperature UI
-    G.opal_heat_mods = G.opal_heat_mods or CardArea(0,0,3,0.8,{card_limit = 1, highlight_limit = 0, type = 'title_2'})
+function create_uibox_opal_temperature() -- Temperature UI reworked
+    G.opal_heat_mods = G.opal_heat_mods or CardArea(0,0,2.1,0.5,{card_limit = 1, highlight_limit = 0, type = 'opal_mods', lr_padding = 0, opal_per_row = 4})
     local heat_UI = {}
     if not G.GAME.modifiers.opal_no_heat then
-    local heat_stat = {n=G.UIT.R, config = {colour = G.C.UI.TRANSPARENT_DARK, r = 0.1}, nodes = {
-                        {n = G.UIT.R, config = {colour = G.C.CLEAR, align = "cm", padding = 0.2, r = 0.1}, nodes = {
-                            {n=G.UIT.C, config = {colour = G.C.CLEAR}, nodes = {
-                                {n=G.UIT.T, config={text = localize('b_temperature'), scale = 0.65, colour = G.C.UI.TEXT_LIGHT, shadow = true}},
-                            }},
-                        }},
-                        {n = G.UIT.R, config = {colour = G.C.UI.TRANSPARENT_DARK, align = "cm", padding = 0.2, r = 0.1, minw = 3}, nodes = {
-                            {n=G.UIT.O, config={object = DynaText({string = {{ref_table = G.GAME, ref_value = 'opal_temperature', suffix = '°'}}, colours = {OPAL.get_temp_colour()}, font = G.LANGUAGES['en-us'].font, shadow = false,spacing = 2, bump = true, scale = 0.8 }), id = 'opal_temperature_text_UI', }},
+    local heat_stat = {n=G.UIT.R, config = {colour = G.C.CLEAR, align = "cm", r = 0.1}, nodes = {
+                        {n = G.UIT.C, config = {colour = G.C.UI.TRANSPARENT_DARK, align = "cm", padding = 0.2, r = 0.1, minw = 1}, nodes = {
+                            {n=G.UIT.O, config={object = DynaText({string = {{ref_table = G.GAME, ref_value = 'opal_temperature', suffix = '°'}}, colours = {OPAL.get_temp_colour()}, font = G.LANGUAGES['en-us'].font, shadow = false,spacing = 2, bump = true, scale = 0.3 }), id = 'opal_temperature_text_UI', }},
                         }},
                     }}
     table.insert(heat_UI, heat_stat)
     end
     
     if not G.GAME.modifiers.opal_no_mods then
-    local heat_mods = {n=G.UIT.C, config = {colour = G.C.UI.TRANSPARENT_DARK, r = 0.1}, nodes = {
-                        {n=G.UIT.R, config = {colour = G.C.CLEAR, align = "cm", padding = 0.2}, nodes = {
-                            {n=G.UIT.T, config={text = localize('b_opal_modifiers'), scale = 0.65, colour = G.C.UI.TEXT_LIGHT, shadow = true}},
-                        }},
-                        {n=G.UIT.R, config = {colour = G.C.CLEAR, id = 'opal_heat_mods_UI'}, nodes = {
+    local heat_mods = {n=G.UIT.R, config = {colour = G.C.CLEAR, r = 0.1}, nodes = {
+                        {n=G.UIT.C, config = {colour = G.C.UI.TRANSPARENT_DARK, r = 0.1}, nodes = {
                             {n=G.UIT.O, config={object = G.opal_heat_mods}}
                         }},
                     }}
     table.insert(heat_UI, heat_mods)            
     end
-    return {n = G.UIT.ROOT, config = {colour = G.C.CLEAR, align = "cr", padding = 0.2, r = 0.1, maxh = 1.6}, nodes = heat_UI}
+    return {n = G.UIT.ROOT, config = {colour = G.C.CLEAR, align = "cm", padding = 0, r = 0.1}, nodes = heat_UI}
 end
 
 function create_UIBox_your_collection_modifiers_contents(page)

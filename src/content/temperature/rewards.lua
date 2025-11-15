@@ -46,21 +46,13 @@ end
 function OPAL.Modifier:unapply(card)
 end
 
-function OPAL.Modifier:remove(card)
-    OPAL.Modifier.unapply(self, card)
-end
-
-
 function OPAL.copy_funcs(card)
     function card:apply()
         local _center = card.config.center
         _center:apply(card)
     end
     function card:calculate(context)
-        local _center = card.config.center
-        if type(card.calculate) == "function" then
-            OPAL.Modifier.calculate(_center, card, context)
-        end
+        OPAL.Modifier.calculate(_center, card, context)
     end
 end
 
@@ -79,6 +71,7 @@ OPAL.Modifier{ -- Recycler
     end,
     unapply = function(self, card)
         G.GAME.modifiers.money_per_discard = G.GAME.modifiers.money_per_discard - card.ability.extra
+        if G.GAME.modifiers.money_per_discard == 0 then G.GAME.modifiers.money_per_discard = 0 end
     end
 }
 
@@ -122,17 +115,26 @@ OPAL.Modifier{ -- Astronomy
     name = 'Astronomy',
     atlas = 'modifierAtlas',
     pos = {x = 3, y = 0},
-    config = {extra = 1},
+    config = {extra = {levels = 1, hands = 3, hands_left = 3}},
     loc_vars = function(self, info_queue, card)
-        return{vars = {card.ability.extra}}
+        return{vars = {card.ability.extra.hands, card.ability.extra.hands_left}}
     end,
     calculate = function(self, card, context)
-        if  context.before and context.cardarea == G.opal_heat_mods and G.GAME.current_round.hands_played == 0 then
-            return {
-                card = card,
-                level_up = true,
-                message = localize('k_level_up_ex')
-            }
+        if  context.before and context.cardarea == G.opal_heat_mods then
+            card.ability.extra.hands_left = card.ability.extra.hands_left - 1
+            if card.ability.extra.hands_left == 0 then
+                card.ability.extra.hands_left = card.ability.extra.hands
+                return {
+                    card = card,
+                    level_up = true,
+                    message = localize('k_level_up_ex')
+                }
+            else
+                return {
+                    card = card,
+                    message = localize{type='variable',key='loyalty_inactive',vars={card.ability.extra.hands_left}}
+                }
+            end
         end
     end,
 }
@@ -201,24 +203,6 @@ OPAL.Modifier{ -- Experimental (does random shit)
     end
 }]]
 
---[[local start_run_ref = Game.start_run
-function Game:start_run(args)
-    local result = start_run_ref(self, args)
-    if args and args.savetext and not G.GAME.modifiers.opal_no_mods then
-        for k, v in ipairs(args.savetext.mods) do
-            print(v)
-            G.E_MANAGER:add_event(Event({
-                trigger = 'immediate',
-                func = function()
-                    G.opal_heat_mods = G.opal_heat_mods or CardArea(0,0,3,0.8,{card_limit = 1, highlight_limit = 0, type = 'title_2'})
-                    OPAL.add_modifier(v, nil, true)
-                return true
-                end
-            }))
-        end
-    end
-end]]
-
 function OPAL.add_modifier(modifier, apply, silent)
     if not G.GAME.modifiers.opal_no_mods then
     local _area = G.opal_heat_mods and G.opal_heat_mods or nil
@@ -229,6 +213,7 @@ function OPAL.add_modifier(modifier, apply, silent)
     if apply then card:apply() end
     if _area and card.ability.set == 'OpalModifier' then _area:emplace(card) end
     card.created_on_pause = nil
+    G.opal_temperature_UI.alignment.offset.y = 2.1 - 0.6*math.floor(math.max(#G.opal_heat_mods.cards - 1, 0)/4)
     save_run()
     return card
     end
@@ -250,6 +235,12 @@ function OPAL.random_modifier()
     else
         print("NO MODIFIERS GO AWAY PLEASE")
     end
+end
+
+function OPAL.remove_modifier(card)
+    card.config.center:unapply(card)
+    SMODS.destroy_cards(card, nil, nil, nil)
+    G.opal_temperature_UI.alignment.offset.y = 2.1 - 0.6*math.floor(math.max(#G.opal_heat_mods.cards - 2, 0)/4)
 end
 
 function OPAL.Modifier:get_uibox_table(modifier_sprite)
