@@ -1,39 +1,51 @@
-SMODS.Sticker{ -- Stacked (The Pillar)
+OPAL.BStickers = {}
+OPAL.BSticker = SMODS.Sticker:extend{
+    rarity = 1,
+    inject = function(self)
+        OPAL.BStickers[self.key] = self
+        SMODS.Sticker.inject(self)
+    end,
+}
+
+OPAL.BSticker{ -- Stacked (The Pillar)
     key = 'stacked',
     sets = {
         Joker = false,
         Default = true,
         Enhanced = true
     },
-    rate = 0.5,
+    rarity = 1,
+    rate = 0.2,
     needs_enable_flag = true,
     badge_colour = HEX('7e6752'),
     atlas = 'stickerAtlas',
     pos = {x = 0, y = 0}
 }
 
-SMODS.Sticker{ -- Hooked (The Hook)
+OPAL.BSticker{ -- Hooked (The Hook)
     key = 'hooked',
     sets = {
         Joker = false,
         Default = true,
         Enhanced = true
     },
-    rate = 0.5,
+    rarity = 1,
+    rate = 0.2,
     needs_enable_flag = true,
     badge_colour = HEX('a84024'),
     atlas = 'stickerAtlas',
     pos = {x = 1, y = 0},
 }
 
-SMODS.Sticker{ -- Chewed (The Tooth)
+OPAL.BSticker{ -- Chewed (The Tooth)
     key = 'chewed',
     sets = {
         Joker = false,
         Default = true,
         Enhanced = true
     },
-    rate = 0.5,
+    rarity = 1,
+    rate = 0.2,
     needs_enable_flag = true,
     badge_colour = HEX('b52d2d'),
     atlas = 'stickerAtlas',
@@ -48,87 +60,126 @@ SMODS.Sticker{ -- Chewed (The Tooth)
     end
 }
 
-SMODS.Sticker{ -- Trampled (The Ox)
+OPAL.BSticker{ -- Overgrown (The Plant)
+    key = 'overgrown',
+    sets = {
+        Joker = false,
+        Default = true,
+        Enhanced = true
+    },
+    rarity = 1,
+    rate = 0.15,
+    needs_enable_flag = true,
+    badge_colour = HEX('709284'),
+    atlas = 'stickerAtlas',
+    pos = {x = 3, y = 0},
+}
+
+OPAL.BSticker{ -- Trampled (The Ox)
     key = 'trampled',
     sets = {
         Joker = false,
         Default = true,
         Enhanced = true
     },
-    rate = 0.2,
+    rarity = 2,
+    rate = 0.1,
     needs_enable_flag = true,
     badge_colour = HEX('b95b08'),
     atlas = 'stickerAtlas',
     pos = {x = 4, y = 0},
+    config = {mph = 'most played Hand'},
     loc_vars = function(self, info_queue, card)
-        return {vars = {(G.GAME and G.GAME.current_round) and G.GAME.current_round.most_played_poker_hand or "most played Hand",(G.GAME and G.GAME.modifiers) and G.GAME.modifiers.opal_trampled_multiplier or "0.5"}}
+        OPAL.get_mph()
+        card.ability.opal_trampled.mph = G.GAME.current_round.most_played_poker_hand
+        return {vars = {card.ability.opal_trampled.mph ~= 'most played Hand' and localize(card.ability.opal_trampled.mph, 'poker_hands') or card.ability.opal_trampled.mph,(G.GAME and G.GAME.modifiers) and G.GAME.modifiers.opal_trampled_multiplier or "0.5"}}
     end,
     calculate = function(self,card,context)
         if context.before and context.cardarea == G.play and not card.trampled_triggered then
-            if G.GAME.opal_trampled_check then
+            OPAL.get_mph()
+            card.ability.opal_trampled.mph = G.GAME.current_round.most_played_poker_hand
+            if context.scoring_name == card.ability.opal_trampled.mph then
                 ease_dollars(G.GAME.dollars*-(1-G.GAME.modifiers.opal_trampled_multiplier), true)
                 card.trampled_triggered = true
+                return{
+                    message = localize{type = 'variable', key = 'a_xdollars', vars = {G.GAME.modifiers.opal_trampled_multiplier}},
+                    colour = G.C.MONEY,
+                    card = card
+                }
             end
         end
         if context.after and card.trampled_triggered then
+            OPAL.get_mph()
+            card.ability.opal_trampled.mph = G.GAME.current_round.most_played_poker_hand
             card.trampled_triggered = nil
         end
     end
 }
 
-SMODS.Sticker{ -- Ringing (Cerulean Bell)
-    key = 'ringing',
-    sets = {
-        Joker = false,
-        Default = true,
-        Enhanced = true
-    },
-    rate = 0.05,
-    needs_enable_flag = true,
-    badge_colour = HEX('009cfd'),
-    atlas = 'stickerAtlas',
-    pos = {x = 0, y = 2}
-}
+OPAL.get_mph = function()
+    local _handname, _played, _order = 'High Card', -1, 100
+        for k, v in pairs(G.GAME.hands) do
+            if v.played > _played or (v.played == _played and _order > v.order) then 
+                _played = v.played
+                _handname = k
+            end
+        end
+        G.GAME.current_round.most_played_poker_hand = _handname
+end
 
-SMODS.Sticker{ -- Bound (The Manacle)
+OPAL.BSticker{ -- Bound (The Manacle)
     key = 'bound',
     sets = {
         Joker = false,
         Default = true,
         Enhanced = true
     },
-    rate = 0.2,
+    rarity = 2,
+    rate = 0.1,
     needs_enable_flag = true,
     badge_colour = HEX('575757'),
     atlas = 'stickerAtlas',
     pos = {x = 1, y = 1},
     calculate = function(self,card,context)
-        if context.before and context.cardarea == G.play and card.ability.opal_bound_active then
-            card.ability.opal_bound_active = false
-            G.hand:change_size(1)            
+        if context.hand_drawn then
+            for k, v in ipairs(context.hand_drawn) do
+                if card.ability.opal_bound and not card.ability.opal_bound_active then
+                    card.ability.opal_bound_active = true
+                    G.hand:change_size(-1)
+                end
+            end
         end
-        if context.discard and context.other_card.ability.opal_bound_active then
-            context.other_card.ability.opal_bound_active = false
-            G.hand:change_size(1) 
-        end
-        if context.end_of_round and card.ability.opal_bound_active == true then
+        if card.ability.opal_bound_active and ((context.before and context.cardarea == G.play) or
+        (context.discard and context.other_card == card) or
+        (context.end_of_round)) then
             card.ability.opal_bound_active = false
             G.hand:change_size(1)
         end
     end,
 }
 
-local debuff_hand_ref = Blind.debuff_hand
-function Blind:debuff_hand(cards, hand, handname, check) -- Trampled functionality
-    G.GAME.opal_trampled_check = false
-    if not check then
-        if handname == G.GAME.current_round.most_played_poker_hand then
-            G.GAME.opal_trampled_check = true
-        end
-    end
-    local result = debuff_hand_ref(self,cards, hand, handname, check)
-    return result
-end
+OPAL.BSticker{ -- Ringing (Cerulean Bell)
+    key = 'ringing',
+    sets = {
+        Joker = false,
+        Default = true,
+        Enhanced = true
+    },
+    rarity = 3,
+    rate = 0.03,
+    needs_enable_flag = true,
+    badge_colour = HEX('009cfd'),
+    atlas = 'stickerAtlas',
+    pos = {x = 0, y = 2}
+}
+
+-- TO DO:
+-- Prickly (The Needle) - -1 Hand when discarded
+-- Slick (The Water) - -1 Discard when played
+-- Strong (The Arm) - Levels down the last played hand when held in hand at the end of the round
+-- The Flint - X0.9 Chips, X0.9 Mult
+-- Crimson Heart - When played, debuff a random Joker for the rest of the round
+-- Serpent - After this card is played or discarded, draw 1 less card
 
 local drawn_to_hand_ref = Blind.drawn_to_hand
 function Blind:drawn_to_hand() -- Ringing / Bound functionality
@@ -152,7 +203,6 @@ function Blind:drawn_to_hand() -- Ringing / Bound functionality
             any_forced = true
         end
     end
-    G.hand:change_size(-bound_cards)
     if bound_cards > 0 then
         for i = 1, bound_cards do
             local cardSelected = nil
@@ -207,4 +257,23 @@ function Blind:press_play() -- Hooked functionality
     end
     local result = press_play_ref(self)
     return result
+end
+
+local is_face_ref = Card.is_face
+function Card:is_face(from_boss) -- Overgrown functionality
+    if self.ability.opal_overgrown then
+        return false
+    end
+    return is_face_ref(self, from_boss)
+end
+
+
+function Card:opal_stickers(max_rarity)
+    max_rarity = max_rarity or 3
+    for k, v in pairs(OPAL.BStickers) do
+        if pseudorandom('opal_bst') < v.rate and v.rarity <= max_rarity then
+            print('Applying '..k)
+            self:add_sticker(k, true)
+        end
+    end
 end

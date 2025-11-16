@@ -234,7 +234,7 @@ return{
                 name = 'Bound',
                 text = {
                     "While in Hand, {C:attention}-1 Hand size,",
-                    "discard excess card"
+                    "{C:red}discard excess card"
 
                 }
             },
@@ -254,22 +254,22 @@ return{
             opal_overgrown = {
                 name = "Overgrown",
                 text = {
-                    "This card is Debuffed",
-                    "{s:0.8}Only on Face Cards"
+                    "This card can never",
+                    "count as {C:attention}Face Card"
                 }
             },
             opal_ringing = {
                 name = "Ringing",
                 text = {
-                    "One Ringing card is",
-                    "randomly force-selected"
+                    "One {C:blue}Ringing{} card is",
+                    "randomly {C:attention}force-selected"
                 }
             },
             opal_stacked = {
                 name = "Stacked",
                 text = {
-                    "When scored, debuff",
-                    "for rest of Ante"
+                    "When scored, {C:red}debuff",
+                    "for {C:attention}rest of Ante"
                 }
             },
             opal_trampled = {
@@ -546,6 +546,9 @@ return{
             opal_stacked = "Stacked",
             opal_trampled = "Trampled"
             
+        },
+        v_dictionary = {
+            a_xdollars = 'X#1# Dollars'
         },
         v_text = {
             ch_c_opal_pillar = {"{C:attention}Played Cards{} are {C:red}debuffed{} until the end of the Ante"},

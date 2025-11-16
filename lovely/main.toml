@@ -11,24 +11,7 @@ pattern = "table.insert(G.playing_cards, _card)"
 position = "before"
 match_indent = true
 payload = '''if control.opal_stickers then
-    if pseudorandom('opal_b') < 0.05 then
-    _card.ability.opal_bound = true
-    end
-    if pseudorandom('opal_c') < 0.2 then
-    _card.ability.opal_chewed = true
-    end
-    if pseudorandom('opal_h') < 0.2 then
-    _card.ability.opal_hooked = true
-    end
-    if pseudorandom('opal_r') < 0.05 then
-        _card.ability.opal_ringing = true
-    end
-    if pseudorandom('opal_s') < 0.2 then
-        _card.ability.opal_stacked = true
-    end
-    if pseudorandom('opal_t') < 0.1 then
-        _card.ability.opal_trampled = true
-    end
+    _card:opal_stickers(3)
 end'''
 
 # Snake Partner functionality
