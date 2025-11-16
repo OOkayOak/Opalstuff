@@ -48,7 +48,7 @@ payload = '''if not (G.GAME.modifiers.opal_no_heat and G.GAME.modifiers.opal_no_
                     definition = create_uibox_opal_temperature(), 
                     config = {align="cli", offset = {x=17.55,y=2.1}, major = G.ROOM_ATTACH, bond = 'Weak', instance_type = 'CARD'}
                 }
-                G.E_MANAGER:add_event(Event({trigger = 'after', func = function() G.opal_temperature_UI.alignment.offset.y = 2.1 - 0.6*math.floor(math.max(#G.opal_heat_mods.cards - 1, 0)/4) ;return true end }))
+                if not G.GAME.modifiers.opal_no_mods then G.E_MANAGER:add_event(Event({trigger = 'after', func = function() G.opal_temperature_UI.alignment.offset.y = 2.1 - 0.6*math.floor(math.max(#G.opal_heat_mods.cards - 1, 0)/4) ;return true end })) end
 end'''
 
 # Temperature 5/ - Create Heat for hands above blind requirement

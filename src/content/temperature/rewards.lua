@@ -142,7 +142,8 @@ OPAL.Modifier{ -- Astronomy
 OPAL.running_yolk_modifiers = {
     {item = {'mult'}, text = localize('k_mult'), colour = G.C.MULT},
     {item = {'chips'}, text = 'Chips', colour = G.C.CHIPS},
-    {item = {'xmult', 'Xmult', 'x_mult'}, text = 'XMult', colour = G.C.MULT}
+    {item = {'xmult', 'Xmult', 'x_mult'}, text = 'XMult', colour = G.C.MULT},
+    {item = {'dollars', 'money'}, text = 'Money', colour = G.C.MONEY}
 }
 
 OPAL.Modifier{ -- Running Yolk
