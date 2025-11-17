@@ -143,8 +143,8 @@ OPAL.BSticker{ -- Bound (The Manacle)
     calculate = function(self,card,context)
         if context.hand_drawn then
             for k, v in ipairs(context.hand_drawn) do
-                if card.ability.opal_bound and not card.ability.opal_bound_active then
-                    card.ability.opal_bound_active = true
+                if v == card and v.ability.opal_bound and not v.ability.opal_bound_active then
+                    v.ability.opal_bound_active = true
                     G.hand:change_size(-1)
                 end
             end
@@ -173,45 +173,69 @@ OPAL.BSticker{ -- Ringing (Cerulean Bell)
     pos = {x = 0, y = 2}
 }
 
+OPAL.BSticker{ -- Prickly (The Needle)
+    key = 'prickly',
+    sets = {
+        Joker = false,
+        Default = true,
+        Enhanced = true
+    },
+    rarity = 2,
+    rate = 0.05,
+    needs_enable_flag = true,
+    badge_colour = HEX('5c6e31'),
+    atlas = 'stickerAtlas',
+    pos = {x = 0, y = 1},
+    calculate = function(self, card, context)
+        if context.discard and context.other_card == card then
+            ease_hands_played(-1)
+        end
+    end,
+}
+
+OPAL.BSticker{ -- Soggy (The Water)
+    key = 'soggy',
+    sets = {
+        Joker = false,
+        Default = true,
+        Enhanced = true
+    },
+    rarity = 2,
+    rate = 0.05,
+    needs_enable_flag = true,
+    badge_colour = HEX('c6e0eb'),
+    atlas = 'stickerAtlas',
+    pos = {x = 2, y = 1},
+    calculate = function(self, card, context)
+        if context.main_scoring and context.cardarea == G.play then
+            for k, v in ipairs(context.full_hand) do
+                if v == card then
+                    ease_discard(-1)
+                end
+            end
+        end
+    end,
+}
+
 -- TO DO:
--- Prickly (The Needle) - -1 Hand when discarded
--- Slick (The Water) - -1 Discard when played
 -- Strong (The Arm) - Levels down the last played hand when held in hand at the end of the round
 -- The Flint - X0.9 Chips, X0.9 Mult
 -- Crimson Heart - When played, debuff a random Joker for the rest of the round
 -- Serpent - After this card is played or discarded, draw 1 less card
+-- Amber Acorn - Drawn face down, forced to be in the leftmost position
 
 local drawn_to_hand_ref = Blind.drawn_to_hand
-function Blind:drawn_to_hand() -- Ringing / Bound functionality
+function Blind:drawn_to_hand() -- Ringing functionality
     local ringing_cards = {}
-    local non_bound_cards = {}
-    local bound_cards = 0
     local any_forced = nil
     for k, v in ipairs(G.hand.cards) do
         if not v.debuff then
             if v.ability.opal_ringing then
                 ringing_cards[#ringing_cards+1] = v
             end
-            if v.ability.opal_bound and not v.ability.opal_bound_active then
-                bound_cards = bound_cards + 1
-                v.ability.opal_bound_active = true
-            else
-                non_bound_cards[#non_bound_cards+1] = v
-            end
         end
         if v.ability.forced_selection then
             any_forced = true
-        end
-    end
-    if bound_cards > 0 then
-        for i = 1, bound_cards do
-            local cardSelected = nil
-            G.E_MANAGER:add_event(Event({ trigger = "before", func = function()
-            local cardSelected, removeThis = pseudorandom_element(non_bound_cards,pseudoseed("bound_discard"))
-            G.hand:add_to_highlighted(cardSelected)
-            table.remove(non_bound_cards, removeThis)
-            G.FUNCS.discard_cards_from_highlighted(nil, true)
-            return true end }))
         end
     end
     if not any_forced and #ringing_cards>0 then

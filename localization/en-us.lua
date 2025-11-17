@@ -258,11 +258,25 @@ return{
                     "count as {C:attention}Face Card"
                 }
             },
+            opal_prickly = {
+                name = "Prickly",
+                text = {
+                    "{C:red}-1{C:blue} Hand",
+                    "when discarded"
+                }
+            },
             opal_ringing = {
                 name = "Ringing",
                 text = {
                     "One {C:blue}Ringing{} card is",
                     "randomly {C:attention}force-selected"
+                }
+            },
+            opal_soggy = {
+                name = "Soggy",
+                text = {
+                    "{C:red}-1 Discard",
+                    "when played"
                 }
             },
             opal_stacked = {
@@ -544,7 +558,9 @@ return{
             opal_overgrown = "Overgrown",
             opal_ringing = "Ringing",
             opal_stacked = "Stacked",
-            opal_trampled = "Trampled"
+            opal_trampled = "Trampled",
+            opal_soggy = 'Soggy',
+            opal_prickly = 'Prickly',
             
         },
         v_dictionary = {
