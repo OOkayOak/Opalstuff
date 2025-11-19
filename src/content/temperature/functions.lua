@@ -63,3 +63,13 @@ function OPAL.get_temp_colour()
         return(mix_colours(mix_colours(G.C.PURPLE, G.C.WHITE, 0.7), G.C.BLUE, math.max(0,math.min((G.GAME.opal_temperature-50)/25,1))))
     end
 end
+
+function OPAL.add_indicators()
+    if not G.GAME.modifiers.opal_no_mods then
+        for k, v in pairs(G.GAME.modifiers) do
+            if OPAL.Modifiers['informational']['md_opal_info_'..k] then
+                OPAL.add_modifier('md_opal_info_'..k, false, true, G.opal_indicators)
+            end
+        end
+    end
+end

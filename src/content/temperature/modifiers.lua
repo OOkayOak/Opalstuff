@@ -226,25 +226,40 @@ OPAL.Modifier{ -- Experimental (does random shit)
     end
 }]]
 
-OPAL.Modifier{ -- Informational - Blind Stickers enabled
-    key = "info_bsticks",
+-- Informational Modifiers - corresponds to a G.GAME.modifiers value
+
+OPAL.Modifier{
+    key = "info_opal_enable_bl_stickers",
     name = 'Blind Stickers',
     atlas = 'indicatorAtlas',
     opal_alignment = 'informational',
     pos = {x = 0, y = 0},
-    config = {extra = {level = 1}},
     loc_vars = function(self, info_queue, card)
-        return{vars = {card.ability.extra.level}}
+        return{vars = {G.GAME.modifiers.opal_bl_stickers_level}}
     end
 }
-
-OPAL.Modifier{ -- Informational - Blinds give Stickers
-    key = "info_bsticks2",
+OPAL.Modifier{
+    key = "info_opal_blinds_give_stickers",
     name = 'Blinds Give Stickers',
     atlas = 'indicatorAtlas',
     opal_alignment = 'informational',
     pos = {x = 1, y = 0}
 }
+OPAL.Modifier{
+    key = "info_opal_disable_skipping",
+    name = 'No Skipping',
+    atlas = 'indicatorAtlas',
+    opal_alignment = 'informational',
+    pos = {x = 2, y = 0}
+}
+OPAL.Modifier{
+    key = "info_opal_pillar",
+    name = 'Permanent Pillar',
+    atlas = 'indicatorAtlas',
+    opal_alignment = 'informational',
+    pos = {x = 3, y = 0}
+}
+
 function OPAL.add_modifier(modifier, apply, silent, area)
     if not G.GAME.modifiers.opal_no_mods then
     local _area = area or G.opal_heat_mods

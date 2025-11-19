@@ -49,13 +49,7 @@ payload = '''if not (G.GAME.modifiers.opal_no_heat and G.GAME.modifiers.opal_no_
                     config = {align="cli", offset = {x=17.35,y=1.7}, major = G.ROOM_ATTACH, bond = 'Weak', instance_type = 'CARD'}
                 }
                 if not G.GAME.modifiers.opal_no_mods then G.E_MANAGER:add_event(Event({trigger = 'after', func = function() G.opal_temperature_UI.alignment.offset.y = 1.7 - 0.6*(math.floor(math.max(#G.opal_heat_mods.cards - 1, 0)/4) + math.floor(math.max(#G.opal_indicators.cards - 1, 0)/4)) ;return true end })) end
-if G.GAME.modifiers.opal_enable_bl_stickers and not G.GAME.modifiers.opal_no_mods then
-    local _mod = OPAL.add_modifier('md_opal_info_bsticks', false, true, G.opal_indicators)
-    _mod.ability.extra.level = G.GAME.modifiers.opal_bl_stickers_level
-end
-if G.GAME.modifiers.opal_blinds_give_stickers and not G.GAME.modifiers.opal_no_mods then
-    local _mod = OPAL.add_modifier('md_opal_info_bsticks2', false, true, G.opal_indicators)
-end
+OPAL.add_indicators()
 end'''
 
 # Temperature 5/ - Create Heat for hands above blind requirement

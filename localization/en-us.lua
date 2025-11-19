@@ -230,20 +230,35 @@ return{
             },
 
             -- Informational Modifiers
-            md_opal_info_bsticks = {
+            md_opal_info_opal_enable_bl_stickers = {
                 name = 'Blind Stickers',
                 text = {
                     '{C:attention}Blind Stickers{} with max',
                     'rarity {C:attention}#1#{} may appear'
                 }
             },
-            md_opal_info_bsticks2 = {
+            md_opal_info_opal_blinds_give_stickers = {
                 name = 'Blinds Give Stickers',
                 text = {
                     '{C:attention}Blinds{} give their respective',
                     '{C:attention}Blind Stickers{} to all cards',
                     'in winning Hand when defeated',
                     '{C:inactive,s:0.8}(if possible)'
+                }
+            },
+            md_opal_info_opal_disable_skipping = {
+                name = 'No Skipping',
+                text = {
+                    'You {C:red}can not{}',
+                    'skip {C:attention}Blinds'
+                }
+            },
+            md_opal_info_opal_pillar = {
+                name = 'Pillar Forever',
+                text = {
+                    '{C:attention}Played Cards{} are',
+                    '{C:red}debuffed{} for the rest',
+                    'of the {C:attention}Ante'
                 }
             },
         },

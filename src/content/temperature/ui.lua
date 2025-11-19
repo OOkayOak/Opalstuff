@@ -111,6 +111,20 @@ function G.FUNCS.opal_indicator_info()
     }
 end
 
+function G.FUNCS.opal_good_info()
+    G.SETTINGS.paused = true
+    G.FUNCS.overlay_menu{
+        definition = create_UIBox_opal_info({back_func = 'your_collection_modifiers_good', set = 'mods', small_lines = 3, small_size = 0.5})
+    }
+end
+
+function G.FUNCS.opal_informational_info()
+    G.SETTINGS.paused = true
+    G.FUNCS.overlay_menu{
+        definition = create_UIBox_opal_info({back_func = 'your_collection_modifiers_informational', set = 'indicators', small_lines = 9, small_size = 0.25})
+    }
+end
+
 function create_UIBox_your_collection_modifiers_contents(page, type)
     type = type or 'all'
     page = page or 1
@@ -154,6 +168,9 @@ function create_UIBox_your_collection_modifiers_contents(page, type)
     end
 
     local t = create_UIBox_generic_options({ back_func = 'your_collection_modifiers', contents = {
+        {n=G.UIT.R, config = {align = 'cr'}, nodes = {
+            UIBox_button{button = 'opal_'..type..'_info', label = {'?'}, minw = 0.5, minh = 0.5, maxw = 0.5, maxh = 0.5, shadow = false}
+        } },
     {n=G.UIT.R, config={align = "cm", r = 0.1, colour = G.C.BLACK, padding = 0.1, emboss = 0.05}, nodes={
       {n=G.UIT.C, config={align = "cm"}, nodes={
         {n=G.UIT.R, config={align = "cm"}, nodes=table_nodes}
