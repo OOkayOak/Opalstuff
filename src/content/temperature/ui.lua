@@ -14,9 +14,17 @@ function create_uibox_opal_temperature() -- Temperature UI reworked
     local top_row = {n=G.UIT.R, config = {colour = G.C.CLEAR, align = "cm", padding = 0.1, r = 0.1}, nodes = top_row}
     table.insert(heat_UI, top_row)
     
+    G.opal_indicators = G.opal_indicators or CardArea(0,0,2.1,0.5,{card_limit = 1, highlight_limit = 0, type = 'opal_mods', opal_per_row = 4})
+        local indicators = {n=G.UIT.R, config = {colour = G.C.CLEAR, padding = 0.1, r = 0.1}, nodes = {
+                        {n=G.UIT.C, config = {colour = G.C.UI.TRANSPARENT_DARK, r = 0.1}, nodes = {
+                            {n=G.UIT.O, config={object = G.opal_indicators}}
+                        }},
+                    }}
+        table.insert(heat_UI, indicators)
+
     if not G.GAME.modifiers.opal_no_mods then
         G.opal_heat_mods = G.opal_heat_mods or CardArea(0,0,2.1,0.5,{card_limit = 1, highlight_limit = 0, type = 'opal_mods', opal_per_row = 4})
-        local heat_mods = {n=G.UIT.R, config = {colour = G.C.CLEAR, r = 0.1}, nodes = {
+        local heat_mods = {n=G.UIT.R, config = {colour = G.C.CLEAR, padding = 0.1, r = 0.1}, nodes = {
                         {n=G.UIT.C, config = {colour = G.C.UI.TRANSPARENT_DARK, r = 0.1}, nodes = {
                             {n=G.UIT.O, config={object = G.opal_heat_mods}}
                         }},
@@ -60,6 +68,10 @@ function create_UIBox_opal_mod_info()
         }}
         table.insert(r,new_button)
     end
+
+    local new_button = {n = G.UIT.R, config = {colour = G.C.CLEAR}, nodes = {UIBox_button{button = 'opal_indicator_info', label = {localize('opal_indicators')}}}}
+    table.insert(r,new_button)
+
     if not G.GAME.modifiers.opal_no_mods then
         local new_button = {n = G.UIT.R, config = {colour = G.C.CLEAR}, nodes = {UIBox_button{button = 'opal_modifier_info', label = {localize('opal_mods')}}}}
         table.insert(r,new_button)
@@ -89,6 +101,13 @@ function G.FUNCS.opal_modifier_info()
     G.SETTINGS.paused = true
     G.FUNCS.overlay_menu{
         definition = create_UIBox_opal_info({back_func = 'opal_mod_info', set = 'mods', small_lines = 3, small_size = 0.5})
+    }
+end
+
+function G.FUNCS.opal_indicator_info()
+    G.SETTINGS.paused = true
+    G.FUNCS.overlay_menu{
+        definition = create_UIBox_opal_info({back_func = 'opal_mod_info', set = 'indicators', small_lines = 9, small_size = 0.25})
     }
 end
 

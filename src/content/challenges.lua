@@ -34,7 +34,7 @@ SMODS.Challenge{
     key = 'stickers_1',
     rules = {
         custom = {
-            {id = 'opal_enable_bl_stickers_cards'}
+            {id = 'opal_enable_bl_stickers'}
         },
         modifiers = {
         },
@@ -75,7 +75,6 @@ if (CHDP or {}).can_load then
     button_colour = OPAL.badge_colour
 }
 
-    local AKYRS = SMODS.Mods['aikoyorisshenanigans']
     SMODS.Challenge{
         key = 'stickers_2',
         rules = {
@@ -96,5 +95,28 @@ if (CHDP or {}).can_load then
             {id = 'j_opal_kimochi_warui', eternal = true}
         },
         button_colour = OPAL.badge_colour
+    }
+end
+
+if (SMODS.Mods['aikoyorisshenanigans'] or {}).can_load then -- hai aikoyori!
+    sendTraceMessage('haiii aikoyoriiii')
+    AKYRS = AKYRS or SMODS.Mods['aikoyorisshenanigans']
+    AKYRS.HardcoreChallenge{
+        key = "stickers_3",
+        deck = {
+            cards = DeckWithStickers,
+            type = "Hardcore Challenge Deck",
+        },
+        rules = {
+            custom = {
+                {id = 'opal_enable_bl_stickers'},
+                {id = 'opal_bstick_rate', value = 3}
+            }
+        },
+        difficulty = 7,
+        button_colour = OPAL.badge_colour,
+        apply = function(self)
+            OPAL.update_bsticker_rates(3)
+        end,
     }
 end

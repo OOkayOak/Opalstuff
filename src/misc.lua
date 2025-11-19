@@ -51,7 +51,8 @@ function Back:apply_to_run()
     Backapply_to_run_Ref(self)
     G.GAME.opal_dupes = 0
     G.GAME.modifiers.opal_chewed_loss = 1
-    G.GAME.modifiers.opal_trampled_multiplier = 0.5
+    G.GAME.modifiers.opal_trampled_multiplier = 0.8
+    OPAL.update_bsticker_rates(type(G.GAME.modifiers.opal_bstick_rate) == "number" and G.GAME.modifiers.opal_bstick_rate or 1)
 end
 
 quantum_gradient = SMODS.Gradient{ --Quantum Gradient

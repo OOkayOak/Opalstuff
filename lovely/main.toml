@@ -3,17 +3,6 @@ version = "1.0.0"
 dump_lua = true
 priority = 1
 
-# Apply Blind Stickers
-[[patches]]
-[patches.pattern]
-target = "functions/misc_functions.lua"
-pattern = "table.insert(G.playing_cards, _card)"
-position = "before"
-match_indent = true
-payload = '''if control.opal_stickers then
-    _card:opal_stickers(3)
-end'''
-
 # Snake Partner functionality
 [[patches]]
 [patches.pattern]
@@ -96,22 +85,6 @@ pattern = '''update_hand_text({delay = 0, immediate = true}, {mult = 0, chips = 
 position = 'at'
 match_indent = true
 payload = '''update_hand_text({delay = 0, immediate = true}, {mult = 0, chips = 0, chip_total = opal_return_score(hand_chips*mult), level = '', handname = ''});'''
-
-# Stacked functionality + Pillar modifier functionality
-[[patches]]
-[patches.pattern]
-target = "blind.lua"
-pattern = "if self.name == 'The Pillar' and card.ability.played_this_ante then"
-position = "before"
-match_indent = true
-payload = '''if G.GAME.modifiers.opal_pillar and card.ability.played_this_ante then
-    card:set_debuff(true)
-    return
-end
-if card.ability.opal_stacked and card.ability.played_this_ante then
-    card:set_debuff(true)
-    return
-end'''
 
 # disable skipping blinds
 [[patches]]

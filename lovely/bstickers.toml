@@ -1,0 +1,57 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 0
+
+# Apply Blind Stickers
+[[patches]]
+[patches.pattern]
+target = "functions/misc_functions.lua"
+pattern = "table.insert(G.playing_cards, _card)"
+position = "before"
+match_indent = true
+payload = '''if control.opal_stickers then
+    _card:opal_stickers(3)
+end'''
+
+# Challenge rule functionality - opal_enable_bl_stickers
+[[patches]]
+[patches.pattern]
+target = "game.lua"
+pattern = "elseif v.id == 'no_shop_jokers' then"
+position = "before"
+match_indent = true
+payload = '''elseif v.id == 'opal_enable_bl_stickers' then
+    v.value = v.value or 3
+    G.GAME.modifiers.opal_bl_stickers_level = v.value
+    for kk, vv in pairs(OPAL.BStickers) do
+        if vv.rarity <= v.value then
+            G.GAME.modifiers['enable_'..k] = true
+        end
+    end
+'''
+
+# Blind Stickers - Strong functionality
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = "-- context.after calculations"
+position = "before"
+match_indent = true
+payload = '''G.GAME.opal_strong_score = hand_chips*mult'''
+
+# Stacked functionality + Pillar modifier functionality
+[[patches]]
+[patches.pattern]
+target = "blind.lua"
+pattern = "if self.name == 'The Pillar' and card.ability.played_this_ante then"
+position = "before"
+match_indent = true
+payload = '''if G.GAME.modifiers.opal_pillar and card.ability.played_this_ante then
+    card:set_debuff(true)
+    return
+end
+if card.ability.opal_stacked and card.ability.played_this_ante then
+    card:set_debuff(true)
+    return
+end'''

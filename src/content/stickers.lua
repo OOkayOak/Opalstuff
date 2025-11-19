@@ -7,6 +7,21 @@ OPAL.BSticker = SMODS.Sticker:extend{
     end,
 }
 
+OPAL.Bsticker_rarities = {0.6, 0.2, 0.075}
+
+function OPAL.BSticker:get_bsticker_rate(augment)
+    augment = augment or 1
+    local same_rarity_stickers = 0
+
+    for k, v in pairs(OPAL.BStickers) do
+        if v.rarity == self.rarity then
+            same_rarity_stickers = same_rarity_stickers + 1
+        end
+    end
+    
+    return math.min(1, augment*OPAL.Bsticker_rarities[self.rarity]/same_rarity_stickers)
+end
+
 OPAL.BSticker{ -- Stacked (The Pillar)
     key = 'stacked',
     sets = {
@@ -181,7 +196,7 @@ OPAL.BSticker{ -- Prickly (The Needle)
         Enhanced = true
     },
     rarity = 2,
-    rate = 0.05,
+    rate = 0.06,
     needs_enable_flag = true,
     badge_colour = HEX('5c6e31'),
     atlas = 'stickerAtlas',
@@ -201,7 +216,7 @@ OPAL.BSticker{ -- Soggy (The Water)
         Enhanced = true
     },
     rarity = 2,
-    rate = 0.05,
+    rate = 0.06,
     needs_enable_flag = true,
     badge_colour = HEX('c6e0eb'),
     atlas = 'stickerAtlas',
@@ -217,12 +232,197 @@ OPAL.BSticker{ -- Soggy (The Water)
     end,
 }
 
+OPAL.BSticker{ -- Strong (The Arm)
+    key = 'strong',
+    sets = {
+        Joker = false,
+        Default = true,
+        Enhanced = true
+    },
+    rarity = 2,
+    rate = 0.1,
+    needs_enable_flag = true,
+    badge_colour = HEX('6865f3'),
+    atlas = 'stickerAtlas',
+    pos = {x = 3, y = 1},
+    calculate = function(self, card, context)
+        if context.after and context.cardarea == G.hand then
+            if (G.GAME.chips + G.GAME.opal_strong_score) > G.GAME.blind.chips then
+                return {
+                    card = card,
+                    level_up = -1
+                }
+            end
+        end
+    end,
+}
+
+OPAL.BSticker{ -- Sharp (The Flint)
+    key = 'sharp',
+    sets = {
+        Joker = false,
+        Default = true,
+        Enhanced = true
+    },
+    rarity = 1,
+    rate = 0.1,
+    needs_enable_flag = true,
+    badge_colour = HEX('e56a2f'),
+    atlas = 'stickerAtlas',
+    pos = {x = 1, y = 2},
+    calculate = function(self, card, context)
+        if context.initial_scoring_step and context.cardarea == G.play then
+                return {
+                    card = card,
+                    xmult = 0.9,
+                    xchips = 0.9
+                }
+        end
+    end,
+}
+
+OPAL.BSticker{ -- Bleeding (Crimson Heart)
+    key = 'bleeding',
+    sets = {
+        Joker = false,
+        Default = true,
+        Enhanced = true
+    },
+    rarity = 3,
+    rate = 0.05,
+    needs_enable_flag = true,
+    badge_colour = HEX('ac3232'),
+    atlas = 'stickerAtlas',
+    config = {extra = {debuffed_joker = nil}},
+    pos = {x=2, y=2},
+    calculate = function(self, card, context)
+        if context.initial_scoring_step and context.cardarea == G.play then
+            card.ability.opal_bleeding.debuffed_joker = pseudorandom_element(G.jokers.cards, pseudoseed('bs_b'))
+            if card.ability.opal_bleeding.debuffed_joker then card.ability.opal_bleeding.debuffed_joker:set_debuff(true) end
+        end
+        if context.end_of_round then
+            if card.ability.opal_bleeding.debuffed_joker then card.ability.opal_bleeding.debuffed_joker:set_debuff(false) end
+            card.ability.opal_bleeding.debuffed_joker = nil
+        end
+    end
+}
+
+OPAL.BSticker{ -- Venomous (The Serpent)
+    key = 'venomous',
+    sets = {
+        Joker = false,
+        Default = true,
+        Enhanced = true
+    },
+    rarity = 2,
+    rate = 0.05,
+    needs_enable_flag = true,
+    badge_colour = HEX('439a4f'),
+    atlas = 'stickerAtlas',
+    config = {extra = {debuffed_joker = nil}},
+    pos = {x=5, y=0},
+    calculate = function(self, card, context)
+        if context.drawing_cards and context.cardarea == G.discard then
+            return {cards_to_draw = context.amount - 1}
+        end
+    end
+}
+
+OPAL.BSticker{ -- Growing (Amber Acorn)
+    key = 'growing',
+    sets = {
+        Joker = false,
+        Default = true,
+        Enhanced = true
+    },
+    rarity = 3,
+    rate = 0.05,
+    needs_enable_flag = true,
+    badge_colour = HEX('fda200'),
+    atlas = 'stickerAtlas',
+    config = {extra = {debuffed_joker = nil}},
+    pos = {x=3, y=2},
+    calculate = function(self, card, context)
+        if context.cardarea == G.hand then
+            if card.facing == 'front' then card:flip() end
+        end
+    end
+}
+
+OPAL.BSticker{ -- Intelligent (The Psychic)
+    key = 'intelligent',
+    sets = {
+        Joker = false,
+        Default = true,
+        Enhanced = true
+    },
+    rarity = 1,
+    rate = 0.05,
+    needs_enable_flag = true,
+    badge_colour = HEX('efc03c'),
+    atlas = 'stickerAtlas',
+    pos = {x=4, y=1},
+    calculate = function(self, card, context)
+        if context.modify_scoring_hand and context.other_card == card then
+            if #context.full_hand < 5 then
+                return{remove_from_hand = true}
+            end
+        end
+    end
+}
+
+OPAL.BSticker{ -- Homely (The House)
+    key = 'homely',
+    sets = {
+        Joker = false,
+        Default = true,
+        Enhanced = true
+    },
+    rarity = 1,
+    rate = 0.05,
+    needs_enable_flag = true,
+    badge_colour = HEX('5186a8'),
+    atlas = 'stickerAtlas',
+    config = {extra = {keep_flipped = false}},
+    pos = {x=5, y=1},
+    calculate = function(self, card, context)
+        if context.first_hand_drawn and context.hand_drawn then
+            for k, v in ipairs(context.hand_drawn) do
+                if v == card then
+                    if card.facing == 'front' then card:flip() end
+                    card.ability.opal_homely.keep_flipped = true
+                end
+            end
+        end
+        if context.cardarea == G.hand and card.ability.opal_homely.keep_flipped then
+            if card.facing == 'front' then card:flip() end
+        end
+        if context.main_scoring and context.cardarea == G.play then
+            if card.facing == 'back' then card:flip() end
+        end
+        if context.end_of_round then
+            card.ability.opal_homely.keep_flipped = false
+        end
+    end
+}
+
 -- TO DO:
--- Strong (The Arm) - Levels down the last played hand when held in hand at the end of the round
--- The Flint - X0.9 Chips, X0.9 Mult
--- Crimson Heart - When played, debuff a random Joker for the rest of the round
--- Serpent - After this card is played or discarded, draw 1 less card
--- Amber Acorn - Drawn face down, forced to be in the leftmost position
+-- Verdant Leaf - Card is debuffed unless you have 1 empty Joker slot
+-- Mouth - Card does not score if hand type is not (first handtype played)
+-- Eye - Card does not score if hand type has been played this round
+-- Fish - Card is drawn face-down if drawn after a hand was played
+-- Wheel - 1 in 10 chance to be drawn face-down
+-- Club/Goad/Window/Head - Card can never count as Club/Spade/Diamond/Heart
+-- Wall/Violet Vessel - Increases Blind Requirement by x1.2/x1.5
+
+function OPAL.update_bsticker_rates(augment)
+    for k, v in pairs(SMODS.Stickers) do
+        if OPAL.BStickers[k] then
+            v.rate = v:get_bsticker_rate(augment)
+            OPAL.BStickers[k].rate = v.rate
+        end
+    end
+end
 
 local drawn_to_hand_ref = Blind.drawn_to_hand
 function Blind:drawn_to_hand() -- Ringing functionality
@@ -298,6 +498,30 @@ function Card:opal_stickers(max_rarity)
         if pseudorandom('opal_bst') < v.rate and v.rarity <= max_rarity then
             print('Applying '..k)
             self:add_sticker(k, true)
+        end
+    end
+end
+
+local sort_ref = CardArea.sort
+function CardArea:sort(method) -- Growing functionality
+    sort_ref(self, method)
+    if self == G.hand then
+        local growing_cards = {}
+        local non_growing_cards = {}
+        for k, v in ipairs(self.cards) do
+            if v.ability.opal_growing and not v.debuff then
+                growing_cards[#growing_cards+1] = v
+            else
+                non_growing_cards[#non_growing_cards+1] = v
+            end
+        end
+        pseudoshuffle(growing_cards, pseudoseed('op_gr'))
+        for k, v in ipairs(self.cards) do
+            if growing_cards[k] then
+                self.cards[k] = growing_cards[k]
+            else
+                self.cards[k] = non_growing_cards[k-#growing_cards]
+            end
         end
     end
 end

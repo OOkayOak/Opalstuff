@@ -227,14 +227,23 @@ return{
                     'increases or decreases rank',
                     'when {C:attention}scored'
                 }
-            }
+            },
+
+            -- Informational Modifiers
+            md_opal_info_bsticks = {
+                name = 'Blind Stickers',
+                text = {
+                    '{C:attention}Blind Stickers{} with max',
+                    'rarity {C:attention}#1#{} may appear'
+                }
+            },
         },
         Other = {
             opal_bound = {
                 name = 'Bound',
                 text = {
-                    "While in Hand, {C:attention}-1 Hand size,",
-                    "{C:red}discard excess card"
+                    "While in Hand, {C:attention}-1",
+                    "Hand Size"
 
                 }
             },
@@ -293,6 +302,59 @@ return{
                     "{C:money}Money{} multiplied by {X:money,C:white}X#2#"
                 }
             },
+            opal_strong = {
+                name = 'Strong',
+                text = {
+                    'Levels {C:red}down {C:attention}last played',
+                    'Hand if held in Hand',
+                    'at {C:attention}end of round'
+                }
+            },
+            opal_sharp = {
+                name = 'Sharp',
+                text = {
+                    '{X:chips,C:white}X0.9{} Chips and',
+                    '{X:mult,C:white}X0.9{} Mult when scored',
+                }
+            },
+            opal_bleeding = {
+                name = 'Bleeding',
+                text = {
+                    'When played, {C:red}debuff{} a',
+                    '{C:attention}random Joker{} for the',
+                    'rest of the Round'
+                }
+            },
+            opal_venomous = {
+                name = 'Venomous',
+                text = {
+                    'After this card is {C:attention}played{} or',
+                    '{C:attention}discarded{}, {C:red}draw 1 less card'
+                }
+            },
+            opal_growing = {
+                name = 'Growing',
+                text = {
+                    'Permanently {C:attention}flipped{} and',
+                    'shuffled to {C:attention}left of hand'
+                }
+            },
+            opal_intelligent = {
+                name = 'Intelligent',
+                text = {
+                    'Does not count in {C:attention}Hand',
+                    'if played with less than {C:attention}5{} cards',
+                    'in played Hand'
+                }
+            },
+            opal_homely = {
+                name = 'Homely',
+                text = {
+                    'If drawn in {C:attention}first Hand,',
+                    '{C:attention}flip{} this card'
+                }
+            },
+
             opal_double_down_sticker = {
                 name = "Double Down Stake",
                 text = {
@@ -528,7 +590,12 @@ return{
             'Modifiers are passively earned as Heat increases.',
             'You can gain 4 in normal gameplay, one at each of these Heat values:',
             '10, 25, 50, 75.'
-        }
+        },
+        indicators = {
+            'Indicators are used to display information.',
+            'These are displayed separately from Modifiers, and are given',
+            'when certain effects are in place.'
+        },
     },
     misc = {
         challenge_names = {
@@ -538,6 +605,9 @@ return{
             c_opal_stickers_1 = "Decorated Cards",
             c_opal_stickers_2 = "Restoration Project",
         },
+        hardcore_challenge_names = {
+            hc_opal_stickers_3 = 'Decorated Cards II'
+        },
         dictionary = {
             b_temperature = 'Heat',
             b_opal_modifiers = 'Modifiers',
@@ -546,10 +616,12 @@ return{
             k_opal_chomp = 'Chomp!',
             k_opal_eaten = 'Eaten!',
             k_opalmodifier = 'Modifier',
+            k_opalindicator = 'Indicator',
 
             opal_optional_features = 'OPTIONAL FEATURES',
             opal_heat = 'Heat System',
             opal_mods = 'Modifiers',
+            opal_indicators = 'Indicators',
         },
         labels = {
             opal_bound = "Bound",
@@ -561,7 +633,13 @@ return{
             opal_trampled = "Trampled",
             opal_soggy = 'Soggy',
             opal_prickly = 'Prickly',
-            
+            opal_strong = 'Strong',
+            opal_sharp = 'Sharp',
+            opal_bleeding = 'Bleeding',
+            opal_venomous = 'Venomous',
+            opal_growing = 'Growing',
+            opal_intelligent = 'Intelligent',
+            opal_homely = 'Homely',
         },
         v_dictionary = {
             a_xdollars = 'X#1# Dollars'
@@ -569,7 +647,8 @@ return{
         v_text = {
             ch_c_opal_pillar = {"{C:attention}Played Cards{} are {C:red}debuffed{} until the end of the Ante"},
             ch_c_opal_disable_skipping = {"{C:attention}Skipping Blinds{} is {C:red}disabled"},
-            ch_c_opal_enable_bl_stickers_cards = {"Every {C:attention}Blind Sticker{} for {C:attention}Cards{} is enabled{C:inactive} (Opalstuff)"},
+            ch_c_opal_enable_bl_stickers = {"Every {C:attention}Blind Sticker{} for {C:attention}Cards{} is enabled{C:inactive} (Opalstuff)"},
+            ch_c_opal_bstick_rate = {"{C:attention}Blind Stickers{} appear {C:red}X#1#{} more{C:inactive} (Opalstuff)"},
             ch_c_opal_no_heat = {"Heat is{C:red} disabled{C:inactive} (Opalstuff)"},
             ch_c_opal_no_mods = {"Modifiers are {C:red}disabled{C:inactive} (Opalstuff)"},
         },

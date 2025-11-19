@@ -5,7 +5,7 @@
 	"author": ["Opal"],
 	"description": "A normal mod.",
 	"prefix": "opal",
-	"priority": 0,
+	"priority": 1000,
 	"main_file": "main.lua",
 	"badge_colour": "E096DF",
 	"version": "0.1.0-alpha-07"
