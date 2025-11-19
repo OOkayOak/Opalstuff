@@ -237,6 +237,15 @@ return{
                     'rarity {C:attention}#1#{} may appear'
                 }
             },
+            md_opal_info_bsticks2 = {
+                name = 'Blinds Give Stickers',
+                text = {
+                    '{C:attention}Blinds{} give their respective',
+                    '{C:attention}Blind Stickers{} to all cards',
+                    'in winning Hand when defeated',
+                    '{C:inactive,s:0.8}(if possible)'
+                }
+            },
         },
         Other = {
             opal_bound = {
@@ -352,6 +361,109 @@ return{
                 text = {
                     'If drawn in {C:attention}first Hand,',
                     '{C:attention}flip{} this card'
+                }
+            },
+            opal_envious = {
+                name = 'Envious',
+                text = {
+                    'This card is {C:red}debuffed',
+                    'if all {C:attention}Joker Slots',
+                    'are full'
+                }
+            },
+            opal_hungry = {
+                name = 'Hungry',
+                text = {
+                    'This card {C:red}will not score',
+                    'when played if {C:attention}Hand',
+                    'is not {C:attention}#1#'
+                }
+            },
+            opal_witness = {
+                name = 'Witness',
+                text = {
+                    'This card {C:red}will not score',
+                    'if played in a {C:attention}Hand',
+                    'previously played in Round',
+                }
+            },
+            opal_suspicious = {
+                name = 'Suspicious',
+                text = {
+                    'If {C:attention}drawn{} after a {C:attention}Hand',
+                    'played, {C:red}draw face down'
+                }
+            },
+            opal_dizzy = {
+                name = 'Dizzy',
+                text = {
+                    '{C:green}#1# in #2#{} chance',
+                    'to {C:red}draw face down'
+                }
+            },
+            opal_brutal = {
+                name = 'Brutal',
+                text = {
+                    "This card can never",
+                    "count as a {C:clubs}Club"
+                }
+            },
+            opal_backstabbing = {
+                name = 'Backstabbing',
+                text = {
+                    "This card can never",
+                    "count as a {C:spades}Spade"
+                }
+            },
+            opal_insular = {
+                name = 'Insular',
+                text = {
+                    "This card can never",
+                    "count as a {C:hearts}Heart"
+                }
+            },
+            opal_pointy = {
+                name = 'Pointy',
+                text = {
+                    "This card can never",
+                    "count as a {C:diamonds}Diamond"
+                }
+            },
+            opal_tall = {
+                name = 'Tall',
+                text = {
+                    "When scored, {C:red}increase Blind",
+                    "{C:red}Requirement{} by {C:attention}X#1#"
+                }
+            },
+            opal_looming = {
+                name = 'Looming',
+                text = {
+                    "When scored, {C:red}increase Blind",
+                    "{C:red}Requirement{} by {C:attention}X#1#"
+                }
+            },
+            opal_stained = {
+                name = 'Stained',
+                text = {
+                    "When scored, {C:attention}flip",
+                    "all {C:attention}Face Cards"
+                }
+            },
+            opal_snappy = {
+                name = 'Snappy',
+                text = {
+                    '{C:green}#1# in #2#{} chance',
+                    'to be {C:red}destroyed{} when',
+                    'played'
+                }
+            },
+            opal_overloaded = {
+                name = 'Overloaded',
+                text = {
+                    'When played, {C:red}debuff{} a',
+                    '{C:attention}random Modifier{} for the',
+                    'rest of the Round'
                 }
             },
 
@@ -640,6 +752,20 @@ return{
             opal_growing = 'Growing',
             opal_intelligent = 'Intelligent',
             opal_homely = 'Homely',
+            opal_envious = 'Envious',
+            opal_hungry = 'Hungry',
+            opal_witness = 'Witness',
+            opal_suspicious = 'Suspicious',
+            opal_dizzy = 'Dizzy',
+            opal_brutal = 'Brutal',
+            opal_backstabbing = 'Backstabbing',
+            opal_insular = 'Insular',
+            opal_pointy = 'Pointy',
+            opal_tall = 'Tall',
+            opal_looming = 'Looming',
+            opal_stained = 'Stained',
+            opal_snappy = 'Snappy',
+            opal_overloaded = 'Overloaded',
         },
         v_dictionary = {
             a_xdollars = 'X#1# Dollars'
@@ -647,8 +773,11 @@ return{
         v_text = {
             ch_c_opal_pillar = {"{C:attention}Played Cards{} are {C:red}debuffed{} until the end of the Ante"},
             ch_c_opal_disable_skipping = {"{C:attention}Skipping Blinds{} is {C:red}disabled"},
+
             ch_c_opal_enable_bl_stickers = {"Every {C:attention}Blind Sticker{} for {C:attention}Cards{} is enabled{C:inactive} (Opalstuff)"},
             ch_c_opal_bstick_rate = {"{C:attention}Blind Stickers{} appear {C:red}X#1#{} more{C:inactive} (Opalstuff)"},
+            ch_c_opal_blinds_give_stickers = {"Defeated {C:attention}Boss Blinds{} give stickers to winning {C:attention}Hand{C:inactive} (Opalstuff)"},
+
             ch_c_opal_no_heat = {"Heat is{C:red} disabled{C:inactive} (Opalstuff)"},
             ch_c_opal_no_mods = {"Modifiers are {C:red}disabled{C:inactive} (Opalstuff)"},
         },

@@ -14,7 +14,7 @@ payload = '''if control.opal_stickers then
     _card:opal_stickers(3)
 end'''
 
-# Challenge rule functionality - opal_enable_bl_stickers
+# Challenge rules regarding blind stickers
 [[patches]]
 [patches.pattern]
 target = "game.lua"
@@ -26,7 +26,7 @@ payload = '''elseif v.id == 'opal_enable_bl_stickers' then
     G.GAME.modifiers.opal_bl_stickers_level = v.value
     for kk, vv in pairs(OPAL.BStickers) do
         if vv.rarity <= v.value then
-            G.GAME.modifiers['enable_'..k] = true
+            G.GAME.modifiers['enable_'..kk] = true
         end
     end
 '''
@@ -54,4 +54,33 @@ end
 if card.ability.opal_stacked and card.ability.played_this_ante then
     card:set_debuff(true)
     return
+end'''
+
+# Hungry functionality - add handname to context check
+[[patches]]
+[patches.pattern]
+target = """functions/state_events.lua"""
+pattern = """SMODS.calculate_context({modify_scoring_hand = true, other_card =  G.play.cards[i], full_hand = G.play.cards, scoring_hand = scoring_hand, in_scoring = true}, effects)"""
+position = 'at'
+match_indent = true
+payload = '''SMODS.calculate_context({modify_scoring_hand = true, other_card =  G.play.cards[i], full_hand = G.play.cards, scoring_hand = scoring_hand, in_scoring = true, scoring_name = text}, effects)'''
+
+# Add blind sticker to every card in boss blind winning hand
+[[patches]]
+[patches.pattern]
+target = 'functions/state_events.lua'
+pattern = '''-- TARGET: effects after hand evaluation'''
+position = 'after'
+match_indent = true
+payload = '''if G.GAME.modifiers.opal_blinds_give_stickers and (G.GAME.chips + G.GAME.opal_strong_score) >= G.GAME.blind.chips then
+    local _sticker = OPAL.get_sticker_from_blind(G.GAME.blind.config.blind.key)
+    if _sticker then
+        for k, v in ipairs(scoring_hand) do
+                G.E_MANAGER:add_event(Event({delay = 0.6, trigger = 'after', func = function()
+                    v:add_sticker(_sticker, true)
+                    v:juice_up(1)
+                    play_sound('tarot1')
+                return true end }))
+        end
+    end
 end'''

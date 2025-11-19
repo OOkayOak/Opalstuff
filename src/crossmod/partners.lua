@@ -132,16 +132,6 @@ if (CRYPTID or {}).can_load then
         return math.floor(math.min(score, (G.GAME.selected_partner_card.ability.extra.max_score)*G.GAME.blind.chips))
     end
 
-    function opal_return_score(score)
-        if G.GAME.modifiers.opal_tariff then 
-            return opal_cap_score(math.floor(score))
-        elseif G.GAME.blind.cry_cap_score then
-            return G.GAME.blind:cry_cap_score(math.floor(hand_chips*mult))
-        else
-            return math.floor(hand_chips*mult)
-        end
-    end
-
     Partner_API.Partner{ -- The Tariff
     key = "tariff",
     atlas = "partnerAnimAtlas",

@@ -55,6 +55,16 @@ function Back:apply_to_run()
     OPAL.update_bsticker_rates(type(G.GAME.modifiers.opal_bstick_rate) == "number" and G.GAME.modifiers.opal_bstick_rate or 1)
 end
 
+function opal_return_score(score)
+    if G.GAME.modifiers.opal_tariff then 
+        return opal_cap_score(math.floor(score))
+    elseif (SMODS.Mods['Cryptid'] or {}).can_load and G.GAME.blind.cry_cap_score then
+        return G.GAME.blind:cry_cap_score(math.floor(hand_chips*mult))
+    else
+        return math.floor(hand_chips*mult)
+    end
+end
+
 quantum_gradient = SMODS.Gradient{ --Quantum Gradient
     key = 'quantum_gradient',
     colours = {

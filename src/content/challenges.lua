@@ -34,7 +34,8 @@ SMODS.Challenge{
     key = 'stickers_1',
     rules = {
         custom = {
-            {id = 'opal_enable_bl_stickers'}
+            {id = 'opal_enable_bl_stickers'},
+            {id = 'opal_blinds_give_stickers'}
         },
         modifiers = {
         },
@@ -110,7 +111,7 @@ if (SMODS.Mods['aikoyorisshenanigans'] or {}).can_load then -- hai aikoyori!
         rules = {
             custom = {
                 {id = 'opal_enable_bl_stickers'},
-                {id = 'opal_bstick_rate', value = 3}
+                {id = 'opal_bstick_rate', value = 2}
             }
         },
         difficulty = 7,

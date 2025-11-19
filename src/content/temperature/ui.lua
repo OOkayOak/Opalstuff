@@ -118,7 +118,7 @@ function create_UIBox_your_collection_modifiers_contents(page)
 
     local modifier_tab = {}
     local counter = 0
-    for k, v in pairs(OPAL.Modifiers) do
+    for k, v in pairs(OPAL.Modifiers['all']) do
         modifier_tab[#modifier_tab+1] = v
         counter = counter + 1
     end
@@ -244,7 +244,7 @@ function OPAL.generate_modifier_UI(modifier, _size)
                 if _modifier.children.alert then 
                     _modifier.children.alert:remove()
                     _modifier.children.alert = nil
-                    if modifier.key and OPAL.Modifiers[modifier.key] then OPAL.Modifiers[modifier.key].alerted = true end
+                    if modifier.key and OPAL.Modifiers['all'][modifier.key] then OPAL.Modifiers['all'][modifier.key].alerted = true end
                     G:save_progress()
                 end
             end

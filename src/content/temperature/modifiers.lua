@@ -1,4 +1,5 @@
 OPAL.Modifiers = {
+    ['all'] = {},
     ['good'] = {},
     ['informational'] = {}
 }
@@ -19,7 +20,8 @@ OPAL.Modifier = SMODS.Center:extend{
     end,
     inject = function(self)
         OPAL.Modifiers[self.opal_alignment][self.key] = self
-        self.order = #OPAL.Modifiers
+        OPAL.Modifiers['all'][self.key] = self
+        self.order = #OPAL.Modifiers['all']
         SMODS.Center.inject(self)
     end,
     get_obj = function(self, key)
@@ -236,6 +238,13 @@ OPAL.Modifier{ -- Informational - Blind Stickers enabled
     end
 }
 
+OPAL.Modifier{ -- Informational - Blinds give Stickers
+    key = "info_bsticks2",
+    name = 'Blinds Give Stickers',
+    atlas = 'indicatorAtlas',
+    opal_alignment = 'informational',
+    pos = {x = 1, y = 0}
+}
 function OPAL.add_modifier(modifier, apply, silent, area)
     if not G.GAME.modifiers.opal_no_mods then
     local _area = area or G.opal_heat_mods
@@ -281,6 +290,6 @@ end
 function OPAL.Modifier:get_uibox_table(modifier_sprite)
     modifier_sprite = modifier_sprite or self.modifier_sprite
     local name_to_check, loc_vars = self.name, {}
-    modifier_sprite.ability_UIBox_table = generate_card_ui(OPAL.Modifiers[self.key], nil, loc_vars, (self.hide_ability) and 'Undiscovered' or 'Modifier', nil, (self.hide_ability))
+    modifier_sprite.ability_UIBox_table = generate_card_ui(OPAL.Modifiers['all'][self.key], nil, loc_vars, (self.hide_ability) and 'Undiscovered' or 'Modifier', nil, (self.hide_ability))
     return modifier_sprite
 end
