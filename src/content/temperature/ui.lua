@@ -111,14 +111,15 @@ function G.FUNCS.opal_indicator_info()
     }
 end
 
-function create_UIBox_your_collection_modifiers_contents(page)
+function create_UIBox_your_collection_modifiers_contents(page, type)
+    type = type or 'all'
     page = page or 1
     local modifier_matrix = {
     }
 
     local modifier_tab = {}
     local counter = 0
-    for k, v in pairs(OPAL.Modifiers['all']) do
+    for k, v in pairs(OPAL.Modifiers[type]) do
         modifier_tab[#modifier_tab+1] = v
         counter = counter + 1
     end
@@ -152,7 +153,7 @@ function create_UIBox_your_collection_modifiers_contents(page)
         table.insert(page_options, localize('k_page')..' '..tostring(i)..'/'..tostring(math.ceil(counter/24)))
     end
 
-    local t = create_UIBox_generic_options({ back_func = 'your_collection_other_gameobjects', contents = {
+    local t = create_UIBox_generic_options({ back_func = 'your_collection_modifiers', contents = {
     {n=G.UIT.R, config={align = "cm", r = 0.1, colour = G.C.BLACK, padding = 0.1, emboss = 0.05}, nodes={
       {n=G.UIT.C, config={align = "cm"}, nodes={
         {n=G.UIT.R, config={align = "cm"}, nodes=table_nodes}
@@ -166,6 +167,7 @@ function create_UIBox_your_collection_modifiers_contents(page)
             opt_callback = 'your_collection_modifiers_page',
             focus_args = {snap_to = true, nav = 'wide'},
             current_option = page,
+            type = type,
             no_pips = true
         })
       }}
@@ -173,27 +175,56 @@ function create_UIBox_your_collection_modifiers_contents(page)
   return t
 end
 
-function create_UIBox_your_collection_modifiers()
+function create_UIBox_your_collection_modifiers(type)
     return{
         n = G.UIT.O,
         config = { object = UIBox{
-            definition = create_UIBox_your_collection_modifiers_contents(),
+            definition = create_UIBox_your_collection_modifiers_contents(nil, type),
             config = { offset = {x=0,y=0}, align = 'cm'}
         }, id = 'your_collection_modifiers', align = 'cm'},
+    }
+end
+
+G.FUNCS.your_collection_modifiers_good = function(e)
+    G.SETTINGS.paused = true
+    G.FUNCS.overlay_menu{
+        definition = create_UIBox_your_collection_modifiers('good')
+    }
+end
+
+G.FUNCS.your_collection_modifiers_informational = function(e)
+    G.SETTINGS.paused = true
+    G.FUNCS.overlay_menu{
+        definition = create_UIBox_your_collection_modifiers('informational')
     }
 end
 
 G.FUNCS.your_collection_modifiers = function(e)
     G.SETTINGS.paused = true
     G.FUNCS.overlay_menu{
-        definition = create_UIBox_your_collection_modifiers()
+        definition = create_UIBox_your_collection_modifiers_types()
     }
+end
+
+function create_UIBox_your_collection_modifiers_types()
+    local r = {}
+    local new_button = {n = G.UIT.R, config = {colour = G.C.CLEAR}, nodes = {UIBox_button{button = 'your_collection_modifiers_good', label = {localize('opal_mods')}}}}
+    table.insert(r,new_button)
+
+    local new_button = {n = G.UIT.R, config = {colour = G.C.CLEAR}, nodes = {UIBox_button{button = 'your_collection_modifiers_informational', label = {localize('opal_indicators')}}}}
+    table.insert(r,new_button)
+
+    local t = create_UIBox_generic_options({ back_func = 'exit_overlay_menu', contents = {
+        {n = G.UIT.C, config = {colour = G.C.CLEAR, align = 'cm', padding = 0.1}, nodes = r}
+    }})
+    return t
 end
 
 G.FUNCS.your_collection_modifiers_page = function(args)
     print(args.cycle_config.current_option)
     local page = args.cycle_config.current_option or 1
-    local t = create_UIBox_your_collection_modifiers_contents(page)
+    local type = args.cycle_config.type or 'all'
+    local t = create_UIBox_your_collection_modifiers_contents(page, type)
     local e = G.OVERLAY_MENU:get_UIE_by_ID('your_collection_modifiers')
     if e.config.object then e.config.object:remove() end
     e.config.object = UIBox{
