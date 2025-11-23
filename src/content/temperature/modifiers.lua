@@ -11,7 +11,7 @@ OPAL.Modifier = SMODS.Center:extend{
     available = true,
     atlas = 'opal_modifierAtlas',
     pos = {x = 0, y = 0},
-    display_size = {w = 22, h = 22},
+    display_size = {w = 22, h = 23},
     config = {},
     opal_alignment = 'good',
     required_params = {'key'},
@@ -270,7 +270,7 @@ function OPAL.add_modifier(modifier, apply, silent, area)
     if apply then card:apply() end
     if _area and card.ability.set == 'OpalModifier' then _area:emplace(card) end
     card.created_on_pause = nil
-    G.opal_temperature_UI.alignment.offset.y = 1.7 - 0.6*(math.floor(math.max(#G.opal_heat_mods.cards - 1, 0)/4) + math.floor(math.max(#G.opal_indicators.cards - 1, 0)/4))
+    G.opal_temperature_UI.alignment.offset.y = 1.7 - 0.58*(math.floor(math.max(#G.opal_heat_mods.cards - 1, 0)/G.opal_heat_mods.config.opal_per_row)) + 0.6*(math.floor(math.max(#G.opal_indicators.cards - 1, 0)/4))
     G.E_MANAGER:add_event(Event({trigger = 'after',func = function()
         save_run()
     return true end}))
@@ -299,7 +299,7 @@ end
 function OPAL.remove_modifier(card)
     card.config.center:unapply(card)
     SMODS.destroy_cards(card, nil, nil, nil)
-    G.opal_temperature_UI.alignment.offset.y = 2.1 - 0.6*math.floor(math.max(#G.opal_heat_mods.cards - 2, 0)/4)
+    G.opal_temperature_UI.alignment.offset.y = 1.7 - 0.58*(math.floor(math.max(#G.opal_heat_mods.cards - 1, 0)/G.opal_heat_mods.config.opal_per_row)) + 0.6*(math.floor(math.max(#G.opal_indicators.cards - 1, 0)/4))
 end
 
 function OPAL.Modifier:get_uibox_table(modifier_sprite)

@@ -48,7 +48,7 @@ payload = '''if not (G.GAME.modifiers.opal_no_heat and G.GAME.modifiers.opal_no_
                     definition = create_uibox_opal_temperature(), 
                     config = {align="cli", offset = {x=17.35,y=1.7}, major = G.ROOM_ATTACH, bond = 'Weak', instance_type = 'CARD'}
                 }
-                if not G.GAME.modifiers.opal_no_mods then G.E_MANAGER:add_event(Event({trigger = 'after', func = function() G.opal_temperature_UI.alignment.offset.y = 1.7 - 0.6*(math.floor(math.max(#G.opal_heat_mods.cards - 1, 0)/4) + math.floor(math.max(#G.opal_indicators.cards - 1, 0)/4)) ;return true end })) end
+                if not G.GAME.modifiers.opal_no_mods then G.E_MANAGER:add_event(Event({trigger = 'after', func = function() G.opal_temperature_UI.alignment.offset.y = 1.7 - 0.58*(math.floor(math.max(#G.opal_heat_mods.cards - 1, 0)/G.opal_heat_mods.config.opal_per_row)) + 0.6*(math.floor(math.max(#G.opal_indicators.cards - 1, 0)/4)) ;return true end })) end
 OPAL.add_indicators()
 end'''
 
@@ -223,10 +223,17 @@ payload = '''if self.config.type == 'opal_mods' then
     end
     for k, card in ipairs(self.cards) do
         if (not card.states.drag.is) or card == G.lock_in_card then 
-            card.T.r = 0
-            card.T.x = self.T.x + (0.55)*(math.fmod(card.opal_count, self.config.opal_per_row)) - 0.1
-            card.T.y = self.T.y + self.T.h/2 - card.T.h/2 + 0.6*(math.floor(card.opal_count/self.config.opal_per_row))
-            card.shadow_parrallax = {x=0, y=0}
+            if self.config.opal_type == 'hex' then
+                card.T.r = 0
+                card.T.x = self.T.x + (0.58)*(math.fmod(card.opal_count, self.config.opal_per_row) - 0.5*math.fmod(math.floor(card.opal_count/self.config.opal_per_row)+2, 2)) - 0.1
+                card.T.y = self.T.y + self.T.h/2 - card.T.h/2 + 0.56*(math.floor(card.opal_count/self.config.opal_per_row))
+                card.shadow_parrallax = {x=0, y=0}
+            else -- type must be 'square'
+                card.T.r = 0
+                card.T.x = self.T.x + (0.55)*(math.fmod(card.opal_count, self.config.opal_per_row)) - 0.1
+                card.T.y = self.T.y + self.T.h/2 - card.T.h/2 + 0.6*(math.floor(card.opal_count/self.config.opal_per_row))
+                card.shadow_parrallax = {x=0, y=0}
+            end
         end
     end
 end'''
@@ -238,7 +245,8 @@ target = 'cardarea.lua'
 pattern = '''self.config.card_count = 0'''
 position = 'after'
 match_indent = true
-payload = '''self.config.opal_per_row = config.opal_per_row or 4'''
+payload = '''self.config.opal_per_row = config.opal_per_row or 4
+self.config.opal_type = config.opal_type or 'square' '''
 
 # Localization shenanigans 1/
 [[patches]]
