@@ -54,28 +54,7 @@ SMODS.Challenge{
     button_colour = OPAL.badge_colour
 }
 
-if (CHDP or {}).can_load then 
-    SMODS.Challenge{
-    key = 'dupes_1',
-    rules = {
-        custom = {
-            {id = "enable_singular_jokers"}
-        },
-        modifiers = {
-        },
-    },
-    jokers = {
-        {id = 'j_opal_hardlight', eternal = true},
-        {id = 'j_throwback', eternal = true, singular = true}
-    },
-    restrictions = {
-        banned_cards = {},
-        banned_tags = {},
-        banned_other = {}
-    },
-    button_colour = OPAL.badge_colour
-}
-
+if (CHDP or {}).can_load then
     SMODS.Challenge{
         key = 'stickers_2',
         rules = {

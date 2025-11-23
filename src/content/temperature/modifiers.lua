@@ -22,6 +22,7 @@ OPAL.Modifier = SMODS.Center:extend{
         OPAL.Modifiers[self.opal_alignment][self.key] = self
         OPAL.Modifiers['all'][self.key] = self
         self.order = #OPAL.Modifiers['all']
+        self.atlas = G.opal_mod_shape == 1 and self.atlas or self.atlas.."_square"
         SMODS.Center.inject(self)
     end,
     get_obj = function(self, key)
@@ -270,7 +271,7 @@ function OPAL.add_modifier(modifier, apply, silent, area)
     if apply then card:apply() end
     if _area and card.ability.set == 'OpalModifier' then _area:emplace(card) end
     card.created_on_pause = nil
-    G.opal_temperature_UI.alignment.offset.y = 1.7 - 0.58*(math.floor(math.max(#G.opal_heat_mods.cards - 1, 0)/G.opal_heat_mods.config.opal_per_row)) + 0.6*(math.floor(math.max(#G.opal_indicators.cards - 1, 0)/4))
+    OPAL.update_modifier_menu()
     G.E_MANAGER:add_event(Event({trigger = 'after',func = function()
         save_run()
     return true end}))
@@ -299,7 +300,7 @@ end
 function OPAL.remove_modifier(card)
     card.config.center:unapply(card)
     SMODS.destroy_cards(card, nil, nil, nil)
-    G.opal_temperature_UI.alignment.offset.y = 1.7 - 0.58*(math.floor(math.max(#G.opal_heat_mods.cards - 1, 0)/G.opal_heat_mods.config.opal_per_row)) + 0.6*(math.floor(math.max(#G.opal_indicators.cards - 1, 0)/4))
+    OPAL.update_modifier_menu()
 end
 
 function OPAL.Modifier:get_uibox_table(modifier_sprite)
@@ -307,4 +308,9 @@ function OPAL.Modifier:get_uibox_table(modifier_sprite)
     local name_to_check, loc_vars = self.name, {}
     modifier_sprite.ability_UIBox_table = generate_card_ui(OPAL.Modifiers['all'][self.key], nil, loc_vars, (self.hide_ability) and 'Undiscovered' or 'Modifier', nil, (self.hide_ability))
     return modifier_sprite
+end
+
+function OPAL.update_modifier_menu()
+    local modMult = G.opal_mod_shape == 1 and 0.58 or 0.6
+    G.opal_temperature_UI.alignment.offset.y = 1.7 - modMult*(math.floor(math.max(#G.opal_heat_mods.cards - 1, 0)/G.opal_heat_mods.config.opal_per_row)) + 0.6*(math.floor(math.max(#G.opal_indicators.cards - 1, 0)/4))
 end

@@ -738,14 +738,22 @@ return{
         dictionary = {
             b_temperature = 'Heat',
             b_opal_modifiers = 'Modifiers',
+            b_opal_modifiers_appearance = 'Modifier Appearance',
             b_opal_temp_info = 'Set Score on fire to gain Heat!',
             b_opal_open_temp = 'TAB to open Heat',
             k_opal_chomp = 'Chomp!',
             k_opal_eaten = 'Eaten!',
             k_opalmodifier = 'Modifier',
             k_opalindicator = 'Indicator',
+            k_opal_restart_required = 'Restart Required',
+
+            k_opal_modifier_shapes = {
+                'Hexagonal',
+                'Square'
+            },
 
             opal_optional_features = 'OPTIONAL FEATURES',
+            opal_appearance = 'APPEARANCE OPTIONS',
             opal_heat = 'Heat System',
             opal_mods = 'Modifiers',
             opal_indicators = 'Indicators',

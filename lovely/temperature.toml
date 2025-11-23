@@ -48,7 +48,8 @@ payload = '''if not (G.GAME.modifiers.opal_no_heat and G.GAME.modifiers.opal_no_
                     definition = create_uibox_opal_temperature(), 
                     config = {align="cli", offset = {x=17.35,y=1.7}, major = G.ROOM_ATTACH, bond = 'Weak', instance_type = 'CARD'}
                 }
-                if not G.GAME.modifiers.opal_no_mods then G.E_MANAGER:add_event(Event({trigger = 'after', func = function() G.opal_temperature_UI.alignment.offset.y = 1.7 - 0.58*(math.floor(math.max(#G.opal_heat_mods.cards - 1, 0)/G.opal_heat_mods.config.opal_per_row)) + 0.6*(math.floor(math.max(#G.opal_indicators.cards - 1, 0)/4)) ;return true end })) end
+                G.opal_heat_mods.config.opal_type = G.opal_mod_shape == 1 and 'hex' or 'square'
+                if not G.GAME.modifiers.opal_no_mods then G.E_MANAGER:add_event(Event({trigger = 'after', func = function() OPAL.update_modifier_menu() ;return true end })) end
 OPAL.add_indicators()
 end'''
 
