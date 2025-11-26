@@ -220,12 +220,34 @@ return{
                     'gain {C:attention}twice{} as much'
                 }
             },
-            md_opal_experimental = {
-                name = 'Experimental',
+            md_opal_rigged = {
+                name = 'Rigged',
                 text = {
-                    'Every card in {C:attention}played hand',
-                    'increases or decreases rank',
-                    'when {C:attention}scored'
+                    '{X:green,C:white}X#1#{} to all listed',
+                    '{C:green,E:1,S:1.1}probabilities',
+                    '{C:inactive}(ex: {C:green}1 in 3{C:inactive} -> {C:green}1.5 in 3{C:inactive})'
+                }
+            },
+            md_opal_sticky = {
+                name = 'Sticky',
+                text = {
+                    'Cards can appear',
+                    'with {C:attention}#1#'
+                }
+            },
+            md_opal_skipless = {
+                name = 'Skipless',
+                text = {
+                    'Skipping is {C:red}disabled',
+                    'Until {C:attention}#1#'
+                }
+            },
+            md_opal_raiser = {
+                name = 'Raiser',
+                text = {
+                    'Enable the effects of',
+                    '{C:attention}#1#',
+                    '{C:inactive}(Does not apply other Stakes)'
                 }
             },
 
@@ -646,7 +668,7 @@ return{
             stake_opal_hyperdeath = {
                 name = 'Stake of Hyperdeath',
                 text = {
-                    "A random {C:attention}Challenge Rule{} is added",
+                    "A random {C:red}Bad Modifier{} is added",
                     "after a Blind is completed",
                     "{s:0.8}(Applies Double Down Stake, {C:dark_edition,s:0.8}Opalstuff{s:0.8} Stake)"
                 }
@@ -791,7 +813,8 @@ return{
             opal_overloaded = 'Overloaded',
         },
         v_dictionary = {
-            a_xdollars = 'X#1# Dollars'
+            a_xdollars = 'X#1# Dollars',
+            a_antes_left = '#1# Ante Remaining'
         },
         v_text = {
             ch_c_opal_pillar = {"{C:attention}Played Cards{} are {C:red}debuffed{} until the end of the Ante"},

@@ -100,3 +100,44 @@ quantum_gradient = SMODS.Gradient{ --Quantum Gradient
 
 loc_colour()
 G.ARGS.LOC_COLOURS["opal_pink"] = OPAL.badge_colour
+
+if not (CHDP or {}).can_load then -- steal the reworked force sticker/ban edition code
+    local set_edition_ref = Card.set_edition
+    function Card:set_edition(edition, immediate, silent)
+        if self.ability.set == "Joker" then
+            for k, v in pairs(G.GAME.modifiers.chdp_force_stickers) do
+                self:add_sticker(k, true)
+            end
+        end
+        local run = true
+
+        if edition then
+            if G.GAME.modifiers.no_edition_jokers and self.ability.set == "Joker" then
+                run = false
+            end
+            if G.GAME.modifiers.no_edition_cards and not(self.ability.set == "Joker") then
+                run = false
+            end
+
+            local _edition = edition
+            if type(edition) == "table" then
+                for k, v in pairs(edition) do
+                    _edition = 'e_'..k
+                end
+            end
+
+            if G.GAME.modifiers.no_editions.jokers[_edition] and self.ability.set == 'Joker'
+            or G.GAME.modifiers.no_editions.cards[_edition] and not(self.ability.set == 'Joker') then
+                run = false
+            end
+
+            if run then
+                return set_edition_ref(self, edition, immediate, silent)
+            else
+                play_sound('tarot2', 0.76, 0.4)
+                play_sound('tarot2', 1, 0.4)
+                self:juice_up(0.3,0.5)
+            end
+        end
+    end
+end

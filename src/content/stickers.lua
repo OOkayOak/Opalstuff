@@ -112,7 +112,10 @@ OPAL.BSticker{ -- Trampled (The Ox)
     loc_vars = function(self, info_queue, card)
         OPAL.get_mph()
         card.ability.opal_trampled.mph = G.GAME.current_round.most_played_poker_hand
-        return {vars = {card.ability.opal_trampled.mph ~= 'most played Hand' and localize(card.ability.opal_trampled.mph, 'poker_hands') or card.ability.opal_trampled.mph,(G.GAME and G.GAME.modifiers) and G.GAME.modifiers.opal_trampled_multiplier or "0.5"}}
+        local _1 = card.ability.opal_trampled.mph ~= 'most played Hand' and localize(card.ability.opal_trampled.mph, 'poker_hands') 
+        or (card and card.ability and card.ability.opal_trampled) and card.ability.opal_trampled.mph 
+        or 'most played Hand'
+        return {vars = {_1,(G.GAME and G.GAME.modifiers) and G.GAME.modifiers.opal_trampled_multiplier or "0.5"}}
     end,
     calculate = function(self,card,context)
         if context.before and context.cardarea == G.play and not card.trampled_triggered then
@@ -452,7 +455,7 @@ OPAL.BSticker{ -- Hungry (The Mouth)
     config = {extra = {only_hand = false}},
     counterpart = 'bl_mouth',
     loc_vars = function(self, info_queue, card)
-        return{vars = {card.ability.opal_hungry.extra.only_hand and localize(card.ability.opal_hungry.extra.only_hand, 'poker_hands') or 'first played Hand'}}
+        return{vars = {(card and card.ability and card.ability.opal_hungry and card.ability.opal_hungry.extra.only_hand) and localize(card.ability.opal_hungry.extra.only_hand, 'poker_hands') or 'first played Hand'}}
     end,
     calculate = function(self, card, context)
         if context.main_scoring and not card.ability.opal_hungry.extra.only_hand then
@@ -559,7 +562,8 @@ OPAL.BSticker{ -- Dizzy (The Wheel)
     counterpart = 'bl_wheel',
     config = {extra = {odds = 7}},
     loc_vars = function(self, info_queue, card)
-        local n, d = SMODS.get_probability_vars(card, 1, card.ability.opal_dizzy.extra.odds, 'opal_bsticker_dizzy')
+        local n, d = 1, 7
+        if card then n, d = SMODS.get_probability_vars(card, 1, card.ability.opal_dizzy.extra.odds, 'opal_bsticker_dizzy') end
         return{vars = {n, d}}
     end,
     calculate = function(self, card, context)
@@ -674,7 +678,7 @@ OPAL.BSticker{ -- Tall (The Wall)
     counterpart = 'bl_wall',
     config = {extra = {increase = 1.05}},
     loc_vars = function(self, info_queue, card)
-        return{vars = {card.ability.opal_tall.extra.increase}}
+        return{vars = {(card and card.ability and card.ability.opal_tall) and card.ability.opal_tall.extra.increase or 1.05}}
     end,
     calculate = function(self, card, context)
         if context.before and context.cardarea == G.play then
@@ -704,7 +708,7 @@ OPAL.BSticker{ -- Looming (Violet Vessel)
     counterpart = 'bl_final_vessel',
     config = {extra = {increase = 1.2}},
     loc_vars = function(self, info_queue, card)
-        return{vars = {card.ability.opal_looming.extra.increase}}
+        return{vars = {card and card.ability and card.ability.opal_looming and card.ability.opal_looming.extra.increase or 1.2}}
     end,
     calculate = function(self, card, context)
         if context.before and context.cardarea == G.play then
@@ -734,7 +738,8 @@ OPAL.BSticker{ -- Snappy (The Stinger)
     counterpart = 'bl_opal_stinger',
     config = {extra = {odds = 5}},
     loc_vars = function(self, info_queue, card)
-        local n, d = SMODS.get_probability_vars(card, 1, card.ability.opal_snappy.extra.odds, 'opal_bsticker_snappy')
+        local n, d = 1, 5
+        if card then n, d = SMODS.get_probability_vars(card, 1, card.ability.opal_snappy.extra.odds, 'opal_bsticker_snappy') end
         return{vars = {n, d}}
     end,
     calculate = function(self, card, context)

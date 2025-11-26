@@ -105,7 +105,6 @@ SMODS.Stake{ -- Double Down
     end,
 }
 
-if (CHDP or {}).can_load then
 SMODS.Stake{ -- Hyperdeath
     key = 'hyperdeath',
     prefix_config = {applied_stakes = {mod = false}},
@@ -116,12 +115,16 @@ SMODS.Stake{ -- Hyperdeath
     sticker_pos = {x=4,y=2},
     colour = HEX('ff0000'),
     opalstuff_alt = true,
-    modifiers = function()
-        G.GAME.modifiers.chaos_engine_all = true
-        CHDP.setup_chaos_run()
-    end,
+    calculate = function(self, context)
+        if context.end_of_round and not G.GAME.opal_hyperdeath_triggered then
+            G.GAME.opal_hyperdeath_triggered = true
+            OPAL.add_evil_modifier()
+        end
+        if context.ending_shop and G.GAME.opal_hyperdeath_triggered then
+            G.GAME.opal_hyperdeath_triggered = nil
+        end
+    end
 }
-end
 
 function OPAL.opalstuff_stakes()
     local min = 0

@@ -1,7 +1,8 @@
 OPAL.Modifiers = {
     ['all'] = {},
-    ['good'] = {},
-    ['informational'] = {}
+    ['good'] = {}, -- Good modifiers come from levelling up.
+    ['bad'] = {}, -- Bad modifiers come from the Stake of Hyperdeath.
+    ['informational'] = {} -- Informational modifiers are given when the run begins, i.e. in Challenge runs with certain rules.
 }
 OPAL.Modifier = SMODS.Center:extend{
     class_prefix = 'md',
@@ -38,7 +39,8 @@ OPAL.Modifier = SMODS.Center:extend{
         if self.opal_alignment == 'informational' then
             badges[#badges+1] = create_badge(localize("k_opalindicator"), G.C.FILTER, G.C.WHITE)
         else
-            badges[#badges+1] = create_badge(localize("k_opalmodifier"), G.C.OPAL_PINK, G.C.WHITE)
+            local colour = self.opal_alignment == 'bad' and G.C.RED or OPAL.badge_colour
+            badges[#badges+1] = create_badge(localize("k_opalmodifier"), colour, G.C.WHITE)
         end
     end,
 }
@@ -191,6 +193,24 @@ OPAL.Modifier{ -- Running Yolk
     end
 }
 
+OPAL.Modifier{ -- Rigged
+    key = "rigged",
+    name = 'Rigged',
+    atlas = 'modifierAtlas',
+    pos = {x = 3, y = 1},
+    config = {extra = {prob_mod = 1.5}},
+    loc_vars = function(self, info_queue, card)
+        return{vars = {card.ability.extra.prob_mod}}
+    end,
+    calculate = function(self, card, context)
+        if context.mod_probability then
+            return {
+                numerator = context.numerator * card.ability.extra.prob_mod
+            }
+        end
+    end,
+}
+
 --[[
 OPAL.Modifier{ -- Experimental (does random shit)
     key = "experimental",
@@ -226,6 +246,127 @@ OPAL.Modifier{ -- Experimental (does random shit)
         end
     end
 }]]
+
+-- Bad Modifiers
+OPAL.Modifier{ -- Sticky
+    key = "sticky",
+    name = 'Sticky',
+    atlas = 'modifierAtlas',
+    opal_alignment = 'bad',
+    opal_requires = 'sticker',
+    pos = {x = 0, y = 1},
+    config = {extra = {sticker = nil}},
+    loc_vars = function(self, info_queue, card)
+        if card.ability.extra.sticker then info_queue[#info_queue+1] = {key = card.ability.extra.sticker, set = "Other", vars = {}} end
+        return{vars = {card.ability.extra.sticker and localize(card.ability.extra.sticker, 'labels') or 'A Random Sticker'}}
+    end,
+    can_apply = function(self)
+         local possibleStickers = {}
+        for k, v in pairs(SMODS.Stickers) do
+            if not (G.GAME.modifiers['enable_'..k] or G.GAME.modifiers['enable_'..k..'s_in_shop']) and not (k == 'pinned') then
+                possibleStickers[#possibleStickers+1] = k
+            end
+        end
+        return #possibleStickers > 0
+    end,
+    apply = function(self, card)
+        local possibleStickers = {}
+        for k, v in pairs(SMODS.Stickers) do
+            if not (G.GAME.modifiers['enable_'..k] or G.GAME.modifiers['enable_'..k..'s_in_shop']) then
+                possibleStickers[#possibleStickers+1] = k
+            end
+        end
+        card.ability.extra.sticker = pseudorandom_element(possibleStickers)
+        if SMODS.Stickers[card.ability.extra.sticker].rarity then OPAL.BStickers[card.ability.extra.sticker]:get_bsticker_rate(5) end
+        if card.ability.extra.sticker == 'eternal' or card.ability.extra.sticker == 'perishable' or card.ability.extra.sticker == 'rental' then 
+            G.GAME.modifiers['enable_'..card.ability.extra.sticker..'s_in_shop'] = true
+        else
+            G.GAME.modifiers['enable_'..card.ability.extra.sticker] = true
+        end
+    end,
+    unapply = function(self, card)
+        if card.ability.extra.sticker == 'eternal' or card.ability.extra.sticker == 'perishable' or card.ability.extra.sticker == 'rental' then 
+            G.GAME.modifiers['enable_'..card.ability.extra.sticker..'s_in_shop'] = false
+        else
+            G.GAME.modifiers['enable_'..card.ability.extra.sticker] = false
+        end
+        card.ability.extra.sticker = nil
+    end
+}
+
+OPAL.Modifier{ -- Skipless
+    key = "skipless",
+    name = 'Skipless',
+    atlas = 'modifierAtlas',
+    opal_alignment = 'bad',
+    opal_requires = 'no_dupes',
+    pos = {x = 1, y = 1},
+    config = {extra = {ante = nil}},
+    loc_vars = function(self, info_queue, card)
+        return{vars = {card.ability.extra.ante and 'Ante '..card.ability.extra.ante or '2 Antes later'}}
+    end,
+    apply = function(self, card)
+        card.ability.extra.ante = G.GAME.round_resets.ante + 2
+        G.GAME.modifiers.opal_disable_skipping = true
+    end,
+    unapply = function(self, card)
+        G.GAME.modifiers.opal_disable_skipping = false
+    end,
+    can_apply = function(self)
+        return not G.GAME.modifiers.opal_disable_skipping
+    end,
+    calculate = function(self, card, context)
+        if context.ante_change and G.GAME.round_resets.ante >= card.ability.extra.ante then
+            OPAL.remove_modifier(card)
+        end
+    end
+}
+
+OPAL.Modifier{ -- Raiser
+    key = "raiser",
+    name = 'Raiser',
+    atlas = 'modifierAtlas',
+    opal_alignment = 'bad',
+    opal_requires = 'unapplied_stake',
+    pos = {x = 2, y = 1},
+    config = {extra = {stake = nil}},
+    loc_vars = function(self, info_queue, card)
+        if card.ability.extra.stake and not G.localization.descriptions.Other[card.ability.extra.stake] then
+            G.localization.descriptions.Other[card.ability.extra.stake] = G.localization.descriptions.Stake[card.ability.extra.stake]
+        end
+        if card.ability.extra.stake then info_queue[#info_queue+1] = {key = G.P_STAKES[card.ability.extra.stake].key, set = 'Other', vars = {1}}  end
+        return{vars = {card.ability.extra.stake and G.localization.descriptions.Stake[card.ability.extra.stake].name or 'A Random Stake'}}
+    end,
+    can_apply = function(self)
+        return #G.P_CENTER_POOLS['Stake'] > #G.GAME.applied_stakes
+    end,
+    apply = function(self, card)
+        local possibleStakes = {}
+        for k, v in pairs(G.P_STAKES) do
+            local stakeApplied = false
+            for k2, v2 in ipairs(G.GAME.applied_stakes) do
+                if v2 == v.order then stakeApplied = true end
+            end
+            if not stakeApplied then
+                possibleStakes[#possibleStakes+1] = k
+            end
+        end
+
+        card.ability.extra.stake = pseudorandom_element(possibleStakes, pseudoseed('opal_raiser'))
+        if card.ability.extra.stake then
+            if G.P_STAKES[card.ability.extra.stake].order then table.insert(G.GAME.applied_stakes, G.P_STAKES[card.ability.extra.stake].order) end
+            if G.P_STAKES[card.ability.extra.stake].modifiers then G.P_STAKES[card.ability.extra.stake].modifiers() end
+        else
+            print('AAAH!')
+            OPAL.remove_modifier(card)
+        end
+    end,
+    calculate = function(self, card, context)
+        if card.ability.extra.stake and G.P_STAKES[card.ability.extra.stake].calculate and context then
+            G.P_STAKES[card.ability.extra.stake]:calculate(context)
+        end
+    end
+}
 
 -- Informational Modifiers - corresponds to a G.GAME.modifiers value
 

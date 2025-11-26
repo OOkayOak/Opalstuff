@@ -95,6 +95,30 @@ position = "before"
 match_indent = true
 payload = "if G.GAME.modifiers.opal_disable_skipping or (G.GAME.modifiers.opal_no_skipping_big and blind_choice == 'Big') then return nil end"
 
+# disable skipping blinds (aikoyori's shenanigans compat)
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = """elseif type == 'Big' then
+    if not G.GAME.akyrs_no_skips then"""
+position = "at"
+match_indent = true
+payload = """elseif type == 'Big' then
+    if not (G.GAME.modifiers.opal_disable_skipping or G.GAME.modifiers.opal_no_skipping_big) and
+    not G.GAME.akyrs_no_skips then"""
+
+# disable skipping blinds (aikoyori's shenanigans compat)
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = """if type == 'Small' then
+    if not G.GAME.akyrs_no_skips then"""
+position = "at"
+match_indent = true
+payload = """if type == 'Small' then
+    if not (G.GAME.modifiers.opal_disable_skipping) and
+    not G.GAME.akyrs_no_skips then"""
+
 # display Opalstuff stakes correctly 1/2
 [[patches]]
 [patches.pattern]

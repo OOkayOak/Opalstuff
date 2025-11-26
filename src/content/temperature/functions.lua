@@ -73,3 +73,22 @@ function OPAL.add_indicators()
         end
     end
 end
+
+function OPAL.add_evil_modifier()
+    mod_keys = {}
+    for k, v in pairs(OPAL.Modifiers['bad']) do
+        if not v.can_apply
+        or (v:can_apply()) then
+            mod_keys[#mod_keys+1] = k
+        end
+    end
+    if #mod_keys > 0 then
+        local modifier_chosen = pseudorandom_element(mod_keys, pseudoseed('add_opal_modifier'))
+        G.E_MANAGER:add_event(Event({
+            func = function()
+                local modifier = OPAL.add_modifier(modifier_chosen, true)
+            return true
+            end
+        }))
+    end
+end

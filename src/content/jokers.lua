@@ -499,7 +499,7 @@ SMODS.Joker { --Intrusive Joker
     calculate = function(self, card, context)
         if context.hand_drawn then
             local suit_count = 0
-            for k, v in ipairs(G.hand.cards) do
+            for k, v in ipairs(context.hand_drawn) do
                 if v:is_suit(card.ability.extra.suit) then
                     suit_count = suit_count + 1
                 end
@@ -542,7 +542,7 @@ SMODS.Joker { --Egocentric Joker
     calculate = function(self, card, context)
         if context.hand_drawn then
             local suit_count = 0
-            for k, v in ipairs(G.hand.cards) do
+            for k, v in ipairs(context.hand_drawn) do
                 if v:is_suit(card.ability.extra.suit) then
                     suit_count = suit_count + 1
                 end
@@ -585,7 +585,7 @@ SMODS.Joker {--Irritating Joker
     calculate = function(self, card, context)
         if context.hand_drawn then
             local suit_count = 0
-            for k, v in ipairs(G.hand.cards) do
+            for k, v in ipairs(context.hand_drawn) do
                 if v:is_suit(card.ability.extra.suit) then
                     suit_count = suit_count + 1
                 end
@@ -628,7 +628,7 @@ SMODS.Joker {--Wreckless Joker
     calculate = function(self, card, context)
         if context.hand_drawn then
             local suit_count = 0
-            for k, v in ipairs(G.hand.cards) do
+            for k, v in ipairs(context.hand_drawn) do
                 if v:is_suit(card.ability.extra.suit) then
                     suit_count = suit_count + 1
                 end

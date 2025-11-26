@@ -137,6 +137,12 @@ function create_UIBox_your_collection_modifiers_contents(page, type)
         modifier_tab[#modifier_tab+1] = v
         counter = counter + 1
     end
+    if type == 'good' then
+        for k, v in pairs(OPAL.Modifiers['bad']) do
+            modifier_tab[#modifier_tab+1] = v
+            counter = counter + 1
+        end
+    end
 
     for i = 1, math.ceil(counter/6) do
         table.insert(modifier_matrix, {})
@@ -238,7 +244,6 @@ function create_UIBox_your_collection_modifiers_types()
 end
 
 G.FUNCS.your_collection_modifiers_page = function(args)
-    print(args.cycle_config.current_option)
     local page = args.cycle_config.current_option or 1
     local type = args.cycle_config.type or 'all'
     local t = create_UIBox_your_collection_modifiers_contents(page, type)

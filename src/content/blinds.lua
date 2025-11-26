@@ -22,11 +22,15 @@ SMODS.Blind{
                 blind.prepped = true
             end
             if (context.hand_drawn and blind.prepped) or context.first_hand_drawn then
+                local possible_mods = {}
                 for k, v in ipairs(G.opal_heat_mods.cards) do
                     v.ability.opal_overload_chosen = false
                     blind:debuff_card(v)
+                    if v.config.center.opal_alignment == 'good' then
+                        possible_mods[#possible_mods+1] = v
+                    end
                 end
-                debuff_this_card = pseudorandom_element(G.opal_heat_mods.cards, pseudoseed('bl_opal_overload'))
+                debuff_this_card = pseudorandom_element(possible_mods, pseudoseed('bl_opal_overload'))
                 debuff_this_card.ability.opal_overload_chosen = true
                 blind:debuff_card(debuff_this_card)
                 blind.prepped = nil
