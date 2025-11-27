@@ -104,6 +104,8 @@ G.ARGS.LOC_COLOURS["opal_pink"] = OPAL.badge_colour
 if not (CHDP or {}).can_load then -- steal the reworked force sticker/ban edition code
     local set_edition_ref = Card.set_edition
     function Card:set_edition(edition, immediate, silent)
+        G.GAME.modifiers.chdp_force_stickers = G.GAME.modifiers.chdp_force_stickers or {}
+        G.GAME.modifiers.no_editions = G.GAME.modifiers.no_editions or {jokers = {}, cards = {}}
         if self.ability.set == "Joker" then
             for k, v in pairs(G.GAME.modifiers.chdp_force_stickers) do
                 self:add_sticker(k, true)

@@ -23,7 +23,7 @@ OPAL.Modifier = SMODS.Center:extend{
         OPAL.Modifiers[self.opal_alignment][self.key] = self
         OPAL.Modifiers['all'][self.key] = self
         self.order = #OPAL.Modifiers['all']
-        self.atlas = G.opal_mod_shape == 1 and self.atlas or self.atlas.."_square"
+        self.atlas = (G.opal_mod_shape == 1 or self.opal_alignment == 'informational') and self.atlas or self.atlas.."_square"
         SMODS.Center.inject(self)
     end,
     get_obj = function(self, key)
