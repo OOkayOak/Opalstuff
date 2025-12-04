@@ -23,7 +23,7 @@ function create_uibox_opal_temperature() -- Temperature UI reworked
         table.insert(heat_UI, indicators)
 
     if not G.GAME.modifiers.opal_no_mods then
-        G.opal_heat_mods = G.opal_heat_mods or CardArea(0,0,2.1,0.5,{card_limit = 1, highlight_limit = 0, type = 'opal_mods', opal_type = G.opal_mod_shape == 1 and 'hex' or 'square',  opal_per_row = 4})
+        G.opal_heat_mods = G.opal_heat_mods or CardArea(0,0,2.1,0.5,{card_limit = 1, highlight_limit = 0, type = 'opal_mods', opal_type = G.opal_mod_shape == 1 and 'hex' or 'square',  opal_per_row = 3})
         local heat_mods = {n=G.UIT.R, config = {colour = G.C.CLEAR, padding = 0.1, r = 0.1}, nodes = {
                         {n=G.UIT.C, config = {colour = G.C.UI.TRANSPARENT_DARK, r = 0.1}, nodes = {
                             {n=G.UIT.O, config={object = G.opal_heat_mods}}

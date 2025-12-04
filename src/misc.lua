@@ -17,6 +17,7 @@ OPAL.optional_features = function()
 end
 
 G.opal_mod_shape = OPAL.config.modifier_display
+G.opal_mod_size = OPAL.config.modifier_size
 
 G.FUNCS.opal_change_modifier_shape = function(e)
     OPAL.config.modifier_display = e.to_key
@@ -24,6 +25,10 @@ G.FUNCS.opal_change_modifier_shape = function(e)
     local object = G.OVERLAY_MENU:get_UIE_by_ID('modifier_shape_indicator')
     modifier_example.T = object.config.object.T
     object.config.object = modifier_example
+end
+
+G.FUNCS.opal_change_modifier_size = function(e)
+    OPAL.config.modifier_size = e.to_key
 end
 
 OPAL.config_tab = function()
@@ -57,6 +62,11 @@ OPAL.config_tab = function()
                     }},
                     {n = G.UIT.C, config = {colour = G.C.CLEAR, align = "cm"}, nodes = {
                         {n = G.UIT.O, config = {w=0.6,h=0.6 , object = modifier_example, id = 'modifier_shape_indicator'}}
+                    }},
+                }},
+                {n = G.UIT.R, config = {colour = G.C.CLEAR, align = "cm"}, nodes = {
+                    {n = G.UIT.C, config = {colour = G.C.CLEAR, align = "cm"}, nodes = {
+                        create_option_cycle({w = 3.4,scale = 0.8, options = localize('k_opal_modifier_sizes'), opt_callback = 'opal_change_modifier_size', current_option = OPAL.config.modifier_size}),
                     }},
                 }},
                 {n = G.UIT.R, config = {colour = G.C.CLEAR, align = "cm"}, nodes = {

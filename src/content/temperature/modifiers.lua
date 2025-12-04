@@ -12,7 +12,7 @@ OPAL.Modifier = SMODS.Center:extend{
     available = true,
     atlas = 'opal_modifierAtlas',
     pos = {x = 0, y = 0},
-    display_size = {w = 22, h = 23},
+    display_size = OPAL.config.modifier_size == 2 and {w = 29, h = 30} or {w = 22, h = 23},
     config = {},
     opal_alignment = 'good',
     required_params = {'key'},
@@ -20,6 +20,7 @@ OPAL.Modifier = SMODS.Center:extend{
             G.P_CENTER_POOLS[self.set] = {}
     end,
     inject = function(self)
+        if self.opal_alignment == 'informational' then self.display_size = {w = 22, h = 23} end
         OPAL.Modifiers[self.opal_alignment][self.key] = self
         OPAL.Modifiers['all'][self.key] = self
         self.order = #OPAL.Modifiers['all']
@@ -453,5 +454,6 @@ end
 
 function OPAL.update_modifier_menu()
     local modMult = G.opal_mod_shape == 1 and 0.58 or 0.6
+    modMult = G.opal_mod_size == 2 and 1.35*modMult or modMult
     G.opal_temperature_UI.alignment.offset.y = 1.7 - modMult*(math.floor(math.max(#G.opal_heat_mods.cards - 1, 0)/G.opal_heat_mods.config.opal_per_row)) + 0.6*(math.floor(math.max(#G.opal_indicators.cards - 1, 0)/4))
 end

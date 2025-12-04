@@ -773,6 +773,10 @@ return{
                 'Hexagonal',
                 'Square'
             },
+            k_opal_modifier_sizes = {
+                'Small',
+                'Large'
+            },
 
             opal_optional_features = 'OPTIONAL FEATURES',
             opal_appearance = 'APPEARANCE OPTIONS',
