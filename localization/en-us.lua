@@ -745,6 +745,11 @@ return{
             'These are displayed separately from Modifiers, and are given',
             'when certain effects are in place.'
         },
+        bad = {
+            'These are Bad Modifiers that only appear',
+            'when playing on the Stake of Hyperdeath.',
+            'They do not appear in normal gameplay.'
+        },
     },
     misc = {
         challenge_names = {
@@ -783,6 +788,7 @@ return{
             opal_heat = 'Heat System',
             opal_mods = 'Modifiers',
             opal_indicators = 'Indicators',
+            opal_bad = 'Bad Modifiers'
         },
         labels = {
             opal_bound = "Bound",

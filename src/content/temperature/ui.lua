@@ -104,6 +104,13 @@ function G.FUNCS.opal_modifier_info()
     }
 end
 
+function G.FUNCS.opal_evil_info()
+    G.SETTINGS.paused = true
+    G.FUNCS.overlay_menu{
+        definition = create_UIBox_opal_info({back_func = 'opal_mod_info', set = 'bad', small_lines = 3, small_size = 0.5})
+    }
+end
+
 function G.FUNCS.opal_indicator_info()
     G.SETTINGS.paused = true
     G.FUNCS.overlay_menu{
@@ -115,6 +122,13 @@ function G.FUNCS.opal_good_info()
     G.SETTINGS.paused = true
     G.FUNCS.overlay_menu{
         definition = create_UIBox_opal_info({back_func = 'your_collection_modifiers_good', set = 'mods', small_lines = 3, small_size = 0.5})
+    }
+end
+
+function G.FUNCS.opal_bad_info()
+    G.SETTINGS.paused = true
+    G.FUNCS.overlay_menu{
+        definition = create_UIBox_opal_info({back_func = 'your_collection_modifiers_bad', set = 'bad', small_lines = 3, small_size = 0.5})
     }
 end
 
@@ -136,12 +150,6 @@ function create_UIBox_your_collection_modifiers_contents(page, type)
     for k, v in pairs(OPAL.Modifiers[type]) do
         modifier_tab[#modifier_tab+1] = v
         counter = counter + 1
-    end
-    if type == 'good' then
-        for k, v in pairs(OPAL.Modifiers['bad']) do
-            modifier_tab[#modifier_tab+1] = v
-            counter = counter + 1
-        end
     end
 
     for i = 1, math.ceil(counter/6) do
@@ -222,6 +230,13 @@ G.FUNCS.your_collection_modifiers_informational = function(e)
     }
 end
 
+G.FUNCS.your_collection_modifiers_bad = function(e)
+    G.SETTINGS.paused = true
+    G.FUNCS.overlay_menu{
+        definition = create_UIBox_your_collection_modifiers('bad')
+    }
+end
+
 G.FUNCS.your_collection_modifiers = function(e)
     G.SETTINGS.paused = true
     G.FUNCS.overlay_menu{
@@ -235,6 +250,9 @@ function create_UIBox_your_collection_modifiers_types()
     table.insert(r,new_button)
 
     local new_button = {n = G.UIT.R, config = {colour = G.C.CLEAR}, nodes = {UIBox_button{button = 'your_collection_modifiers_informational', label = {localize('opal_indicators')}}}}
+    table.insert(r,new_button)
+
+    local new_button = {n = G.UIT.R, config = {colour = G.C.CLEAR}, nodes = {UIBox_button{button = 'your_collection_modifiers_bad', label = {localize('opal_bad')}}}}
     table.insert(r,new_button)
 
     local t = create_UIBox_generic_options({ back_func = 'exit_overlay_menu', contents = {
