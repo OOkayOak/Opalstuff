@@ -446,6 +446,67 @@ SMODS.Joker { -- Flat White
     end
 }]]
 
+SMODS.Joker{ -- Wonkee Loves U
+    key = 'wonkee',
+    config = {extra = {create_num = 70, req = 4, checked = false}},
+    rarity = 2,
+    atlas = "jokerAtlas",
+    pos = {x = 1, y = 3},
+    cost = 7,
+    blueprint_compat = true,
+    loc_vars = function(self, info_queue, card)
+        return { vars = {card.ability.extra.create_num, card.ability.extra.create_num > 1 and 'cards' or 'card', card.ability.extra.req}}
+    end,
+    calculate = function(self, card, context)
+        if context.opal_add_cards and not card.ability.extra.checked then
+            card.ability.extra.checked = true
+            local heart_count = 0
+            local eligible_hearts = {}
+            for k, v in ipairs(context.full_hand) do
+                if v:is_suit('Hearts') then
+                    eligible_hearts[#eligible_hearts+1] = v
+                    heart_count = heart_count + 1
+                end
+            end
+            if heart_count >= card.ability.extra.req then
+                local dupe_hearts = {}
+                for i = 1, card.ability.extra.create_num do
+                    if eligible_hearts[1] then
+                        dupe_hearts[#dupe_hearts+1] = pseudorandom_element(eligible_hearts, pseudoseed('opl_wonkee'))
+                    end
+                end
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'immediate',
+                    func = function()
+                        local new_cards = {}
+                        for k, v in ipairs(dupe_hearts) do
+                            local _card = copy_card(v, nil, nil, G.playing_cards)
+                            _card:add_to_deck()
+                            G.deck.config.card_limit = G.deck.config.card_limit + 1
+                            table.insert(G.playing_cards, _card)
+                            G.hand:emplace(_card)
+                            _card:start_materialize(nil)
+                            new_cards[#new_cards+1] = _card
+                        end
+                        for i=1, #new_cards do
+                            if new_cards[i]:is_face() then inc_career_stat('c_face_cards_played', 1) end
+                            new_cards[i].base.times_played = new_cards[i].base.times_played + 1
+                            new_cards[i].ability.played_this_ante = true
+                            G.GAME.round_scores.cards_played.amt = G.GAME.round_scores.cards_played.amt + 1
+                            draw_card(G.hand, G.play, i*100/#new_cards, 'up', nil, new_cards[i])
+                        end
+                        SMODS.calculate_context({playing_card_added = true, cards = new_cards})
+                        return true
+                    end
+                }))
+            end
+        end
+        if context.press_play then
+            card.ability.extra.checked = false
+        end
+    end
+}
+
 --[[SMODS.Joker { --
     key = 'a',
     config = {extra = {prob_mod = 30/3}},

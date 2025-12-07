@@ -183,6 +183,14 @@ return{
                 text = {
 
                 }
+            },
+            j_opal_wonkee = {
+                name = 'Wonkee Loves U',
+                text = {
+                    'When #3# {C:hearts}Hearts{} are played,',
+                    '{C:attention}duplicate #1#{} at random and',
+                    '{C:attention}add new #2#{} to deck'
+                }
             }
         },
         OpalModifier = {
