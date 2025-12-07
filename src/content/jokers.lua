@@ -508,6 +508,115 @@ SMODS.Joker{ -- Wonkee Loves U
     end
 }
 
+SMODS.Joker { -- Hot Chip
+    key = 'hot_chip',
+    config = {extra = {heat_mod = 4, heat_sub = 1}},
+    rarity = 1,
+    atlas = "jokerAtlas",
+    pos = {x = 2, y = 3},
+    cost = 4,
+    blueprint_compat = true,
+    loc_vars = function(self, info_queue, card)
+        return { vars = {card.ability.extra.heat_mod, card.ability.extra.heat_sub}}
+    end,
+    calculate = function(self, card, context)
+        if context.end_of_round and not card.ability.extra.opal_triggered then
+            card.ability.extra.opal_triggered = true
+            G.GAME.modifiers.opal_heat_increase = G.GAME.modifiers.opal_heat_increase + card.ability.extra.heat_mod
+            card.ability.extra.heat_mod = card.ability.extra.heat_mod - card.ability.extra.heat_sub
+            if card.ability.extra.heat_mod == 0 then
+                SMODS.destroy_cards(card, nil, nil, true)
+            end
+            return{
+                message = localize {type = 'variable', key = 'a_heat', vars = {card.ability.extra.heat_mod + card.ability.extra.heat_sub}}
+            }
+        end
+        if context.setting_blind then
+            card.ability.extra.opal_triggered = false
+        end
+    end
+}
+
+SMODS.Joker { -- Moderator
+    key = 'moderator',
+    config = {extra = {remove_decimal = 1/2, max_remove = 5}},
+    rarity = 2,
+    atlas = "jokerAtlas",
+    pos = {x = 3, y = 3},
+    cost = 7,
+    blueprint_compat = true,
+    loc_vars = function(self, info_queue, card)
+        return { vars = {100*card.ability.extra.remove_decimal, card.ability.extra.max_remove}}
+    end,
+    calculate = function(self, card, context)
+        if context.end_of_round and context.game_over then
+            local removable_mods = {}
+            for k, v in ipairs(G.opal_heat_mods.cards) do
+                if OPAL.Modifiers['good'][v.config.center.key] then
+                    removable_mods[#removable_mods+1] = v
+                end
+            end
+            local remove_num = math.min(math.ceil(card.ability.extra.remove_decimal*#removable_mods), card.ability.extra.max_remove)
+            for i = 1, remove_num do
+                removable_mods = {}
+                for k, v in ipairs(G.opal_heat_mods.cards) do
+                    if OPAL.Modifiers['good'][v.config.center.key] then
+                        removable_mods[#removable_mods+1] = v
+                    end
+                end
+                local removeThisGuy = pseudorandom_element(removable_mods, pseudoseed('opal_moderator'))
+                OPAL.remove_modifier(removeThisGuy)
+            end
+            return{
+                saved = "moderator_save"
+            }
+        end
+    end
+}
+
+SMODS.Joker { -- Hot Water Bottle
+    key = 'bottle',
+    config = {extra = 2},
+    rarity = 1,
+    atlas = "jokerAtlas",
+    pos = {x = 4, y = 3},
+    cost = 4,
+    blueprint_compat = true,
+    loc_vars = function(self, info_queue, card)
+        return { vars = {card.ability.extra, math.floor(G.GAME.opal_temperature/card.ability.extra)}}
+    end,
+    calculate = function(self, card, context)
+        if context.joker_main and G.GAME.opal_temperature > card.ability.extra then
+            return{
+                mult_mod = math.floor(G.GAME.opal_temperature/card.ability.extra),
+                message = localize {type = 'variable', key = 'a_mult', vars = {math.floor(G.GAME.opal_temperature/card.ability.extra)}}
+            }
+        end
+    end
+}
+
+SMODS.Joker { -- Overseer
+    key = 'overseer',
+    config = {extra = {odds = 3}},
+    rarity = 2,
+    atlas = "jokerAtlas",
+    pos = {x = 5, y = 3},
+    cost = 7,
+    blueprint_compat = true,
+    loc_vars = function(self, info_queue, card)
+        local numerator, denominator = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, 'opal_os1')
+        return { vars = {numerator, denominator}}
+    end,
+    calculate = function(self, card, context)
+        if context.using_consumeable and context.consumeable.ability.set == 'Spectral' and SMODS.pseudorandom_probability(card, 'opal_os2', 1, card.ability.extra.odds) then
+            OPAL.random_modifier()
+            return{
+                message = localize('k_opal_modifier')
+            }
+        end
+    end
+}
+
 --[[SMODS.Joker { --
     key = 'a',
     config = {extra = {prob_mod = 30/3}},

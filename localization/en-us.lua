@@ -199,6 +199,39 @@ return{
                     '{C:attention}duplicate #1#{} at random and',
                     '{C:attention}add new #2#{} to deck'
                 }
+            },
+            j_opal_hot_chip = {
+                name = 'Hot Chip',
+                text = {
+                    '{C:red}+#1# Heat{} at {C:attention}end',
+                    '{C:attention}of round, {C:red}-#2#',
+                    'when {C:attention}triggered'
+                }
+            },
+            j_opal_moderator = {
+                name = 'Moderator',
+                text = {
+                    'Prevents death {C:attention}once,',
+                    'removes {C:red}#1#% of Modifiers',
+                    'and {E:1,C:red}self-destructs',
+                    '{S:0.8,C:inactive}(Can remove up to #2#)'
+                }
+            },
+            j_opal_bottle = {
+                name = 'Hot Water Bottle',
+                text = {
+                    'Gives {C:mult}+1{} Mult for every',
+                    '{C:attention}#1#{} Heat',
+                    '{C:inactive,S:0.8}(Currently {C:mult,S:0.8}+#2#{C:inactive,S:0.8})'
+                }
+            },
+            j_opal_overseer = {
+                name = 'Overseer',
+                text = {
+                    'When {C:attention}using{} a {C:spectral}Spectral{} card,',
+                    '{C:green}#1# in #2#{} chance to create',
+                    'a {C:green}positive {C:opal_pink}Modifier'
+                }
             }
         },
         OpalModifier = {
@@ -803,9 +836,11 @@ return{
             b_opal_open_temp = 'TAB to open Heat',
             k_opal_chomp = 'Chomp!',
             k_opal_eaten = 'Eaten!',
+            k_opal_modifier = '+ Modifier!',
             k_opalmodifier = 'Modifier',
             k_opalindicator = 'Indicator',
             k_opal_restart_required = 'Restart Required',
+            moderator_save = 'Saved by Moderator',
 
             k_opal_modifier_shapes = {
                 'Hexagonal',
@@ -857,7 +892,8 @@ return{
         },
         v_dictionary = {
             a_xdollars = 'X#1# Dollars',
-            a_antes_left = '#1# Ante Remaining'
+            a_antes_left = '#1# Ante Remaining',
+            a_heat = '+#1# Heat'
         },
         v_text = {
             ch_c_opal_pillar = {"{C:attention}Played Cards{} are {C:red}debuffed{} until the end of the Ante"},
