@@ -496,6 +496,7 @@ SMODS.Joker{ -- Wonkee Loves U
                             draw_card(G.hand, G.play, i*100/#new_cards, 'up', nil, new_cards[i])
                         end
                         SMODS.calculate_context({playing_card_added = true, cards = new_cards})
+                        card_eval_status_text(card, 'extra', nil, nil, nil, {message = "I Love U!",})
                         return true
                     end
                 }))

@@ -93,7 +93,7 @@ end
 function G.FUNCS.opal_heat_info()
     G.SETTINGS.paused = true
     G.FUNCS.overlay_menu{
-        definition = create_UIBox_opal_info({back_func = 'opal_mod_info', set = 'heat', small_lines = 4, small_size = 0.25})
+        definition = create_UIBox_opal_info({back_func = 'opal_mod_info', set = 'heat', small_lines = 5, small_size = 0.25})
     }
 end
 

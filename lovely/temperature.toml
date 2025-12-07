@@ -46,7 +46,7 @@ match_indent = true
 payload = '''if not (G.GAME.modifiers.opal_no_heat and G.GAME.modifiers.opal_no_mods) then
                 G.opal_temperature_UI = UIBox{
                     definition = create_uibox_opal_temperature(), 
-                    config = {align="cli", offset = {x=17.35,y=1.7}, major = G.ROOM_ATTACH, bond = 'Weak', instance_type = 'CARD'}
+                    config = {align="cli", offset = {x=OPAL.get_temp_x(),y=1.7}, major = G.ROOM_ATTACH, bond = 'Weak', instance_type = 'CARD'}
                 }
                 G.opal_heat_mods.config.opal_type = G.opal_mod_shape == 1 and 'hex' or 'square'
                 G.opal_heat_mods.config.opal_size = G.opal_mod_size == 1 and 1 or 1.35
@@ -98,6 +98,15 @@ target = 'functions/misc_functions.lua'
 position = 'before'
 pattern = '''tags = tags,'''
 payload = '''mods = mods,'''
+match_indent = true
+
+# Temperature 9/ - Add Heat for end of round
+[[patches]]
+[patches.pattern]
+target = 'functions/state_events.lua'
+position = 'after'
+pattern = '''-- TARGET: main end_of_round evaluation'''
+payload = '''OPAL.ease_temp(G.GAME.modifiers.opal_heat_per_round)'''
 match_indent = true
 
 # Rewards 1/ - eval_card()

@@ -83,6 +83,8 @@ end
 
 local Backapply_to_run_Ref = Back.apply_to_run
 function Back:apply_to_run()
+    G.GAME.modifiers.opal_heat_per_round = 1
+    G.GAME.modifiers.opal_heat_for_mods = 10
     Backapply_to_run_Ref(self)
     G.GAME.opal_dupes = 0
     G.GAME.modifiers.opal_chewed_loss = 1

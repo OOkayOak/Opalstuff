@@ -16,6 +16,14 @@ return{
                     "When a {C:attention}Blind{} is defeated,",
                     "creates {C:attention}#1# {C:attention,T:m_opal_cookie}#2#{}{C:attention}s",
                 }
+            },
+            b_opal_modified = {
+                name = "Modified Deck",
+                text = {
+                    "Begin with {C:attention}#1# {C:opal_pink}Modifiers",
+                    "Gain a new {C:opal_pink}Modifier{C:attention} every",
+                    "{C:attention}#2# Heat"
+                }
             }
         },
         Blind = {
@@ -645,6 +653,22 @@ return{
                     "Start with {C:green}#1# in #3#{} Playing Cards",
                     "converted into {C:attention,T:m_opal_cookie}#2#{}{C:attention}s",
                 }
+            },
+            sleeve_opal_modified = {
+                name = "Modified Sleeve",
+                text = {
+                    "Begin with {C:attention}#1# {C:opal_pink}Modifiers",
+                    "Gain a new {C:opal_pink}Modifier{C:attention} every",
+                    "{C:attention}#2# Heat"
+                }
+            },
+            sleeve_opal_modified_alt = {
+                name = "Modified Sleeve",
+                text = {
+                    "Begin with {C:attention}#1#{} more {C:opal_pink}Modifiers",
+                    "Gain {C:red}+#2# Heat{} when a {C:attention}Blind{} is",
+                    "defeated"
+                }
             }
         },
         Spectral = {
@@ -739,7 +763,8 @@ return{
     opal_info = {
         heat = {
             'Heat is a new metric, rewarded for winning a blind.',
-            'If your hand beats the blind, you will receive one Heat',
+            'Winning any Blind rewards you with one Heat.',
+            'If your hand one-shots the Blind, you will receive one Heat',
             'for every multiple of 2 it beats the blind by.',
             '(e.g: if a Blind requires 300 Score, you would receive 2 Heat for a Hand that scores 600.)'
         },

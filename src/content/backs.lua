@@ -130,3 +130,19 @@ function OPAL.get_suits_and_ranks()
     end
     return{ suits = suits, ranks = ranks }
 end
+
+SMODS.Back{
+    key = 'modified',
+    atlas = 'cardAtlas', pos = { x=2,y=0 },
+    config = {extra = {starting_mods = 2, heat_for_mods = 5}},
+    loc_vars = function(self, info_queue, back)
+        return{vars = {self.config.extra.starting_mods, self.config.extra.heat_for_mods}}
+    end,
+    apply = function(self, back)
+        for i = 1, self.config.extra.starting_mods do
+            OPAL.random_modifier()
+        end
+        G.GAME.modifiers.opal_heat_for_mods = self.config.extra.heat_for_mods
+        G.GAME.modifiers.opal_starting_mods = G.GAME.modifiers.opal_starting_mods and G.GAME.modifiers.opal_starting_mods + 2 or 2
+    end
+}

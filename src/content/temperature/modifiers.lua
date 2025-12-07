@@ -453,7 +453,7 @@ function OPAL.Modifier:get_uibox_table(modifier_sprite)
 end
 
 function OPAL.update_modifier_menu()
-    local modMult = G.opal_mod_shape == 1 and 0.58 or 0.6
+    local modMult = G.opal_mod_shape == 1 and 0.56 or 0.6
     modMult = G.opal_mod_size == 2 and 1.35*modMult or modMult
     G.opal_temperature_UI.alignment.offset.y = 1.7 - modMult*(math.floor(math.max(#G.opal_heat_mods.cards - 1, 0)/G.opal_heat_mods.config.opal_per_row)) + 0.6*(math.floor(math.max(#G.opal_indicators.cards - 1, 0)/4))
 end

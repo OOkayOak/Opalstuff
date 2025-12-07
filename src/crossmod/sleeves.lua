@@ -115,4 +115,33 @@ if CardSleeves then
         end
     end,
    }
+
+   CardSleeves.Sleeve{
+    key = 'modified',
+    atlas = 'sleeveAtlas', pos = { x=2,y=0 },
+    unlocked = false,
+    unlock_condition = {deck = 'b_opal_modified', stake = 'stake_opal_sour'},
+    config = {extra = {starting_mods = 2, heat_for_mods = 5}},
+    loc_vars = function(self, info_queue, sleeve)
+        local key = self.key
+        local vars = {}
+        if self.get_current_deck_key() == "b_opal_modified" then
+            key = key.."_alt"
+            self.config.extra = {starting_mods = 2, heat_inc = 2, triggered = false}
+            vars = {self.config.extra.starting_mods, self.config.extra.heat_inc}
+        else
+            key = key
+            vars = {self.config.extra.starting_mods,  self.config.extra.heat_for_mods}
+        end
+        return { key = key, vars = vars }
+    end,
+    apply = function(self, sleeve)
+        for i = 1, self.config.extra.starting_mods do
+            OPAL.random_modifier()
+        end
+        if not self.get_current_deck_key() == "b_opal_modified" then G.GAME.modifiers.opal_heat_for_mods = self.config.extra.heat_for_mods
+        else G.GAME.modifiers.opal_heat_per_round = self.config.extra.heat_inc end
+        G.GAME.modifiers.opal_starting_mods = G.GAME.modifiers.opal_starting_mods and G.GAME.modifiers.opal_starting_mods + 2 or 2
+    end
+}
 end

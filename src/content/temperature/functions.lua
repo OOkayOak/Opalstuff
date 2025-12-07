@@ -30,6 +30,7 @@ function OPAL.ease_temp(mod, instant)
           })
 
         OPAL.check_heat()
+        play_sound('generic1', 0.9 + math.random() * 0.1)
     end
     if instant then
         _mod(mod)
@@ -46,8 +47,15 @@ function OPAL.ease_temp(mod, instant)
 end
 
 function OPAL.check_heat() -- Checks if you need a modifier/level up
-    while OPAL.level_thresholds[G.GAME.opal_temp_level + 1] and G.GAME.opal_temperature >= OPAL.level_thresholds[G.GAME.opal_temp_level + 1] do
-        G.GAME.opal_temp_level = G.GAME.opal_temp_level + 1
+    local count = 0
+    for k, v in ipairs(G.opal_heat_mods.cards) do
+        if OPAL.Modifiers['good'][v.config.center.key] then
+            count = count + 1
+        end
+    end
+    count = count - (G.GAME.modifiers.opal_starting_mods or 0)
+    while count < math.floor(G.GAME.opal_temperature/G.GAME.modifiers.opal_heat_for_mods) do
+        count = count + 1
         OPAL.random_modifier()
     end
 end
@@ -91,4 +99,12 @@ function OPAL.add_evil_modifier()
             end
         }))
     end
+end
+
+function OPAL.get_temp_x()
+    local _x = 17.35
+    if CardSleeves then
+        _x = _x - 0.175
+    end
+    return _x
 end
