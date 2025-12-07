@@ -448,7 +448,7 @@ SMODS.Joker { -- Flat White
 
 SMODS.Joker{ -- Wonkee Loves U
     key = 'wonkee',
-    config = {extra = {create_num = 70, req = 4, checked = false}},
+    config = {extra = {create_num = 1, req = 4, checked = false}},
     rarity = 2,
     atlas = "jokerAtlas",
     pos = {x = 1, y = 3},
