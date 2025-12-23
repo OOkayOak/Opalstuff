@@ -354,9 +354,12 @@ OPAL.Modifier{ -- Raiser
         end
 
         card.ability.extra.stake = pseudorandom_element(possibleStakes, pseudoseed('opal_raiser'))
+
         if card.ability.extra.stake then
             if G.P_STAKES[card.ability.extra.stake].order then table.insert(G.GAME.applied_stakes, G.P_STAKES[card.ability.extra.stake].order) end
-            if G.P_STAKES[card.ability.extra.stake].modifiers then G.P_STAKES[card.ability.extra.stake].modifiers() end
+            if G.P_STAKES[card.ability.extra.stake].modifiers then
+                OPAL.raiser_update_game(card)
+            end
         else
             print('AAAH!')
             OPAL.remove_modifier(card)
@@ -368,6 +371,68 @@ OPAL.Modifier{ -- Raiser
         end
     end
 }
+
+OPAL.raiser_param_table = { -- Table to tell raiser_update_game what to target.
+    -- If for some reason you want to add to this:
+    -- param_key - the key in starting_params to look for.
+    -- target_table - the table in G.GAME to look for target_key in. Leave blank to just use G.GAME
+    -- target_key - the key to look in G.GAME[target_table] (or G.GAME) for.
+    -- type - for special cases (i.e. cardarea size)
+    {param_key = 'discards', target_table = 'round_resets', target_key = 'discards'},
+    {param_key = 'hands', target_table = 'round_resets', target_key = 'hands'},
+    {param_key = 'reroll_cost', target_table = 'round_resets', target_key = 'reroll_cost'},
+    {param_key = 'hand_size', type = 'cardarea_size', target_key = 'hand'},
+    {param_key = 'joker_slots', type = 'cardarea_size', target_key = 'jokers'},
+    {param_key = 'consumable_slots', type = 'cardarea_size', target_key = 'consumeables'},
+    {param_key = 'boosters_in_shop', type = 'starting_params'},
+    {param_key = 'vouchers_in_shop', type = 'starting_params'},
+    {param_key = 'ante_scaling', type = 'starting_params_mult'},
+    {param_key = 'play_limit', type = 'hlimit_play'},
+    {param_key = 'discard_limit', type = 'hlimit_discard'},
+}
+
+function OPAL.raiser_update_game(card) -- update stuff when a Stake is added
+    G.E_MANAGER:add_event(Event({trigger = 'after',func = function()
+        local storeStuff = { starting_params = G.GAME.starting_params }
+        G.GAME.starting_params = {}
+        for k, v in pairs(storeStuff.starting_params) do
+            if type(v) == "boolean" then
+                G.GAME.starting_params[k] = false
+            elseif type(v) == "string" then
+                G.GAME.starting_params[k] = ""
+            elseif type(v) == "number" then
+                G.GAME.starting_params[k] = 0
+                if k == 'ante_scaling' then G.GAME.starting_params[k] = 1 end
+            else
+                G.GAME.starting_params[k] = nil
+            end
+        end
+        G.P_STAKES[card.ability.extra.stake].modifiers()
+        storeStuff.starting_paramsNew = G.GAME.starting_params
+        G.GAME.starting_params = storeStuff.starting_params
+        local sparams_change = storeStuff.starting_paramsNew
+        
+        for k, v in ipairs(OPAL.raiser_param_table) do
+            if v.type == 'cardarea_size' then
+                G[v.target_key].config.card_limit = G[v.target_key].config.card_limit + sparams_change[v.param_key]
+            elseif v.type =='starting_params' then
+                G.GAME.starting_params[v.param_key] = G.GAME.starting_params[v.param_key] + sparams_change[v.param_key]
+            elseif v.type =='starting_params_mult' then
+                G.GAME.starting_params[v.param_key] = G.GAME.starting_params[v.param_key] * sparams_change[v.param_key]
+            elseif v.type == 'hlimit_play' then
+                SMODS.change_play_limit(sparams_change[v.param_key])
+                elseif v.type == 'hlimit_discard' then
+                SMODS.change_discard_limit(sparams_change[v.param_key])
+            elseif sparams_change[v.param_key] then
+                if v.target_table and G.GAME[v.target_table] and G.GAME[v.target_table][v.target_key] then
+                    G.GAME[v.target_table][v.target_key] = G.GAME[v.target_table][v.target_key] + sparams_change[v.param_key]
+                elseif G.GAME[v.target_key] then
+                    G.GAME[v.target_key] = G.GAME[v.target_key] + sparams_change[v.param_key]
+                end
+            end
+        end
+    return true end}))
+end
 
 -- Informational Modifiers - corresponds to a G.GAME.modifiers value
 

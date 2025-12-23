@@ -617,6 +617,47 @@ SMODS.Joker { -- Overseer
     end
 }
 
+SMODS.Joker { -- Party Mix
+    key = 'party_mix',
+    config = {extra = {odds = 5, hands = 5, mods = {mult = 2, bonus = 15, p_dollars = 2}}},
+    rarity = 2,
+    atlas = "jokerAtlas",
+    pos = {x = 3, y = 4},
+    cost = 6,
+    blueprint_compat = true,
+    loc_vars = function(self, info_queue, card)
+        local numerator, denominator = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, 'opal_pm1')
+        return { vars = {numerator, denominator, card.ability.extra.mods.bonus, card.ability.extra.mods.mult, card.ability.extra.mods.p_dollars, card.ability.extra.hands}}
+    end,
+    calculate = function(self, card, context)
+        if context.press_play then -- prime joker
+            card.ability.extra.primed = SMODS.pseudorandom_probability(card, 'opal_pm2', 1, card.ability.extra.odds)
+            if card.ability.extra.primed then
+                card.ability.extra.hands = card.ability.extra.hands - 1
+                return {
+                    card = card,
+                    message = localize{type='variable',key='loyalty_inactive',vars={card.ability.extra.hands}}
+                }
+            end
+        end
+
+        if context.individual and context.cardarea == G.play and not context.end_of_round and card.ability.extra.primed then -- actually do joker shit
+            local up_value = pseudorandom_element({{'mult', 'mult'}, {'bonus', 'chips'}, {'p_dollars', 'money'}}, pseudoseed('opal_pm3'))
+            local ability_location = 'perma_'..up_value[1]
+            context.other_card.ability[ability_location] = context.other_card.ability[ability_location] or 0
+            context.other_card.ability[ability_location] = context.other_card.ability[ability_location] + card.ability.extra.mods[up_value[1]]
+            return {
+                card = card,
+                message = localize{type = 'variable', key = 'a_'..up_value[2], vars = {card.ability.extra.mods[up_value[1]]}}
+            }
+        end
+
+        if context.post_joker and card.ability.extra.hands <= 0 then
+            SMODS.destroy_cards(card, nil, nil, true)
+        end 
+    end
+}
+
 --[[SMODS.Joker { --
     key = 'a',
     config = {extra = {prob_mod = 30/3}},

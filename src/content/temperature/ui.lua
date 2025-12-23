@@ -255,7 +255,7 @@ function create_UIBox_your_collection_modifiers_types()
     local new_button = {n = G.UIT.R, config = {colour = G.C.CLEAR}, nodes = {UIBox_button{button = 'your_collection_modifiers_bad', label = {localize('opal_bad')}}}}
     table.insert(r,new_button)
 
-    local t = create_UIBox_generic_options({ back_func = 'exit_overlay_menu', contents = {
+    local t = create_UIBox_generic_options({ back_func = 'your_collection_other_gameobjects', contents = {
         {n = G.UIT.C, config = {colour = G.C.CLEAR, align = 'cm', padding = 0.1}, nodes = r}
     }})
     return t

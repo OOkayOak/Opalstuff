@@ -232,6 +232,21 @@ return{
                     '{C:green}#1# in #2#{} chance to create',
                     'a {C:green}positive {C:opal_pink}Modifier'
                 }
+            },
+            j_opal_party_mix = {
+                name = 'Party Mix',
+                text = {{
+                        '{C:green}#1# in #2#{} chance to give',
+                        '{C:chips}+#3#{} Chips, {C:mult}+#4#{} Mult',
+                        'or {C:money}+$#5#{C:inactive,S:0.8} (randomly)',
+                        'when played to each',
+                        '{C:attention}scored card{} in played hand',
+                    },
+                    {
+                        'Can trigger for {C:attention}#6#{} more',
+                        'hands'
+                    }
+                }
             }
         },
         OpalModifier = {
@@ -816,6 +831,11 @@ return{
             'when playing on the Stake of Hyperdeath.',
             'They do not appear in normal gameplay.'
         },
+        bstickers = {
+            'Blind Stickers are Stickers that correspond',
+            'to a certain Blind. They can appear on',
+            'Playing Cards only.'
+        }
     },
     misc = {
         challenge_names = {
@@ -856,7 +876,8 @@ return{
             opal_heat = 'Heat System',
             opal_mods = 'Modifiers',
             opal_indicators = 'Indicators',
-            opal_bad = 'Bad Modifiers'
+            opal_bad = 'Bad Modifiers',
+            opal_bstickers = 'Blind Stickers',
         },
         labels = {
             opal_bound = "Bound",
@@ -892,6 +913,7 @@ return{
         },
         v_dictionary = {
             a_xdollars = 'X#1# Dollars',
+            a_money = '+$#1# Dollars',
             a_antes_left = '#1# Ante Remaining',
             a_heat = '+#1# Heat'
         },
