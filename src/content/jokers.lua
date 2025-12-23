@@ -537,8 +537,8 @@ SMODS.Joker { -- Hot Chip
     end
 }
 
-SMODS.Joker { -- Moderator
-    key = 'moderator',
+SMODS.Joker { -- Alive 2007
+    key = 'alive',
     config = {extra = {remove_decimal = 1/2, max_remove = 5}},
     rarity = 2,
     atlas = "jokerAtlas",
@@ -564,11 +564,11 @@ SMODS.Joker { -- Moderator
                         removable_mods[#removable_mods+1] = v
                     end
                 end
-                local removeThisGuy = pseudorandom_element(removable_mods, pseudoseed('opal_moderator'))
+                local removeThisGuy = pseudorandom_element(removable_mods, pseudoseed('opal_alive'))
                 OPAL.remove_modifier(removeThisGuy)
             end
             return{
-                saved = "moderator_save"
+                saved = "opal_alive_save"
             }
         end
     end
@@ -595,12 +595,12 @@ SMODS.Joker { -- Hot Water Bottle
     end
 }
 
-SMODS.Joker { -- Overseer
+SMODS.Joker { -- Philosopher's Stone
     key = 'overseer',
     config = {extra = {odds = 3}},
     rarity = 2,
     atlas = "jokerAtlas",
-    pos = {x = 5, y = 3},
+    pos = {x = 5, y = 2},
     cost = 7,
     blueprint_compat = true,
     loc_vars = function(self, info_queue, card)

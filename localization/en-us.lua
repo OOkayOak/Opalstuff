@@ -208,8 +208,8 @@ return{
                     'when {C:attention}triggered'
                 }
             },
-            j_opal_moderator = {
-                name = 'Moderator',
+            j_opal_alive = {
+                name = 'Alive 2007',
                 text = {
                     'Prevents death {C:attention}once,',
                     'removes {C:red}#1#% of Modifiers',
@@ -226,7 +226,7 @@ return{
                 }
             },
             j_opal_overseer = {
-                name = 'Overseer',
+                name = "Philosopher's Stone",
                 text = {
                     'When {C:attention}using{} a {C:spectral}Spectral{} card,',
                     '{C:green}#1# in #2#{} chance to create',
@@ -869,7 +869,7 @@ return{
             k_opalmodifier = 'Modifier',
             k_opalindicator = 'Indicator',
             k_opal_restart_required = 'Restart Required',
-            moderator_save = 'Saved by Moderator',
+            opal_alive_save = 'One More Time!',
 
             k_opal_modifier_shapes = {
                 'Hexagonal',
