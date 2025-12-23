@@ -87,7 +87,7 @@ OPAL.Modifier{ -- Recycler
     end,
     unapply = function(self, card)
         G.GAME.modifiers.money_per_discard = G.GAME.modifiers.money_per_discard - card.ability.extra
-        if G.GAME.modifiers.money_per_discard == 0 then G.GAME.modifiers.money_per_discard = 0 end
+        if G.GAME.modifiers.money_per_discard == 0 then G.GAME.modifiers.money_per_discard = nil end
     end
 }
 
@@ -530,15 +530,22 @@ end
 function OPAL.handleKeys(controller, key)
     if controller.hovering.target and controller.hovering.target:is(Card) then
         local _card = controller.hovering.target
-        if key == 'c' then
-            if _card.ability.set == 'OpalModifier' then
+        if _card.ability.set == 'OpalModifier' then
+            if key == 'c' then
                 local new_card = copy_card(_card, nil, nil)
                 new_card:add_to_deck()
+                new_card.config.center:apply(new_card)
                 G.opal_heat_mods:emplace(new_card)
             end
-        end
-        if key == "r" then
-            OPAL.remove_modifier(_card)
+            if key == "r" then
+                OPAL.remove_modifier(_card)
+            end
+            G.E_MANAGER:add_event(Event({
+                trigger = 'after',
+                func = function()
+                    OPAL.update_modifier_menu()
+                return true end
+            }))
         end
     else
         local _element = controller.hovering.target
@@ -561,12 +568,12 @@ function OPAL.handleKeys(controller, key)
                     OPAL.add_modifier(_modifier.key, true, false)
                 end
             end
+            G.E_MANAGER:add_event(Event({
+                trigger = 'after',
+                func = function()
+                    OPAL.update_modifier_menu()
+                return true end
+            }))
         end
     end
-    G.E_MANAGER:add_event(Event({
-        trigger = 'after',
-        func = function()
-            OPAL.update_modifier_menu()
-        return true end
-    }))
 end
