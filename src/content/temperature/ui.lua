@@ -282,7 +282,7 @@ function OPAL.generate_modifier_UI(modifier, _size)
 
     local modifier_sprite_tab = nil
 
-    local modifier_sprite = Sprite(0,0,_size*1,_size*1,G.ASSET_ATLAS[modifier.atlas], (modifier.hide_ability) and G.modifier_undiscovered.pos or modifier.pos)
+    local modifier_sprite = Sprite(0,0,_size*1,_size*1,G.ASSET_ATLAS[modifier.hide_ability and 'opal_modifierAtlas' or modifier.atlas], (modifier.hide_ability) and {x=4,y=2} or modifier.pos)
     modifier_sprite.T.scale = 1
     modifier_sprite_tab = {n= G.UIT.C, config={align = "cm", ref_table = modifier, group = modifier.tally}, nodes={
         {n=G.UIT.O, config={w=_size*1,h=_size*1, colour = G.C.BLUE, object = modifier_sprite, focus_with_object = true}},
@@ -327,4 +327,13 @@ function OPAL.generate_modifier_UI(modifier, _size)
     modifier.modifier_sprite = modifier_sprite
 
     return modifier_sprite_tab, modifier_sprite
+end
+
+function OPAL.Modifier:get_uibox_table(modifier_sprite)
+    local _key = self.key
+    if self.hide_ability then _key = 'md_opal_undiscovered' end
+    modifier_sprite = modifier_sprite or self.modifier_sprite
+    local loc_vars = {}
+    modifier_sprite.ability_UIBox_table = generate_card_ui(OPAL.Modifiers['all'][_key], nil, loc_vars, (self.hide_ability) and 'Undiscovered' or 'Modifier', nil, nil, nil)
+    return modifier_sprite
 end

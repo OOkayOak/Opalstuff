@@ -347,6 +347,15 @@ return{
                     'of the {C:attention}Ante'
                 }
             },
+            md_opal_undiscovered={
+                name="Not Discovered",
+                text={
+                    "Acquire this",
+                    "modifier in an",
+                    "unseeded run to",
+                    "learn what it does",
+                },
+            },
         },
         Other = {
             opal_bound = {

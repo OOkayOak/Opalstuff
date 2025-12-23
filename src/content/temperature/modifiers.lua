@@ -7,7 +7,6 @@ OPAL.Modifiers = {
 OPAL.Modifier = SMODS.Center:extend{
     class_prefix = 'md',
     set = 'OpalModifier',
-    discovered = true,
     unlocked = true,
     available = true,
     atlas = 'opal_modifierAtlas',
@@ -21,7 +20,7 @@ OPAL.Modifier = SMODS.Center:extend{
     end,
     inject = function(self)
         if self.opal_alignment == 'informational' then self.display_size = {w = 22, h = 23} end
-        OPAL.Modifiers[self.opal_alignment][self.key] = self
+        if self.opal_alignment ~= 'excl' then OPAL.Modifiers[self.opal_alignment][self.key] = self end
         OPAL.Modifiers['all'][self.key] = self
         self.order = #OPAL.Modifiers['all']
         self.atlas = (G.opal_mod_shape == 1 or self.opal_alignment == 'informational') and self.atlas or self.atlas.."_square"
@@ -439,6 +438,7 @@ end
 OPAL.Modifier{
     key = "info_opal_enable_bl_stickers",
     name = 'Blind Stickers',
+    discovered = true,
     atlas = 'indicatorAtlas',
     opal_alignment = 'informational',
     pos = {x = 0, y = 0},
@@ -449,6 +449,7 @@ OPAL.Modifier{
 OPAL.Modifier{
     key = "info_opal_blinds_give_stickers",
     name = 'Blinds Give Stickers',
+    discovered = true,
     atlas = 'indicatorAtlas',
     opal_alignment = 'informational',
     pos = {x = 1, y = 0}
@@ -456,6 +457,7 @@ OPAL.Modifier{
 OPAL.Modifier{
     key = "info_opal_disable_skipping",
     name = 'No Skipping',
+    discovered = true,
     atlas = 'indicatorAtlas',
     opal_alignment = 'informational',
     pos = {x = 2, y = 0}
@@ -463,9 +465,18 @@ OPAL.Modifier{
 OPAL.Modifier{
     key = "info_opal_pillar",
     name = 'Permanent Pillar',
+    discovered = true,
     atlas = 'indicatorAtlas',
     opal_alignment = 'informational',
     pos = {x = 3, y = 0}
+}
+OPAL.Modifier{
+    key = "undiscovered",
+    name = 'Undiscovered',
+    discovered = true,
+    atlas = 'modifierAtlas',
+    opal_alignment = 'excl',
+    pos = {x = 4, y = 2}
 }
 
 function OPAL.add_modifier(modifier, apply, silent, area)
@@ -510,15 +521,52 @@ function OPAL.remove_modifier(card)
     OPAL.update_modifier_menu()
 end
 
-function OPAL.Modifier:get_uibox_table(modifier_sprite)
-    modifier_sprite = modifier_sprite or self.modifier_sprite
-    local name_to_check, loc_vars = self.name, {}
-    modifier_sprite.ability_UIBox_table = generate_card_ui(OPAL.Modifiers['all'][self.key], nil, loc_vars, (self.hide_ability) and 'Undiscovered' or 'Modifier', nil, (self.hide_ability))
-    return modifier_sprite
-end
-
 function OPAL.update_modifier_menu()
     local modMult = G.opal_mod_shape == 1 and 0.56 or 0.6
     modMult = G.opal_mod_size == 2 and 1.35*modMult or modMult
     G.opal_temperature_UI.alignment.offset.y = 1.7 - modMult*(math.floor(math.max(#G.opal_heat_mods.cards - 1, 0)/G.opal_heat_mods.config.opal_per_row)) + 0.6*(math.floor(math.max(#G.opal_indicators.cards - 1, 0)/4))
+end
+
+function OPAL.handleKeys(controller, key)
+    if controller.hovering.target and controller.hovering.target:is(Card) then
+        local _card = controller.hovering.target
+        if key == 'c' then
+            if _card.ability.set == 'OpalModifier' then
+                local new_card = copy_card(_card, nil, nil)
+                new_card:add_to_deck()
+                G.opal_heat_mods:emplace(new_card)
+            end
+        end
+        if key == "r" then
+            OPAL.remove_modifier(_card)
+        end
+    else
+        local _element = controller.hovering.target
+        if _element and _element.config and _element.config.modifier then
+            local _modifier = _element.config.modifier
+            if key == "2" then
+                OPAL.Modifiers['all'][_modifier.key].unlocked = true
+                OPAL.Modifiers['all'][_modifier.key].discovered = true
+                OPAL.Modifiers['all'][_modifier.key].alerted = true
+                OPAL.Modifiers[_modifier.opal_alignment][_modifier.key].unlocked = true
+                OPAL.Modifiers[_modifier.opal_alignment][_modifier.key].discovered = true
+                OPAL.Modifiers[_modifier.opal_alignment][_modifier.key].alerted = true
+                _modifier.hide_ability = false
+                set_discover_tallies()
+                G:save_progress()
+                _element:set_sprite_pos(_modifier.pos)
+            end
+            if key == "3" or key == "c" then
+                if G.STAGE == G.STAGES.RUN then
+                    OPAL.add_modifier(_modifier.key, true, false)
+                end
+            end
+        end
+    end
+    G.E_MANAGER:add_event(Event({
+        trigger = 'after',
+        func = function()
+            OPAL.update_modifier_menu()
+        return true end
+    }))
 end

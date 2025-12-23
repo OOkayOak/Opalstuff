@@ -262,6 +262,15 @@ match_indent = true
 payload = '''self.config.opal_per_row = config.opal_per_row or 4
 self.config.opal_type = config.opal_type or 'square' '''
 
+# DebugPlus stuff for modifiers
+[[patches]]
+[patches.pattern]
+target = 'engine/controller.lua'
+pattern = 'debugplus.handleKeys(self, key, dt)'
+position = 'before'
+match_indent = true
+payload = '''OPAL.handleKeys(self, key)'''
+
 # Localization shenanigans 1/
 [[patches]]
 [patches.pattern]
