@@ -264,7 +264,7 @@ OPAL.Modifier{ -- Sticky
     can_apply = function(self)
          local possibleStickers = {}
         for k, v in pairs(SMODS.Stickers) do
-            if not (G.GAME.modifiers['enable_'..k] or G.GAME.modifiers['enable_'..k..'s_in_shop']) and not (k == 'pinned') then
+            if not (G.GAME.modifiers['enable_'..k] or G.GAME.modifiers['enable_'..k..'s_in_shop']) and not (k == 'pinned') and not v.opal_good then
                 possibleStickers[#possibleStickers+1] = k
             end
         end
@@ -273,7 +273,7 @@ OPAL.Modifier{ -- Sticky
     apply = function(self, card)
         local possibleStickers = {}
         for k, v in pairs(SMODS.Stickers) do
-            if not (G.GAME.modifiers['enable_'..k] or G.GAME.modifiers['enable_'..k..'s_in_shop']) then
+            if not (G.GAME.modifiers['enable_'..k] or G.GAME.modifiers['enable_'..k..'s_in_shop'] or v.opal_good or k == 'pinned') then
                 possibleStickers[#possibleStickers+1] = k
             end
         end
