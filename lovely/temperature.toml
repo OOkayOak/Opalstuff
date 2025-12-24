@@ -279,5 +279,5 @@ pattern = '''elseif args.type == 'descriptions' or args.type == 'unlocks' then''
 position = 'before'
 match_indent = true
 payload = '''elseif args.type == 'opal_info' then
-    loc_target = G.localization.opal_info[args.set][args.key]
+    loc_target = G.localization.descriptions.opal_info[args.set][args.key]
     return loc_target'''

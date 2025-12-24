@@ -575,7 +575,7 @@ SMODS.Joker { -- Alive 2007
 }
 
 SMODS.Joker { -- Hot Water Bottle
-    key = 'bottle',
+    key = 'jr',
     config = {extra = 2},
     rarity = 1,
     atlas = "jokerAtlas",
@@ -622,7 +622,7 @@ SMODS.Joker { -- Party Mix
     config = {extra = {odds = 5, hands = 5, mods = {mult = 2, bonus = 15, p_dollars = 2}}},
     rarity = 2,
     atlas = "jokerAtlas",
-    pos = {x = 3, y = 4},
+    pos = {x = 5, y = 3},
     cost = 6,
     blueprint_compat = true,
     loc_vars = function(self, info_queue, card)

@@ -42,7 +42,7 @@ function create_UIBox_opal_info(args)
             {n=G.UIT.T, config = {text = localize('opal_'..set), scale = 0.5, colour = G.C.WHITE}}
         }}}
         local text_holder = {n = G.UIT.R, config = {colour = G.C.BLACK, r = 0.1, padding = 0.1, align = 'cm'}, nodes = {}}
-        for i = 1, #(G.localization.opal_info[set]) do
+        for i = 1, #(G.localization.descriptions.opal_info[set]) do
             local small = args.small_lines and (args.small_lines <= i) or false
             new_line = {n = G.UIT.R, config = {colour = G.C.CLEAR, align = 'cm'}, nodes = {
                 {n=G.UIT.T, config = {text = localize({type = 'opal_info', set = set, key = i}), scale = small and args.small_size or 0.35, colour = G.C.WHITE}}

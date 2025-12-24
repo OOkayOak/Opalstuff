@@ -217,8 +217,8 @@ return{
                     '{S:0.8,C:inactive}(Can remove up to #2#)'
                 }
             },
-            j_opal_bottle = {
-                name = 'Hot Water Bottle',
+            j_opal_jr = {
+                name = 'Fadeoutz',
                 text = {
                     'Gives {C:mult}+1{} Mult for every',
                     '{C:attention}#1#{} Heat',
@@ -356,6 +356,34 @@ return{
                     "learn what it does",
                 },
             },
+        },
+        opal_info = {
+            heat = {
+                'Heat is a new metric, rewarded for winning a blind.',
+                'Winning any Blind rewards you with one Heat.',
+                'If your hand one-shots the Blind, you will receive one Heat',
+                'for every multiple of 2 it beats the blind by.',
+                '(e.g: if a Blind requires 300 Score, you would receive 2 Heat for a Hand that scores 600.)'
+            },
+            mods = {
+                'Modifiers are passively earned as Heat increases.',
+                'You will gain 1 Modifier every 10 Heat.'
+            },
+            indicators = {
+                'Indicators are used to display information.',
+                'These are displayed separately from Modifiers, and are given',
+                'when certain effects are in place.'
+            },
+            bad = {
+                'These are Bad Modifiers that only appear',
+                'in certain conditions.',
+                'They do not appear in normal gameplay.'
+            },
+            bstickers = {
+                'Blind Stickers are Stickers that correspond',
+                'to a certain Blind. They can appear on',
+                'Playing Cards only.'
+            }
         },
         Other = {
             opal_bound = {
@@ -815,35 +843,6 @@ return{
                     "{C:attention}#2#s"
                 }
             }
-        }
-    },
-    opal_info = {
-        heat = {
-            'Heat is a new metric, rewarded for winning a blind.',
-            'Winning any Blind rewards you with one Heat.',
-            'If your hand one-shots the Blind, you will receive one Heat',
-            'for every multiple of 2 it beats the blind by.',
-            '(e.g: if a Blind requires 300 Score, you would receive 2 Heat for a Hand that scores 600.)'
-        },
-        mods = {
-            'Modifiers are passively earned as Heat increases.',
-            'You can gain 4 in normal gameplay, one at each of these Heat values:',
-            '10, 25, 50, 75.'
-        },
-        indicators = {
-            'Indicators are used to display information.',
-            'These are displayed separately from Modifiers, and are given',
-            'when certain effects are in place.'
-        },
-        bad = {
-            'These are Bad Modifiers that only appear',
-            'when playing on the Stake of Hyperdeath.',
-            'They do not appear in normal gameplay.'
-        },
-        bstickers = {
-            'Blind Stickers are Stickers that correspond',
-            'to a certain Blind. They can appear on',
-            'Playing Cards only.'
         }
     },
     misc = {
