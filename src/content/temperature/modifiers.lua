@@ -540,7 +540,7 @@ function OPAL.handleKeys(controller, key)
             if key == "r" then
                 OPAL.remove_modifier(_card)
             end
-            if G.opal_heat_mods then
+            if G.STAGE == G.STAGES.RUN then
                 G.E_MANAGER:add_event(Event({
                     trigger = 'after',
                     func = function()
@@ -570,12 +570,14 @@ function OPAL.handleKeys(controller, key)
                     OPAL.add_modifier(_modifier.key, true, false)
                 end
             end
-            G.E_MANAGER:add_event(Event({
-                trigger = 'after',
-                func = function()
-                    OPAL.update_modifier_menu()
-                return true end
-            }))
+            if G.STAGE == G.STAGES.RUN then
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'after',
+                    func = function()
+                        OPAL.update_modifier_menu()
+                    return true end
+                }))
+            end
         end
     end
 end
