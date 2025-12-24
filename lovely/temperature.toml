@@ -63,7 +63,7 @@ position = 'before'
 match_indent = true
 payload = '''G.GAME.modifiers.opal_heat_increase = G.GAME.modifiers.opal_heat_increase or 0
 if (not(G.GAME.modifiers.opal_no_heat)) and hand_chips*mult > G.GAME.blind.chips then
-    G.GAME.modifiers.opal_heat_increase = (math.floor(math.log((hand_chips*mult / G.GAME.blind.chips), 2)+1))
+    G.GAME.modifiers.opal_heat_increase = math.min((math.floor(math.log((hand_chips*mult / G.GAME.blind.chips), 2)+1)), 10)
 end'''
 
 # Temperature 6/ - Remove Temperature when run is kill...
