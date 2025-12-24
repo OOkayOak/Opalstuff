@@ -220,8 +220,8 @@ return{
             j_opal_jr = {
                 name = 'Fadeoutz',
                 text = {
-                    'Gives {C:mult}+1{} Mult for every',
-                    '{C:attention}#1#{} Heat',
+                    'Gives {C:mult}+1{} Mult for',
+                    'every {C:attention}#1#{} Heat',
                     '{C:inactive,S:0.8}(Currently {C:mult,S:0.8}+#2#{C:inactive,S:0.8})'
                 }
             },

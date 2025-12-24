@@ -540,12 +540,14 @@ function OPAL.handleKeys(controller, key)
             if key == "r" then
                 OPAL.remove_modifier(_card)
             end
-            G.E_MANAGER:add_event(Event({
-                trigger = 'after',
-                func = function()
-                    OPAL.update_modifier_menu()
-                return true end
-            }))
+            if G.opal_heat_mods then
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'after',
+                    func = function()
+                        OPAL.update_modifier_menu()
+                    return true end
+                }))
+            end
         end
     else
         local _element = controller.hovering.target
@@ -564,7 +566,7 @@ function OPAL.handleKeys(controller, key)
                 _element:set_sprite_pos(_modifier.pos)
             end
             if key == "3" or key == "c" then
-                if G.STAGE == G.STAGES.RUN then
+                if G.STAGE == G.STAGES.RUN and G.opal_heat_mods then
                     OPAL.add_modifier(_modifier.key, true, false)
                 end
             end
