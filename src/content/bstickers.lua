@@ -932,7 +932,8 @@ end
 function OPAL.stickers_no_b() -- Returns a table of Stickers with no BStickers.
     local result = {}
     for k, v in pairs(SMODS.Stickers) do
-        if not OPAL.BStickers[k] then
+        if not OPAL.BStickers[k] and
+        not (PB_UTIL and PB_UTIL.is_paperclip(k)) then
             result[k] = v
         end
     end
