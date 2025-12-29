@@ -137,7 +137,11 @@ if CardSleeves then
     end,
     apply = function(self, sleeve)
         for i = 1, self.config.extra.starting_mods do
-            OPAL.random_modifier()
+            G.E_MANAGER:add_event(Event({
+                func = function()
+                    OPAL.random_modifier(true, true)
+                return true end
+            }))
         end
         if not self.get_current_deck_key() == "b_opal_modified" then G.GAME.modifiers.opal_heat_for_mods = self.config.extra.heat_for_mods
         else G.GAME.modifiers.opal_heat_per_round = self.config.extra.heat_inc end

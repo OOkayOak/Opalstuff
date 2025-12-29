@@ -45,6 +45,38 @@ OPAL.Modifier = SMODS.Center:extend{
     end,
 }
 
+SMODS.DrawStep{ -- Counter to appear on modifiers
+    key = 'opal_modifier_counter',
+    order = 30,
+    func = function(self)
+        if self.children.opal_md_counter then self.children.opal_md_counter:draw() end
+    end
+}
+
+local card_draw = Card.draw
+function Card:draw(layer)
+    if self.ability.set == 'OpalModifier' and not self.children.opal_md_counter and not (self.config.center.opal_alignment == 'informational')
+    and self.ability.opal_count > 1 then
+        self.children.opal_md_counter = UIBox{
+            definition = {n = G.UIT.R, config = {colour = G.C.BLACK, align = "cm", padding = 0.05, r = 0.1}, nodes = {
+                {n=G.UIT.O, config={object = DynaText({string = {{ref_table = self.ability, ref_value = 'opal_count'}}, colours = {G.C.WHITE}, font = G.LANGUAGES['en-us'].font, shadow = false,spacing = 2, bump = true, scale = 0.3 })}}
+            }},
+            config = {align = "br", offset = {x=-0.3, y=-0.35}, parent = self}
+        }
+    end
+    if self.ability.set == 'OpalModifier' and not (self.config.center.opal_alignment == 'informational')
+    and self.ability.opal_count > 10 then
+        self.children.opal_md_counter:remove()
+        self.children.opal_md_counter = UIBox{
+            definition = {n = G.UIT.R, config = {colour = G.C.BLACK, align = "cm", padding = 0.05, r = 0.1}, nodes = {
+                {n=G.UIT.O, config={object = DynaText({string = {{ref_table = self.ability, ref_value = 'opal_count'}}, colours = {G.C.WHITE}, font = G.LANGUAGES['en-us'].font, shadow = false,spacing = 2, bump = true, scale = 0.28 })}}
+            }},
+            config = {align = "br", offset = {x=-0.4, y=-0.35}, parent = self}
+        }
+    end
+    return card_draw(self, layer)
+end
+
 function SMODS.current_mod.process_loc_text()
     -- will crash the game if removed (aye aye captain)
     G.localization.descriptions.OpalModifier = G.localization.descriptions.OpalModifier or {}
@@ -57,16 +89,6 @@ function OPAL.Modifier:apply(card)
 end
 
 function OPAL.Modifier:unapply(card)
-end
-
-function OPAL.copy_funcs(card)
-    function card:apply()
-        local _center = card.config.center
-        _center:apply(card)
-    end
-    function card:calculate(context)
-        OPAL.Modifier.calculate(_center, card, context)
-    end
 end
 
 OPAL.Modifier{ -- Recycler
@@ -88,6 +110,10 @@ OPAL.Modifier{ -- Recycler
     unapply = function(self, card)
         G.GAME.modifiers.money_per_discard = G.GAME.modifiers.money_per_discard - card.ability.extra
         if G.GAME.modifiers.money_per_discard == 0 then G.GAME.modifiers.money_per_discard = nil end
+    end,
+    merge = function(self, card)
+        card.ability.extra = card.ability.extra + 1
+        G.GAME.modifiers.money_per_discard = G.GAME.modifiers.money_per_discard + 1
     end
 }
 
@@ -109,6 +135,10 @@ OPAL.Modifier{ -- Handheld
     end,
     unapply = function(self, card)
         G.GAME.modifiers.money_per_hand = G.GAME.modifiers.money_per_hand - card.ability.extra
+    end,
+    merge = function(self, card)
+        card.ability.extra = card.ability.extra + 1
+        G.GAME.modifiers.money_per_hand = G.GAME.modifiers.money_per_hand + 1
     end
 }
 
@@ -122,13 +152,17 @@ OPAL.Modifier{ -- Hilarious
     pos = {x = 2, y = 0},
     config = {extra = 1},
     loc_vars = function(self, info_queue, card)
-        return{vars = {card.ability.extra}}
+        return{vars = {card.ability.extra}, key = (card.ability.extra > 1 or card.ability.extra < -1) and self.key..'_plural' or self.key}
     end,
     apply = function(self, card)
         G.jokers.config.card_limit = G.jokers.config.card_limit + card.ability.extra
     end,
     unapply = function(self, card)
         G.jokers.config.card_limit = G.jokers.config.card_limit - card.ability.extra
+    end,
+    merge = function(self, card)
+        card.ability.extra = card.ability.extra + 1
+        G.jokers.config.card_limit = G.jokers.config.card_limit + 1
     end
 }
 
@@ -142,7 +176,7 @@ OPAL.Modifier{ -- Astronomy
     pos = {x = 3, y = 0},
     config = {extra = {levels = 1, hands = 3, hands_left = 3}},
     loc_vars = function(self, info_queue, card)
-        return{vars = {card.ability.extra.hands, card.ability.extra.hands_left}}
+        return{vars = {card.ability.extra.hands, card.ability.extra.hands_left, card.ability.extra.levels}, key = card.ability.extra.levels > 1 and self.key.."_plural" or self.key}
     end,
     calculate = function(self, card, context)
         if  context.before and context.cardarea == G.opal_heat_mods then
@@ -151,7 +185,7 @@ OPAL.Modifier{ -- Astronomy
                 card.ability.extra.hands_left = card.ability.extra.hands
                 return {
                     card = card,
-                    level_up = true,
+                    level_up = card.ability.extra.levels,
                     message = localize('k_level_up_ex')
                 }
             else
@@ -162,6 +196,12 @@ OPAL.Modifier{ -- Astronomy
             end
         end
     end,
+    pre_apply = function(self, card)
+        return {type = 'astronomy'}
+    end,
+    merge = function(self, card)
+        card.ability.extra.levels = card.ability.extra.levels + 1
+    end
 }
 
 OPAL.running_yolk_modifiers = {
@@ -178,10 +218,9 @@ OPAL.Modifier{ -- Running Yolk
     pos = {x = 4, y = 0},
     config = {extra = {item = nil, text = 'value', colour = G.C.SECONDARY_SET.Tarot}},
     loc_vars = function(self, info_queue, card)
-        return{vars = {card.ability.extra.text, colours = {card.ability.extra.colour}}}
+        return{vars = {card.ability.extra.text, 2^G.GAME.opal_ry_scaling[card.ability.extra.item[1]], colours = {card.ability.extra.colour}}}
     end,
     apply = function(self, card)
-        card.ability.extra = pseudorandom_element(OPAL.running_yolk_modifiers, pseudoseed('op_ry'))
         for k, v in ipairs(card.ability.extra.item) do
             G.GAME.opal_ry_scaling[v] = G.GAME.opal_ry_scaling[v] and G.GAME.opal_ry_scaling[v]+1 or 1
         end
@@ -190,6 +229,15 @@ OPAL.Modifier{ -- Running Yolk
         for k, v in ipairs(card.ability.extra.item) do
             G.GAME.opal_ry_scaling[v] = G.GAME.opal_ry_scaling[v] - 1
         end
+    end,
+    pre_apply = function(self, card)
+        return {type = 'item', item = pseudorandom_element(OPAL.running_yolk_modifiers, pseudoseed('op_ry'))}
+    end,
+    set_item = function(self, card, inp)
+        card.ability.extra = inp
+    end,
+    merge = function(self, card)
+        self:apply(card)
     end
 }
 
@@ -209,6 +257,9 @@ OPAL.Modifier{ -- Rigged
             }
         end
     end,
+    merge = function(self, card)
+        card.ability.extra.prob_mod = card.ability.extra.prob_mod * 1.5
+    end
 }
 
 --[[
@@ -479,39 +530,70 @@ OPAL.Modifier{
     pos = {x = 4, y = 2}
 }
 
-function OPAL.add_modifier(modifier, apply, silent, area)
+function OPAL.add_modifier(modifier, apply, silent, area, as_starting)
     if not G.GAME.modifiers.opal_no_mods then
+    local preapp_table = {}
+    if G.P_CENTERS[modifier].pre_apply then
+        preapp_table = G.P_CENTERS[modifier]:pre_apply()
+    end
     local _area = area or G.opal_heat_mods
-    local _T = _area and _area.T or {x = G.ROOM.T.w/2 - G.CARD_W/2, y = G.ROOM.T.h/2 - G.CARD_H/2}
-    local card = Card(_T.x, _T.y, G.CARD_W, G.CARD_H, G.P_CARDS.empty, G.P_CENTERS[modifier],{discover = true, bypass_discovery_center = true, bypass_discovery_ui = true, bypass_back = G.GAME.selected_back.pos })
-    card:start_materialize(nil, silent)
-    OPAL.copy_funcs(card)
-    if apply then card:apply() end
-    if _area and card.ability.set == 'OpalModifier' then _area:emplace(card) end
-    card.created_on_pause = nil
-    OPAL.update_modifier_menu()
-    G.E_MANAGER:add_event(Event({trigger = 'after',func = function()
-        save_run()
-    return true end}))
-    return card
+    local merge_instead = nil
+    for k, v in ipairs(G.opal_heat_mods.cards) do
+        if v.config.center == G.P_CENTERS[modifier] and v.config.center.merge and
+        (not preapp_table['type'] or
+        preapp_table['type'] == 'item' and preapp_table['item'] == v.ability.extra or
+        preapp_table['type'] == 'astronomy' and (v.ability.extra.hands == v.ability.extra.hands_left)) then
+            merge_instead = k
+        end
+    end
+    if not merge_instead then
+        local _T = _area and _area.T or {x = G.ROOM.T.w/2 - G.CARD_W/2, y = G.ROOM.T.h/2 - G.CARD_H/2}
+        local card = Card(_T.x, _T.y, G.CARD_W, G.CARD_H, G.P_CARDS.empty, G.P_CENTERS[modifier],{discover = true, bypass_discovery_center = true, bypass_discovery_ui = true, bypass_back = G.GAME.selected_back.pos })
+        card:start_materialize(nil, silent)
+        if apply then
+            if preapp_table['type'] == 'item' then
+                card.config.center:set_item(card, preapp_table['item'])
+            end
+            card.config.center:apply(card)
+        end
+        if _area and card.ability.set == 'OpalModifier' then _area:emplace(card) end
+        card.created_on_pause = nil
+        card.ability.opal_count = 1
+        card.ability.opal_is_starting_modifier = as_starting
+        OPAL.update_modifier_menu()
+        G.E_MANAGER:add_event(Event({trigger = 'after',func = function()
+            save_run()
+        return true end}))
+        return card
+    else -- increment existing Modifier
+        local _modifier = G.opal_heat_mods.cards[merge_instead]
+            _modifier.ability.opal_count = _modifier.ability.opal_count + 1
+        G.E_MANAGER:add_event(Event({func = function()
+            _modifier.config.center:merge(_modifier)
+            _modifier:juice_up(0.6)
+            play_sound('holo1', 1.2 + math.random() * 0.1, 0.4)
+            card_eval_status_text(_modifier, 'extra', nil, nil, nil, {message = ('Upgraded!'),})
+            save_run()
+            delay(0.5)
+        return true end}))
+    end
     end
 end
 
-function OPAL.random_modifier()
+function OPAL.random_modifier(unique, as_starting)
     if not G.GAME.modifiers.opal_no_mods then
+    G.GAME.opal_existing_mods = G.GAME.opal_existing_mods or {}
     mod_keys = {}
     for k, v in pairs(OPAL.Modifiers['good']) do
-        mod_keys[#mod_keys+1] = k
+        if not(unique and G.GAME.opal_existing_mods[k]) then
+            mod_keys[#mod_keys+1] = k
+        end
     end
     local modifier_chosen = pseudorandom_element(mod_keys, pseudoseed('add_opal_modifier'))
-    G.E_MANAGER:add_event(Event({
-        func = function()
-            local modifier = OPAL.add_modifier(modifier_chosen, true)
-        return true
-        end
-    }))
-    else
-        print("NO MODIFIERS GO AWAY PLEASE")
+    if modifier_chosen then
+        G.GAME.opal_existing_mods[modifier_chosen] = true
+        OPAL.add_modifier(modifier_chosen, true, nil, nil, as_starting)
+    end
     end
 end
 

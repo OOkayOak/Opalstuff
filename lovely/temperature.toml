@@ -120,9 +120,9 @@ pattern = '''-- TARGET: evaluate your own general effects'''
 payload = '''if G.opal_heat_mods and context.cardarea == G.opal_heat_mods and card.ability.set == 'OpalModifier' then
         local jokers = nil
         if context.other_joker and type(context.other_joker.calculate) == 'function' then
-            jokers = context.other_joker:calculate(context)
+            jokers = context.other_joker.config.center:calculate(card, context)
         elseif type(card.calculate) == 'function' then
-            jokers = card:calculate(context)
+            jokers = card.config.center:calculate(card, context)
         end
         if jokers then 
             ret.jokers = jokers
@@ -190,7 +190,7 @@ payload = """if G.opal_heat_mods and self.area == G.opal_heat_mods then
     _center = self.config.center
     if should_debuff then
         _center:unapply(self)
-    else
+    elseif self.debuff then
         _center:apply(self)
     end
 end"""

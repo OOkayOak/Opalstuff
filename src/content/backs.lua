@@ -140,7 +140,11 @@ SMODS.Back{
     end,
     apply = function(self, back)
         for i = 1, self.config.extra.starting_mods do
-            OPAL.random_modifier()
+            G.E_MANAGER:add_event(Event({
+                func = function()
+                    OPAL.random_modifier(true, true)
+                return true end
+            }))
         end
         G.GAME.modifiers.opal_heat_for_mods = self.config.extra.heat_for_mods
         G.GAME.modifiers.opal_starting_mods = G.GAME.modifiers.opal_starting_mods and G.GAME.modifiers.opal_starting_mods + 2 or 2

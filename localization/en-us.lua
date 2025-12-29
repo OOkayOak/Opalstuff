@@ -267,7 +267,13 @@ return{
             md_opal_hilarious = {
                 name = 'Punchline',
                 text = {
-                    '{C:attention}+1{} Joker Slot'
+                    '{C:attention}+#1#{} Joker Slot'
+                }
+            },
+            md_opal_hilarious_plural = {
+                name = 'Punchline',
+                text = {
+                    '{C:attention}+#1#{} Joker Slots'
                 }
             },
             md_opal_astronomy = {
@@ -277,11 +283,19 @@ return{
                     'every {C:attention}#1#{C:inactive} (#2#){} hands played'
                 }
             },
+            md_opal_astronomy_plural = {
+                name = 'Astronomy',
+                text = {
+                    'Level up played {C:attention}poker hand',
+                    '{C:attention}#3# times{} every',
+                    '{C:attention}#1#{C:inactive} (#2#){} hands played'
+                }
+            },
             md_opal_running_yolk = {
                 name = 'Running Yolk',
                 text = {
                     'Jokers with Scaling {V:1}#1#{}',
-                    'gain {C:attention}twice{} as much'
+                    'gain {C:attention}X#2#{} as much'
                 }
             },
             md_opal_rigged = {

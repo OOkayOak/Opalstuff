@@ -116,7 +116,7 @@ SMODS.Stake{ -- Hyperdeath
     colour = HEX('ff0000'),
     opalstuff_alt = true,
     calculate = function(self, context)
-        if context.end_of_round and not G.GAME.opal_hyperdeath_triggered then
+        if context.beat_boss and not G.GAME.opal_hyperdeath_triggered then
             G.GAME.opal_hyperdeath_triggered = true
             OPAL.add_evil_modifier()
         end

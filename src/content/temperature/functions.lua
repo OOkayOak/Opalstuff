@@ -1,5 +1,3 @@
-OPAL.level_thresholds = {10, 25, 50, 75}
-
 function OPAL.ease_temp(mod, instant)
     if not G.GAME.modifiers.opal_no_heat then
     local function _mod(mod)
@@ -50,14 +48,20 @@ function OPAL.check_heat() -- Checks if you need a modifier/level up
     local count = 0
     for k, v in ipairs(G.opal_heat_mods.cards) do
         if OPAL.Modifiers['good'][v.config.center.key] then
-            count = count + 1
+            count = count + v.ability.opal_count
+        end
+        if v.ability.opal_is_starting_modifier then
+            count = count - 1
         end
     end
-    count = count - (G.GAME.modifiers.opal_starting_mods or 0)
-    while count < math.floor(G.GAME.opal_temperature/G.GAME.modifiers.opal_heat_for_mods) do
-        count = count + 1
-        OPAL.random_modifier()
+    local mods_to_create = math.floor((G.GAME.opal_temperature/G.GAME.modifiers.opal_heat_for_mods) - count)
+    for i = 1, mods_to_create do
+    G.E_MANAGER:add_event(Event({
+    func = function()
+        OPAL.random_modifier(false, false)
+    return true end}))
     end
+    G.E_MANAGER:add_event(Event({func = function() save_run() return true end}))
 end
 
 function OPAL.get_temp_colour()
@@ -94,7 +98,7 @@ function OPAL.add_evil_modifier()
         local modifier_chosen = pseudorandom_element(mod_keys, pseudoseed('add_opal_modifier'))
         G.E_MANAGER:add_event(Event({
             func = function()
-                local modifier = OPAL.add_modifier(modifier_chosen, true)
+                local modifier = OPAL.add_modifier(modifier_chosen, true, false)
             return true
             end
         }))
