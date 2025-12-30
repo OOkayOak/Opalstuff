@@ -55,26 +55,38 @@ SMODS.DrawStep{ -- Counter to appear on modifiers
 
 local card_draw = Card.draw
 function Card:draw(layer)
-    if self.ability.set == 'OpalModifier' and not self.children.opal_md_counter and not (self.config.center.opal_alignment == 'informational')
+    if OPAL.config.modifier_count == 1 and self.ability.set == 'OpalModifier' and not self.children.opal_md_counter and not (self.config.center.opal_alignment == 'informational')
     and self.ability.opal_count > 1 then
         self.children.opal_md_counter = UIBox{
             definition = {n = G.UIT.R, config = {colour = G.C.BLACK, align = "cm", padding = 0.05, r = 0.1}, nodes = {
-                {n=G.UIT.O, config={object = DynaText({string = {{ref_table = self.ability, ref_value = 'opal_count'}}, colours = {G.C.WHITE}, font = G.LANGUAGES['en-us'].font, shadow = false,spacing = 2, bump = true, scale = 0.3 })}}
+                {n=G.UIT.T, config = {text = tostring(self.ability.opal_count), scale = 0.3, colour = G.C.WHITE}}
             }},
             config = {align = "br", offset = {x=-0.3, y=-0.35}, parent = self}
         }
     end
-    if self.ability.set == 'OpalModifier' and not (self.config.center.opal_alignment == 'informational')
-    and self.ability.opal_count > 10 then
-        self.children.opal_md_counter:remove()
+    return card_draw(self, layer)
+end
+
+local card_hover = Card.hover
+function Card:hover()
+    if OPAL.config.modifier_count == 2 and self.ability.set == 'OpalModifier' and not self.children.opal_md_counter and not (self.config.center.opal_alignment == 'informational') then
         self.children.opal_md_counter = UIBox{
             definition = {n = G.UIT.R, config = {colour = G.C.BLACK, align = "cm", padding = 0.05, r = 0.1}, nodes = {
-                {n=G.UIT.O, config={object = DynaText({string = {{ref_table = self.ability, ref_value = 'opal_count'}}, colours = {G.C.WHITE}, font = G.LANGUAGES['en-us'].font, shadow = false,spacing = 2, bump = true, scale = 0.28 })}}
+                {n=G.UIT.T, config = {text = tostring(self.ability.opal_count), scale = 0.3, colour = G.C.WHITE}}
             }},
-            config = {align = "br", offset = {x=-0.4, y=-0.35}, parent = self}
+            config = {align = "br", offset = {x=-0.3, y=-0.35}, parent = self}
         }
     end
-    return card_draw(self, layer)
+    return card_hover(self)
+end
+
+local card_stop_hover = Card.stop_hover
+function Card:stop_hover()
+    if OPAL.config.modifier_count == 2 and self.ability.set == 'OpalModifier' and self.children.opal_md_counter then
+        self.children.opal_md_counter:remove()
+        self.children.opal_md_counter = nil
+    end
+    return card_stop_hover(self)
 end
 
 function SMODS.current_mod.process_loc_text()
@@ -218,7 +230,7 @@ OPAL.Modifier{ -- Running Yolk
     pos = {x = 4, y = 0},
     config = {extra = {item = nil, text = 'value', colour = G.C.SECONDARY_SET.Tarot}},
     loc_vars = function(self, info_queue, card)
-        return{vars = {card.ability.extra.text, 2^G.GAME.opal_ry_scaling[card.ability.extra.item[1]], colours = {card.ability.extra.colour}}}
+        return{vars = {card.ability.extra.text, card.ability.extra.item and 2^G.GAME.opal_ry_scaling[card.ability.extra.item[1]] or 2, colours = {card.ability.extra.colour}}}
     end,
     apply = function(self, card)
         for k, v in ipairs(card.ability.extra.item) do
@@ -575,6 +587,15 @@ function OPAL.add_modifier(modifier, apply, silent, area, as_starting)
             card_eval_status_text(_modifier, 'extra', nil, nil, nil, {message = ('Upgraded!'),})
             save_run()
             delay(0.5)
+            if OPAL.config.modifier_count == 1 and not (self.config.center.opal_alignment == 'informational') then
+            _modifier.children.opal_md_counter = nil
+            _modifier.children.opal_md_counter = UIBox{
+                definition = {n = G.UIT.R, config = {colour = G.C.BLACK, align = "cm", padding = 0.05, r = 0.1}, nodes = {
+                    {n=G.UIT.T, config = {text = tostring(_modifier.ability.opal_count), scale = 0.3, colour = G.C.WHITE}}
+                }},
+                config = {align = "br", offset = {x=-0.3, y=-0.35}, parent = _modifier}
+            }
+            end
         return true end}))
     end
     end

@@ -874,6 +874,9 @@ return{
             b_temperature = 'Heat',
             b_opal_modifiers = 'Modifiers',
             b_opal_modifiers_appearance = 'Modifier Appearance',
+            b_opal_modifiers_count1 = 'Modifier Stack Count',
+            b_opal_modifiers_count2 = 'When the stack count on',
+            b_opal_modifiers_count3 = 'a Modifier should show',
             b_opal_temp_info = 'Set Score on fire to gain Heat!',
             b_opal_open_temp = 'TAB to open Heat',
             k_opal_chomp = 'Chomp!',
@@ -892,6 +895,12 @@ return{
                 'Small',
                 'Large'
             },
+            k_opal_modifier_counts = {
+                'Always',
+                'On Hover',
+                'Never'
+            },
+
 
             opal_optional_features = 'OPTIONAL FEATURES',
             opal_appearance = 'APPEARANCE OPTIONS',

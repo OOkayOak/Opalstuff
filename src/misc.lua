@@ -31,24 +31,35 @@ G.FUNCS.opal_change_modifier_size = function(e)
     OPAL.config.modifier_size = e.to_key
 end
 
+G.FUNCS.opal_change_modifier_count = function(e)
+    OPAL.config.modifier_count = e.to_key
+    if G.opal_heat_mods then
+        for k, v in ipairs(G.opal_heat_mods.cards) do
+            if v.children.opal_md_counter then
+                v.children.opal_md_counter = nil
+            end
+        end
+    end
+end
+
 OPAL.config_tab = function()
     local modifier_example = Sprite(0,0,0.6,0.6,G.ASSET_ATLAS[OPAL.config.modifier_display == 1 and "opal_modifierAtlas" or "opal_modifierAtlas_square"], {x=4, y=2})
 
     local optional_features = {
-    { n = G.UIT.R, config = {colour = G.C.L_BLACK, padding = 0.1, r = 0.2}, nodes = {
-        {n = G.UIT.C, config = {colour = G.C.CLEAR, align = "cm"}, nodes = {
+    { n = G.UIT.C, config = {colour = G.C.L_BLACK, padding = 0.1, r = 0.2}, nodes = {
+        {n = G.UIT.C, config = {colour = G.C.CLEAR, align = "cm", padding = 0.1}, nodes = {
             {n = G.UIT.R, config = {colour = G.C.CLEAR, align = "cm"}, nodes = {
                 {n = G.UIT.T, config = {text = localize('opal_optional_features'), colour = G.C.BLACK, scale = 0.3}},
             }},
             {n = G.UIT.R, config = {colour = G.C.BLACK, align = "cr", r = 0.2, padding = 0.1, minw = 5, emboss = 0.05}, nodes = {
                 create_toggle({ label = localize('opal_heat'), ref_table = OPAL.config, ref_value = 'heat_system', callback = function() end}),
-                create_toggle({ label = localize('b_opal_modifiers'), ref_table = OPAL.config, ref_value = 'modifiers', callback = function() end})
+                create_toggle({ label = localize('b_opal_modifiers'), ref_table = OPAL.config, ref_value = 'modifiers', callback = function() end}),
             }}
         }}
         }
     },
-    { n = G.UIT.R, config = {colour = G.C.L_BLACK, padding = 0.1, r = 0.2}, nodes = {
-        { n = G.UIT.C, config = {colour = G.C.CLEAR}, nodes = {
+    { n = G.UIT.C, config = {colour = G.C.L_BLACK, padding = 0.1, r = 0.2}, nodes = {
+        { n = G.UIT.C, config = {colour = G.C.CLEAR, padding = 0.1}, nodes = {
             {n = G.UIT.R, config = {colour = G.C.CLEAR, align = "cm"}, nodes = {
                 {n = G.UIT.T, config = {text = localize('opal_appearance'), colour = G.C.BLACK, scale = 0.3}},
             }},
@@ -71,6 +82,20 @@ OPAL.config_tab = function()
                 }},
                 {n = G.UIT.R, config = {colour = G.C.CLEAR, align = "cm"}, nodes = {
                     {n = G.UIT.T, config = {text = localize('k_opal_restart_required'), colour = G.C.UI.TEXT_LIGHT, scale = 0.2}},
+                }},
+            }},
+            {n = G.UIT.R, config = {colour = G.C.BLACK, align = "cm", r = 0.2, padding = 0.1, emboss = 0.05}, nodes = {
+                {n = G.UIT.R, config = {colour = G.C.CLEAR, align = "cm"}, nodes = {
+                        {n = G.UIT.T, config = {text = localize('b_opal_modifiers_count1'), colour = G.C.UI.TEXT_LIGHT, scale = 0.4}},
+                }},
+                {n = G.UIT.R, config = {colour = G.C.CLEAR, align = "cm"}, nodes = {
+                    {n = G.UIT.T, config = {text = localize('b_opal_modifiers_count2'), colour = G.C.UI.TEXT_LIGHT, scale = 0.25}},
+                }},
+                {n = G.UIT.R, config = {colour = G.C.CLEAR, align = "cm"}, nodes = {
+                    {n = G.UIT.T, config = {text = localize('b_opal_modifiers_count3'), colour = G.C.UI.TEXT_LIGHT, scale = 0.25}},
+                }},
+                {n = G.UIT.R, config = {colour = G.C.CLEAR, align = "cm"}, nodes = {
+                    create_option_cycle({w = 3.4,scale = 0.8, options = localize('k_opal_modifier_counts'), opt_callback = 'opal_change_modifier_count', current_option = OPAL.config.modifier_count}),
                 }},
             }},
         }}
