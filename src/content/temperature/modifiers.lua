@@ -602,7 +602,8 @@ function OPAL.add_modifier(modifier, apply, silent, area, as_starting)
             save_run()
             delay(0.5)
             if OPAL.config.modifier_count == 1 and not (_modifier.config.center.opal_alignment == 'informational') then
-            _modifier.children.opal_md_counter = nil
+            if _modifier.children.opal_md_counter then _modifier.children.opal_md_counter:remove() end
+            print(#G.MOVEABLES)
             _modifier.children.opal_md_counter = UIBox{
                 definition = {n = G.UIT.R, config = {colour = G.C.BLACK, align = "cm", padding = 0.05, r = 0.1}, nodes = {
                     {n=G.UIT.T, config = {text = tostring(_modifier.ability.opal_count), scale = 0.3, colour = G.C.WHITE}}
