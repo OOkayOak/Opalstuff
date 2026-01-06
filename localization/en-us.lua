@@ -161,10 +161,10 @@ return{
             j_opal_grandma = {
                 name = 'Grandma',
                 text = {
-                    'This Joker gains {C:mult}#1#{} Mult',
+                    'This Joker gains {C:mult}+#1#{} Mult',
                     'every time a {C:attention,T:m_opal_cookie}#2#{}',
                     '{C:green}successfully{} triggers',
-                    '{C:inactive}(Currently {C:mult}#3#{C:inactive} Mult)'
+                    '{C:inactive}(Currently {C:mult}+#3#{C:inactive} Mult)'
                 }
             },
             j_opal_biscuit_tin = {
