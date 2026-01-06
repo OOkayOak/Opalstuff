@@ -79,7 +79,6 @@ if (CHDP or {}).can_load then
 end
 
 if (SMODS.Mods['aikoyorisshenanigans'] or {}).can_load then -- hai aikoyori!
-    sendTraceMessage('haiii aikoyoriiii')
     AKYRS = AKYRS or SMODS.Mods['aikoyorisshenanigans']
     AKYRS.HardcoreChallenge{
         key = "stickers_3",

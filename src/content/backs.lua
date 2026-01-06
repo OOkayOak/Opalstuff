@@ -131,6 +131,7 @@ function OPAL.get_suits_and_ranks()
     return{ suits = suits, ranks = ranks }
 end
 
+if OPAL.config.modifiers and OPAL.config.heat_system then
 SMODS.Back{
     key = 'modified',
     atlas = 'cardAtlas', pos = { x=2,y=0 },
@@ -150,3 +151,4 @@ SMODS.Back{
         G.GAME.modifiers.opal_starting_mods = G.GAME.modifiers.opal_starting_mods and G.GAME.modifiers.opal_starting_mods + 2 or 2
     end
 }
+end

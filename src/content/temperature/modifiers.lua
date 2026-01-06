@@ -53,7 +53,15 @@ SMODS.DrawStep{ -- Counter to appear on modifiers
     end
 }
 
-local card_draw = Card.draw
+SMODS.DrawStep{ -- Raiser Stake sprite
+    key = 'opal_raiser_sprite',
+    order = 29,
+    func = function(self)
+        if self.children.opal_raiser_sprite then self.children.opal_raiser_sprite:draw() end
+    end
+}
+
+--[[local card_draw = Card.draw
 function Card:draw(layer)
     if OPAL.config.modifier_count == 1 and self.ability.set == 'OpalModifier' and not self.children.opal_md_counter and not (self.config.center.opal_alignment == 'informational')
     and self.ability.opal_count > 1 then
@@ -65,7 +73,7 @@ function Card:draw(layer)
         }
     end
     return card_draw(self, layer)
-end
+end]]
 
 local card_hover = Card.hover
 function Card:hover()
@@ -89,10 +97,10 @@ function Card:stop_hover()
     return card_stop_hover(self)
 end
 
-function SMODS.current_mod.process_loc_text()
+--[[function SMODS.current_mod.process_loc_text()
     -- will crash the game if removed (aye aye captain)
     G.localization.descriptions.OpalModifier = G.localization.descriptions.OpalModifier or {}
-end
+end]]
 
 function OPAL.Modifier:calculate(card, context)
 end
@@ -422,8 +430,14 @@ OPAL.Modifier{ -- Raiser
             if G.P_STAKES[card.ability.extra.stake].modifiers then
                 OPAL.raiser_update_game(card)
             end
+            local _size = G.opal_mod_size == 1 and 0.4 or 0.6
+            card.children.opal_raiser_sprite = UIBox{
+                definition = {n = G.UIT.R, config = {colour = G.C.CLEAR, align = "cm", padding = 0, r = 0}, nodes = {
+                    {n = G.UIT.O, config = {object = Sprite(card.T.x, card.T.y, _size, _size, G.ASSET_ATLAS[G.P_STAKES[card.ability.extra.stake].atlas], G.P_STAKES[card.ability.extra.stake].pos)}},
+                }},
+                config = {align = "cm", offset = {x=0, y=0}, parent = card}
+            }
         else
-            print('AAAH!')
             OPAL.remove_modifier(card)
         end
     end,
@@ -473,7 +487,7 @@ function OPAL.raiser_update_game(card) -- update stuff when a Stake is added
         storeStuff.starting_paramsNew = G.GAME.starting_params
         G.GAME.starting_params = storeStuff.starting_params
         local sparams_change = storeStuff.starting_paramsNew
-        
+
         for k, v in ipairs(OPAL.raiser_param_table) do
             if v.type == 'cardarea_size' then
                 G[v.target_key].config.card_limit = G[v.target_key].config.card_limit + sparams_change[v.param_key]
@@ -628,6 +642,18 @@ function OPAL.update_modifier_menu()
     local modMult = G.opal_mod_shape == 1 and 0.56 or 0.6
     modMult = G.opal_mod_size == 2 and 1.35*modMult or modMult
     G.opal_temperature_UI.alignment.offset.y = 1.7 - modMult*(math.floor(math.max(#G.opal_heat_mods.cards - 1, 0)/G.opal_heat_mods.config.opal_per_row)) + 0.6*(math.floor(math.max(#G.opal_indicators.cards - 1, 0)/4))
+    if OPAL.config.modifier_count == 1 then
+        for k, v in ipairs(G.opal_heat_mods.cards) do
+            if v.ability.opal_count > 1 then
+                v.children.opal_md_counter = UIBox{
+                    definition = {n = G.UIT.R, config = {colour = G.C.BLACK, align = "cm", padding = 0.05, r = 0.1}, nodes = {
+                        {n=G.UIT.T, config = {text = tostring(v.ability.opal_count), scale = 0.3, colour = G.C.WHITE}}
+                    }},
+                    config = {align = "br", offset = {x=-0.3, y=-0.35}, parent = v}
+                }
+            end
+        end
+    end
 end
 
 function OPAL.handleKeys(controller, key)

@@ -534,6 +534,9 @@ SMODS.Joker { -- Hot Chip
         if context.setting_blind then
             card.ability.extra.opal_triggered = false
         end
+    end,
+    in_pool = function(self, args)
+        return (G.GAME.modifiers.opal_no_heat and (not G.GAME.modifiers.opal_no_heat) or OPAL.config.heat_system)
     end
 }
 
@@ -571,6 +574,9 @@ SMODS.Joker { -- Alive 2007
                 saved = "opal_alive_save"
             }
         end
+    end,
+    in_pool = function(self, args)
+        return (G.GAME.modifiers.opal_no_mods and (not G.GAME.modifiers.opal_no_mods) or OPAL.config.modifiers)
     end
 }
 
@@ -592,6 +598,9 @@ SMODS.Joker { -- Hot Water Bottle
                 message = localize {type = 'variable', key = 'a_mult', vars = {math.floor(G.GAME.opal_temperature/card.ability.extra)}}
             }
         end
+    end,
+    in_pool = function(self, args)
+        return (G.GAME.modifiers.opal_no_heat and (not G.GAME.modifiers.opal_no_heat) or OPAL.config.heat_system)
     end
 }
 
@@ -614,6 +623,9 @@ SMODS.Joker { -- Philosopher's Stone
                 message = localize('k_opal_modifier')
             }
         end
+    end,
+    in_pool = function(self, args)
+        return (G.GAME.modifiers.opal_no_mods and (not G.GAME.modifiers.opal_no_mods) or OPAL.config.modifiers)
     end
 }
 
