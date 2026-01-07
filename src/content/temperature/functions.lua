@@ -98,7 +98,7 @@ function OPAL.add_evil_modifier()
         local modifier_chosen = pseudorandom_element(mod_keys, pseudoseed('add_opal_modifier'))
         G.E_MANAGER:add_event(Event({
             func = function()
-                local modifier = OPAL.add_modifier(modifier_chosen, true, false)
+                OPAL.add_modifier(modifier_chosen, true, false)
             return true
             end
         }))

@@ -131,9 +131,9 @@ OPAL.Modifier{ -- Recycler
         G.GAME.modifiers.money_per_discard = G.GAME.modifiers.money_per_discard - card.ability.extra
         if G.GAME.modifiers.money_per_discard == 0 then G.GAME.modifiers.money_per_discard = nil end
     end,
-    merge = function(self, card)
-        card.ability.extra = card.ability.extra + 1
-        G.GAME.modifiers.money_per_discard = G.GAME.modifiers.money_per_discard + 1
+    merge = function(self, card, count)
+        card.ability.extra = card.ability.extra + count
+        G.GAME.modifiers.money_per_discard = G.GAME.modifiers.money_per_discard + count
     end
 }
 
@@ -156,9 +156,9 @@ OPAL.Modifier{ -- Handheld
     unapply = function(self, card)
         G.GAME.modifiers.money_per_hand = G.GAME.modifiers.money_per_hand - card.ability.extra
     end,
-    merge = function(self, card)
-        card.ability.extra = card.ability.extra + 1
-        G.GAME.modifiers.money_per_hand = G.GAME.modifiers.money_per_hand + 1
+    merge = function(self, card, count)
+        card.ability.extra = card.ability.extra + count
+        G.GAME.modifiers.money_per_hand = G.GAME.modifiers.money_per_hand + count
     end
 }
 
@@ -180,9 +180,9 @@ OPAL.Modifier{ -- Hilarious
     unapply = function(self, card)
         G.jokers.config.card_limit = G.jokers.config.card_limit - card.ability.extra
     end,
-    merge = function(self, card)
-        card.ability.extra = card.ability.extra + 1
-        G.jokers.config.card_limit = G.jokers.config.card_limit + 1
+    merge = function(self, card, count)
+        card.ability.extra = card.ability.extra + count
+        G.jokers.config.card_limit = G.jokers.config.card_limit + count
     end
 }
 
@@ -219,8 +219,8 @@ OPAL.Modifier{ -- Astronomy
     pre_apply = function(self, card)
         return {type = 'astronomy'}
     end,
-    merge = function(self, card)
-        card.ability.extra.levels = card.ability.extra.levels + 1
+    merge = function(self, card, count)
+        card.ability.extra.levels = card.ability.extra.levels + count
     end
 }
 
@@ -256,8 +256,10 @@ OPAL.Modifier{ -- Running Yolk
     set_item = function(self, card, inp)
         card.ability.extra = inp
     end,
-    merge = function(self, card)
-        self:apply(card)
+    merge = function(self, card, count)
+        for k, v in ipairs(card.ability.extra.item) do
+            G.GAME.opal_ry_scaling[v] = G.GAME.opal_ry_scaling[v] + count
+        end
     end
 }
 
@@ -277,8 +279,8 @@ OPAL.Modifier{ -- Rigged
             }
         end
     end,
-    merge = function(self, card)
-        card.ability.extra.prob_mod = card.ability.extra.prob_mod * 1.5
+    merge = function(self, card, count)
+        card.ability.extra.prob_mod = card.ability.extra.prob_mod * (1.5^count)
     end
 }
 
@@ -590,20 +592,16 @@ function OPAL.add_modifier(modifier, apply, silent, area, as_starting)
         G.E_MANAGER:add_event(Event({trigger = 'after',func = function()
             save_run()
         return true end}))
-        return card
     else -- increment existing Modifier
-        local _modifier = G.opal_heat_mods.cards[merge_instead]
+        G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+            local _modifier = G.opal_heat_mods.cards[merge_instead]
             _modifier.ability.opal_count = _modifier.ability.opal_count + 1
-        G.E_MANAGER:add_event(Event({func = function()
-            _modifier.config.center:merge(_modifier)
+            _modifier.config.center:merge(_modifier, 1)
             _modifier:juice_up(0.6)
             play_sound('holo1', 1.2 + math.random() * 0.1, 0.4)
-            card_eval_status_text(_modifier, 'extra', nil, nil, nil, {message = ('Upgraded!'),})
             save_run()
-            delay(0.5)
             if OPAL.config.modifier_count == 1 and not (_modifier.config.center.opal_alignment == 'informational') then
             if _modifier.children.opal_md_counter then _modifier.children.opal_md_counter:remove() end
-            print(#G.MOVEABLES)
             _modifier.children.opal_md_counter = UIBox{
                 definition = {n = G.UIT.R, config = {colour = G.C.BLACK, align = "cm", padding = 0.05, r = 0.1}, nodes = {
                     {n=G.UIT.T, config = {text = tostring(_modifier.ability.opal_count), scale = 0.3, colour = G.C.WHITE}}
@@ -645,7 +643,7 @@ function OPAL.update_modifier_menu()
     G.opal_temperature_UI.alignment.offset.y = 1.7 - modMult*(math.floor(math.max(#G.opal_heat_mods.cards - 1, 0)/G.opal_heat_mods.config.opal_per_row)) + 0.6*(math.floor(math.max(#G.opal_indicators.cards - 1, 0)/4))
     if OPAL.config.modifier_count == 1 then
         for k, v in ipairs(G.opal_heat_mods.cards) do
-            if v.ability.opal_count > 1 then
+            if v.ability.opal_count > 1 and not v.children.opal_md_counter then
                 v.children.opal_md_counter = UIBox{
                     definition = {n = G.UIT.R, config = {colour = G.C.BLACK, align = "cm", padding = 0.05, r = 0.1}, nodes = {
                         {n=G.UIT.T, config = {text = tostring(v.ability.opal_count), scale = 0.3, colour = G.C.WHITE}}
