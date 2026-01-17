@@ -279,8 +279,14 @@ return{
             md_opal_astronomy = {
                 name = 'Astronomy',
                 text = {
-                    'Level up played {C:attention}poker hand',
-                    'every {C:attention}#1#{C:inactive} (#2#){} hands played'
+                    {
+                        'Level up played {C:attention}poker hand',
+                        'every {C:attention}#1#{C:inactive} (#2#){} hands played'
+                    },
+                    {
+                        'You may only have {C:attention}1',
+                        'of this {C:opal_pink}Modifier'
+                    }
                 }
             },
             md_opal_astronomy_plural = {
@@ -303,7 +309,7 @@ return{
                 text = {
                     '{X:green,C:white}X#1#{} to all listed',
                     '{C:green,E:1,S:1.1}probabilities',
-                    '{C:inactive}(ex: {C:green}1 in 3{C:inactive} -> {C:green}1.5 in 3{C:inactive})'
+                    '{C:inactive}(ex: {C:green}1 in 3{C:inactive} -> {C:green}1.25 in 3{C:inactive})'
                 }
             },
             md_opal_sticky = {

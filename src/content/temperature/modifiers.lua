@@ -216,11 +216,13 @@ OPAL.Modifier{ -- Astronomy
             end
         end
     end,
-    pre_apply = function(self, card)
-        return {type = 'astronomy'}
-    end,
-    merge = function(self, card, count)
-        card.ability.extra.levels = card.ability.extra.levels + count
+    can_apply = function(self)
+        for k, v in ipairs(G.opal_heat_mods.cards) do
+            if v.config.center.key == 'md_opal_astronomy' then
+                return false
+            end
+        end
+        return true
     end
 }
 
@@ -268,7 +270,7 @@ OPAL.Modifier{ -- Rigged
     name = 'Rigged',
     atlas = 'modifierAtlas',
     pos = {x = 3, y = 1},
-    config = {extra = {prob_mod = 1.5}},
+    config = {extra = {prob_mod = 1.25}},
     loc_vars = function(self, info_queue, card)
         return{vars = {card.ability.extra.prob_mod}}
     end,
@@ -280,7 +282,7 @@ OPAL.Modifier{ -- Rigged
         end
     end,
     merge = function(self, card, count)
-        card.ability.extra.prob_mod = card.ability.extra.prob_mod * (1.5^count)
+        card.ability.extra.prob_mod = card.ability.extra.prob_mod * (1.25^count)
     end
 }
 
@@ -559,6 +561,7 @@ OPAL.Modifier{
 }
 
 function OPAL.add_modifier(modifier, apply, silent, area, as_starting)
+    local f = function()
     if not G.GAME.modifiers.opal_no_mods then
     local preapp_table = {}
     if G.P_CENTERS[modifier].pre_apply then
@@ -569,8 +572,7 @@ function OPAL.add_modifier(modifier, apply, silent, area, as_starting)
     for k, v in ipairs(G.opal_heat_mods.cards) do
         if v.config.center == G.P_CENTERS[modifier] and v.config.center.merge and
         (not preapp_table['type'] or
-        preapp_table['type'] == 'item' and preapp_table['item'] == v.ability.extra or
-        preapp_table['type'] == 'astronomy' and (v.ability.extra.hands == v.ability.extra.hands_left)) then
+        preapp_table['type'] == 'item' and preapp_table['item'] == v.ability.extra) then
             merge_instead = k
         end
     end
@@ -589,18 +591,12 @@ function OPAL.add_modifier(modifier, apply, silent, area, as_starting)
         card.ability.opal_count = 1
         card.ability.opal_is_starting_modifier = as_starting
         OPAL.update_modifier_menu()
-        G.E_MANAGER:add_event(Event({trigger = 'after',func = function()
-            save_run()
-        return true end}))
     else -- increment existing Modifier
-        G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-            local _modifier = G.opal_heat_mods.cards[merge_instead]
-            _modifier.ability.opal_count = _modifier.ability.opal_count + 1
-            _modifier.config.center:merge(_modifier, 1)
-            _modifier:juice_up(0.6)
-            play_sound('holo1', 1.2 + math.random() * 0.1, 0.4)
-            save_run()
-            if OPAL.config.modifier_count == 1 and not (_modifier.config.center.opal_alignment == 'informational') then
+        local _modifier = G.opal_heat_mods.cards[merge_instead]
+        _modifier.ability.opal_count = _modifier.ability.opal_count + 1
+        _modifier.config.center:merge(_modifier, 1)
+        _modifier:juice_up(0.6)
+        if OPAL.config.modifier_count == 1 and not (_modifier.config.center.opal_alignment == 'informational') then
             if _modifier.children.opal_md_counter then _modifier.children.opal_md_counter:remove() end
             _modifier.children.opal_md_counter = UIBox{
                 definition = {n = G.UIT.R, config = {colour = G.C.BLACK, align = "cm", padding = 0.05, r = 0.1}, nodes = {
@@ -608,9 +604,18 @@ function OPAL.add_modifier(modifier, apply, silent, area, as_starting)
                 }},
                 config = {align = "br", offset = {x=-0.3, y=-0.35}, parent = _modifier}
             }
-            end
-        return true end}))
+        end
     end
+    end
+    end
+    if not silent then
+        G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.1, func = function()
+            f()
+            play_sound('holo1', 1.2 + math.random() * 0.1, 0.4)
+            save_run()
+        return true end}))
+    else
+        f()
     end
 end
 
@@ -619,7 +624,7 @@ function OPAL.random_modifier(unique, as_starting)
     G.GAME.opal_existing_mods = G.GAME.opal_existing_mods or {}
     mod_keys = {}
     for k, v in pairs(OPAL.Modifiers['good']) do
-        if not(unique and G.GAME.opal_existing_mods[k]) then
+        if not(unique and G.GAME.opal_existing_mods[k]) and (not v.can_apply or v:can_apply()) then
             mod_keys[#mod_keys+1] = k
         end
     end
