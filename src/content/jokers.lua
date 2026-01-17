@@ -516,6 +516,7 @@ SMODS.Joker { -- Hot Chip
     pos = {x = 2, y = 3},
     cost = 4,
     blueprint_compat = true,
+    eternal_compat = false,
     loc_vars = function(self, info_queue, card)
         return { vars = {card.ability.extra.heat_mod, card.ability.extra.heat_sub}}
     end,
@@ -547,12 +548,13 @@ SMODS.Joker { -- Alive 2007
     atlas = "jokerAtlas",
     pos = {x = 3, y = 3},
     cost = 7,
-    blueprint_compat = true,
+    blueprint_compat = false,
+    eternal_compat = false,
     loc_vars = function(self, info_queue, card)
         return { vars = {100*card.ability.extra.remove_decimal, card.ability.extra.max_remove}}
     end,
     calculate = function(self, card, context)
-        if context.end_of_round and context.game_over then
+        if context.end_of_round and context.game_over and not context.blueprint then
             local removable_mods = {}
             for k, v in ipairs(G.opal_heat_mods.cards) do
                 if OPAL.Modifiers['good'][v.config.center.key] then
@@ -637,6 +639,7 @@ SMODS.Joker { -- Party Mix
     pos = {x = 5, y = 3},
     cost = 6,
     blueprint_compat = true,
+    eternal_compat = false,
     loc_vars = function(self, info_queue, card)
         local numerator, denominator = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, 'opal_pm1')
         return { vars = {numerator, denominator, card.ability.extra.mods.bonus, card.ability.extra.mods.mult, card.ability.extra.mods.p_dollars, card.ability.extra.hands}}
