@@ -281,3 +281,13 @@ match_indent = true
 payload = '''elseif args.type == 'opal_info' then
     loc_target = G.localization.descriptions.opal_info[args.set][args.key]
     return loc_target'''
+
+# Localization shenanigans 2/
+[[patches]]
+[patches.pattern]
+target = 'functions/common_events.lua'
+pattern = '''elseif _c.set == 'Tarot' then'''
+position = 'before'
+match_indent = true
+payload = '''elseif _c.set == 'OpalModifier' then
+    localize{type = 'descriptions', key = _c.key, set = _c.set, nodes = desc_nodes, vars = _c.vars or loc_vars}'''

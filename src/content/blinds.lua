@@ -17,37 +17,83 @@ SMODS.Blind{
     boss_colour = HEX('b43117'),
     boss = ({min = 2}),
     calculate = function(self, blind, context)
-        if not blind.disabled then
-            if context.press_play then
-                blind.prepped = true
-            end
-            if (context.hand_drawn and blind.prepped) or context.first_hand_drawn then
-                local possible_mods = {}
-                for k, v in ipairs(G.opal_heat_mods.cards) do
-                    v.ability.opal_overload_chosen = false
-                    blind:debuff_card(v)
-                    if v.config.center.opal_alignment == 'good' then
-                        possible_mods[#possible_mods+1] = v
+            if not blind.disabled then
+                if context.debuff_card and context.debuff_card.area == G.opal_heat_mods then
+                    if context.debuff_card.ability.opal_overload_chosen then
+                        if context.debuff_card.ability.opal_count > 1 then
+                            if not context.debuff_card.ability.opal_md_temp_overload_decreased then
+                                OPAL.depower_modifier(context.debuff_card, 1)
+                                context.debuff_card.ability.opal_md_temp_overload_decreased = true
+                            end
+                        else
+                            return{
+                                debuff = true
+                            }
+                        end
                     end
                 end
-                debuff_this_card = pseudorandom_element(possible_mods, pseudoseed('bl_opal_overload'))
-                debuff_this_card.ability.opal_overload_chosen = true
-                blind:debuff_card(debuff_this_card)
-                blind.prepped = nil
+                if context.press_play then
+                    blind.triggered = true
+                    blind.prepped = true
+                end
+                if (context.hand_drawn and blind.prepped) then
+                    local possible_mods = {}
+                    local fallback_mods = {}
+                    local prev_chosen = {}
+                    for i = 1, #G.opal_heat_mods.cards do
+                        if G.opal_heat_mods.cards[i].ability.opal_overload_chosen then
+                            prev_chosen[G.opal_heat_mods.cards[i]] = true
+                            G.opal_heat_mods.cards[i].ability.opal_overload_chosen = nil
+                            if G.opal_heat_mods.cards[i].debuff then 
+                                SMODS.recalc_debuff(G.opal_heat_mods.cards[i])
+                            else
+                                OPAL.power_modifier_up(G.opal_heat_mods.cards[i], 1)
+                                G.opal_heat_mods.cards[i].ability.opal_md_temp_overload_decreased = nil
+                            end
+                        end
+                    end
+                    for i = 1, #G.opal_heat_mods.cards do
+                        if not G.opal_heat_mods.cards[i].debuff then
+                            if not prev_chosen[G.opal_heat_mods.cards[i]] then
+                                possible_mods[#possible_mods+1] = G.opal_heat_mods.cards[i]
+                            end
+                            table.insert(fallback_mods, G.opal_heat_mods.cards[i])
+                        end
+                    end
+                    if #possible_mods == 0 then possible_mods = fallback_mods end
+                    local _card = pseudorandom_element(possible_mods, 'opal_overload')
+                    if _card then
+                        _card.ability.opal_overload_chosen = true
+                        SMODS.recalc_debuff(_card)
+                        _card:juice_up()
+                        blind:wiggle()
+                    end
+                end
             end
+        if context.hand_drawn then
+            blind.prepped = nil
         end
     end,
-    recalc_debuff = function(self, card, from_blind)
-        return card.ability.opal_overload_chosen
-    end,
-    in_pool = function(self)
-        if G.GAME then
-            if G.GAME.round_resets.ante > 2 then
-                if G.opal_heat_mods and G.opal_heat_mods[1] then
-                    return true
+    disable = function(self)
+        for i = 1, #G.opal_heat_mods.cards do
+            if G.opal_heat_mods.cards[i].ability.opal_overload_chosen then
+                G.opal_heat_mods.cards[i].ability.opal_overload_chosen = false
+                if not G.opal_heat_mods.cards[i].debuff then
+                    OPAL.power_modifier_up(G.opal_heat_mods.cards[i], 1)
+                    G.opal_heat_mods.cards[i].ability.opal_md_temp_overload_decreased = nil
                 end
             end
         end
-        return false
+    end,
+    defeat = function(self)
+        for i = 1, #G.opal_heat_mods.cards do
+            if G.opal_heat_mods.cards[i].ability.opal_overload_chosen then
+                G.opal_heat_mods.cards[i].ability.opal_overload_chosen = false
+                if not G.opal_heat_mods.cards[i].debuff then
+                    OPAL.power_modifier_up(G.opal_heat_mods.cards[i], 1)
+                    G.opal_heat_mods.cards[i].ability.opal_md_temp_overload_decreased = nil
+                end
+            end
+        end
     end
 }

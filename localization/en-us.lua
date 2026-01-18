@@ -37,8 +37,8 @@ return{
             bl_opal_overload = {
                 name = 'The Overload',
                 text = {
-                    "Disables a random Modifier",
-                    "per Hand"
+                    "Reduces the Stack of",
+                    "a random Modifier"
                 }
             }
         },
@@ -289,14 +289,6 @@ return{
                     }
                 }
             },
-            md_opal_astronomy_plural = {
-                name = 'Astronomy',
-                text = {
-                    'Level up played {C:attention}poker hand',
-                    '{C:attention}#3# times{} every',
-                    '{C:attention}#1#{C:inactive} (#2#){} hands played'
-                }
-            },
             md_opal_running_yolk = {
                 name = 'Running Yolk',
                 text = {
@@ -375,6 +367,14 @@ return{
                     "unseeded run to",
                     "learn what it does",
                 },
+            },
+            md_opal_temp_decrease = {
+                name = 'Temporarily Depowered',
+                text = {
+                    'This {C:opal_pink}Modifier{} is',
+                    '{C:red}temporarily depowered',
+                    'by {C:attention}#1#'
+                }
             },
         },
         opal_info = {
@@ -680,7 +680,7 @@ return{
                     "Used this Joker to win",
                     "on Quantum Stake"
                 }
-            }
+            },
         },
         Partner = {
             pnr_opal_branch = {

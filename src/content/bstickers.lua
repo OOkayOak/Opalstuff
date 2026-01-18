@@ -19,6 +19,12 @@ function OPAL.BSticker:get_bsticker_rate(augment)
         end
     end
 
+    if self.key == 'opal_overloaded' then
+        return 1
+    else
+        return 0
+    end
+
     return math.min(1, augment*OPAL.Bsticker_rarities[self.rarity]/same_rarity_stickers)
 end
 
@@ -768,11 +774,22 @@ OPAL.BSticker{ -- Overloaded (The Overload)
     config = {extra = {debuffed_modifier = nil}},
     calculate = function(self, card, context)
         if context.initial_scoring_step and context.cardarea == G.play then
-            card.ability.opal_overloaded.extra.debuffed_modifier = pseudorandom_element(G.opal_heat_mods.cards, pseudoseed('bs_b'))
-            if card.ability.opal_overloaded.extra.debuffed_modifier then card.ability.opal_overloaded.extra.debuffed_modifier:set_debuff(true) end
+            local _mods = {}
+            for k, v in ipairs(G.opal_heat_mods.cards) do
+                if OPAL.Modifiers['good'][v.config.center.key] and v.ability.opal_md_temp_decrease < v.ability.opal_count then
+                    print('a')
+                    _mods[#_mods+1] = v
+                end
+            end
+            card.ability.opal_overloaded.extra.debuffed_modifier = pseudorandom_element(_mods, pseudoseed('bs_b'))
+            if card.ability.opal_overloaded.extra.debuffed_modifier then
+                OPAL.depower_modifier(card.ability.opal_overloaded.extra.debuffed_modifier, 1)
+            end
         end
         if context.end_of_round then
-            if card.ability.opal_overloaded.extra.debuffed_modifier then card.ability.opal_overloaded.extra.debuffed_modifier:set_debuff(false) end
+            if card.ability.opal_overloaded.extra.debuffed_modifier then
+                OPAL.power_modifier_up(card.ability.opal_overloaded.extra.debuffed_modifier, 1)
+            end
             card.ability.opal_overloaded.extra.debuffed_modifier = nil
         end
     end

@@ -32,8 +32,9 @@ OPAL.Modifier = SMODS.Center:extend{
         end
         return self.obj_table[key] or SMODS.Center:get_obj(key)
     end,
-    generate_UI = function(self, info_queue, card, desc_nodes, specific_vars, full_UI_table)
-        return SMODS.Center.generate_UI(self, info_queue, card, desc_nodes, specific_vars, full_UI_table)
+    generate_ui = function(self, info_queue, card, desc_nodes, specific_vars, full_UI_table)
+        if card and card.ability and card.ability.opal_md_temp_decrease and card.ability.opal_md_temp_decrease ~= 0 then info_queue[#info_queue+1] = {key = 'md_opal_temp_decrease', set = 'OpalModifier', vars = {card.ability.opal_md_temp_decrease}} end
+        return SMODS.Center.generate_ui(self, info_queue, card, desc_nodes, specific_vars, full_UI_table)
     end,
     set_card_type_badge = function(self, card, badges)
         if self.opal_alignment == 'informational' then
@@ -217,12 +218,8 @@ OPAL.Modifier{ -- Astronomy
         end
     end,
     can_apply = function(self)
-        for k, v in ipairs(G.opal_heat_mods.cards) do
-            if v.config.center.key == 'md_opal_astronomy' then
-                return false
-            end
-        end
-        return true
+        OPAL.existing_modifiers = OPAL.existing_modifiers or {}
+        return not(OPAL.existing_modifiers['md_opal_astronomy'])
     end
 }
 
@@ -559,8 +556,22 @@ OPAL.Modifier{
     opal_alignment = 'excl',
     pos = {x = 4, y = 2}
 }
+OPAL.Modifier{
+    key = "temp_decrease",
+    name = 'Temp Decrease',
+    discovered = true,
+    atlas = 'modifierAtlas',
+    config = {extra = 1},
+    opal_alignment = 'excl',
+    pos = {x = 4, y = 2},
+    loc_vars = function(self, info_queue, card)
+        return{vars = {card.ability.extra}}
+    end,
+}
 
 function OPAL.add_modifier(modifier, apply, silent, area, as_starting)
+    OPAL.existing_modifiers = OPAL.existing_modifiers or {}
+    OPAL.existing_modifiers[modifier] = true
     local f = function()
     if not G.GAME.modifiers.opal_no_mods then
     local preapp_table = {}
@@ -590,6 +601,7 @@ function OPAL.add_modifier(modifier, apply, silent, area, as_starting)
         card.created_on_pause = nil
         card.ability.opal_count = 1
         card.ability.opal_is_starting_modifier = as_starting
+        card.ability.opal_md_temp_decrease = 0
         OPAL.update_modifier_menu()
     else -- increment existing Modifier
         local _modifier = G.opal_heat_mods.cards[merge_instead]
@@ -609,17 +621,15 @@ function OPAL.add_modifier(modifier, apply, silent, area, as_starting)
     end
     end
     if not silent then
-        G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.1, func = function()
             f()
             play_sound('holo1', 1.2 + math.random() * 0.1, 0.4)
-            save_run()
-        return true end}))
     else
         f()
     end
 end
 
-function OPAL.random_modifier(unique, as_starting)
+function OPAL.random_modifier(unique, as_starting, silent)
+    silent = silent or as_starting or nil
     if not G.GAME.modifiers.opal_no_mods then
     G.GAME.opal_existing_mods = G.GAME.opal_existing_mods or {}
     mod_keys = {}
@@ -631,7 +641,7 @@ function OPAL.random_modifier(unique, as_starting)
     local modifier_chosen = pseudorandom_element(mod_keys, pseudoseed('add_opal_modifier'))
     if modifier_chosen then
         G.GAME.opal_existing_mods[modifier_chosen] = true
-        OPAL.add_modifier(modifier_chosen, true, nil, nil, as_starting)
+        OPAL.add_modifier(modifier_chosen, true, silent, nil, as_starting)
     end
     end
 end

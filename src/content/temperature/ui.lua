@@ -337,3 +337,15 @@ function OPAL.Modifier:get_uibox_table(modifier_sprite)
     modifier_sprite.ability_UIBox_table = generate_card_ui(OPAL.Modifiers['all'][_key], nil, loc_vars, (self.hide_ability) and 'Undiscovered' or 'Modifier', nil, nil, nil)
     return modifier_sprite
 end
+
+function OPAL.update_modifier_count(card)
+    if card.children.opal_md_counter then card.children.opal_md_counter:remove() end
+        if card.ability.opal_count > 1 or card.ability.opal_md_temp_decrease > 0 then
+            card.children.opal_md_counter = UIBox{
+                definition = {n = G.UIT.R, config = {colour = card.ability.opal_md_temp_decrease > 0 and G.C.RED or G.C.BLACK, align = "cm", padding = 0.05, r = 0.1}, nodes = {
+                    {n=G.UIT.T, config = {text = tostring(card.ability.opal_count - card.ability.opal_md_temp_decrease), scale = 0.3, colour = G.C.WHITE}}
+                }},
+                config = {align = "br", offset = {x=-0.3, y=-0.35}, parent = card}
+            }
+        end
+end

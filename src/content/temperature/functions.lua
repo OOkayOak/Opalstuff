@@ -57,11 +57,18 @@ function OPAL.check_heat() -- Checks if you need a modifier/level up
     local mods_to_create = math.floor((G.GAME.opal_temperature/G.GAME.modifiers.opal_heat_for_mods) - count)
     for i = 1, mods_to_create do
     G.E_MANAGER:add_event(Event({
+    trigger = 'before',
+    delay = 0.3,
     func = function()
-        OPAL.random_modifier(false, false)
+        OPAL.random_modifier(false, false, mods_to_create>5)
     return true end}))
     end
-    G.E_MANAGER:add_event(Event({func = function() save_run() return true end}))
+    G.E_MANAGER:add_event(Event({func = function()
+        save_run()
+        if mods_to_create>5 then
+            play_sound('holo1', 1.2 + math.random() * 0.1, 0.4)
+        end
+        return true end}))
 end
 
 function OPAL.get_temp_colour()
@@ -111,4 +118,30 @@ function OPAL.get_temp_x()
         _x = _x - 0.175
     end
     return _x
+end
+
+function OPAL.depower_modifier(card, count)
+    card.ability.opal_md_temp_decrease = card.ability.opal_md_temp_decrease or 0
+    card.ability.opal_md_temp_decrease = card.ability.opal_md_temp_decrease + count
+    if card.config.center.merge and type(card.config.center.merge) == "function" then card.config.center:merge(card, -count) end
+    if OPAL.config.modifier_count == 1 then OPAL.update_modifier_count(card) end
+end
+
+function OPAL.power_modifier_up(card, count)
+    card.ability.opal_md_temp_decrease = card.ability.opal_md_temp_decrease or 0
+    card.ability.opal_md_temp_decrease = card.ability.opal_md_temp_decrease - count
+    if card.config.center.merge and type(card.config.center.merge) == "function" then card.config.center:merge(card, count) end
+    if OPAL.config.modifier_count == 1 then OPAL.update_modifier_count(card) end
+end
+
+function OPAL.fuck()
+    for i = 1, 70 do
+        G.E_MANAGER:add_event(Event({
+            trigger = 'immediate',
+            func = function()
+                OPAL.add_modifier('md_opal_recycler', true, false)
+                return true
+            end
+        }))
+    end
 end
