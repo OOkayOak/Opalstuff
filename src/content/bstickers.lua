@@ -777,7 +777,6 @@ OPAL.BSticker{ -- Overloaded (The Overload)
             local _mods = {}
             for k, v in ipairs(G.opal_heat_mods.cards) do
                 if OPAL.Modifiers['good'][v.config.center.key] and v.ability.opal_md_temp_decrease < v.ability.opal_count then
-                    print('a')
                     _mods[#_mods+1] = v
                 end
             end
