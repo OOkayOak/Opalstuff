@@ -1,7 +1,8 @@
---[[SMODS.Tag{ -- Modified Tag
+SMODS.Tag{ -- Modified Tag
     key = "modified",
     min_ante = 2,
-    pos = { x = 1, y = 2 },
+    atlas = 'tagAtlas',
+    pos = {x=0,y=0},
     loc_vars = function(self, info_queue, tag)
         info_queue[#info_queue + 1] = G.P_CENTERS.p_opal_modifier1
     end,
@@ -25,5 +26,8 @@
             tag.triggered = true
             return true
         end
-    end
-}]]
+    end,
+    in_pool = function(self, args)
+        return false, {allow_duplicates = false}
+    end,
+}

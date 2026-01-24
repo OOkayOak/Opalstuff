@@ -880,6 +880,22 @@ return{
                     "{C:attention}#2#s"
                 }
             }
+        },
+        Voucher = {
+            v_opal_modifier_1 = {
+                name = 'Diamond In The Rough',
+                text = {
+                    'Gain {C:opal_modifier}Modifier Tags{}',
+                    'instead of random {C:opal_modifier}Modifiers'
+                }
+            },
+            v_opal_modifier_2 = {
+                name = 'Modifier Merchant',
+                text = {
+                    '{C:opal_modifier}Modifier Packs{} may',
+                    'appear in the {C:attention}Shop'
+                }
+            }
         }
     },
     misc = {

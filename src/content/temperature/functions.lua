@@ -63,7 +63,11 @@ function OPAL.check_heat() -- Checks if you need a modifier/level up
     trigger = 'before',
     delay = 0.3,
     func = function()
-        OPAL.add_mod({type = 'good', silent = (i ~= mods_to_create)})
+        if G.GAME.opal_tag_instead_of_mod then
+            add_tag({key = 'tag_opal_modified'})
+        else
+            OPAL.add_mod({type = 'good', silent = (i ~= mods_to_create)})
+        end
     return true end}))
     end
     G.E_MANAGER:add_event(Event({func = function()
