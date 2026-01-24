@@ -16,15 +16,23 @@ OPAL.Modifier = SMODS.Center:extend{
     opal_alignment = 'good',
     required_params = {'key'},
     pre_inject_class = function(self)
-            G.P_CENTER_POOLS[self.set] = {}
+        G.P_CENTER_POOLS[self.set..'_good'] = {}
+        G.P_CENTER_POOLS[self.set..'_bad'] = {}
     end,
     inject = function(self)
         if self.opal_alignment == 'informational' then self.display_size = {w = 22, h = 23} end
+        if (self.opal_alignment ~= 'good' and self.opal_alignment ~= 'bad') then self.omit = true end
         if self.opal_alignment ~= 'excl' then OPAL.Modifiers[self.opal_alignment][self.key] = self end
         OPAL.Modifiers['all'][self.key] = self
         self.order = #OPAL.Modifiers['all']
         self.atlas = (G.opal_mod_shape == 1 or self.opal_alignment == 'informational') and self.atlas or self.atlas.."_square"
-        SMODS.Center.inject(self)
+        G.P_CENTERS[self.key] = self
+        if not self.omit then SMODS.insert_pool(G.P_CENTER_POOLS[self.set..'_'..self.opal_alignment], self) end
+        for k, v in pairs(SMODS.ObjectTypes) do
+            if ((self.pools and self.pools[k]) or (v.cards and v.cards[self.key])) then
+                v:inject_card(self)
+            end
+        end
     end,
     get_obj = function(self, key)
         if key == nil then
@@ -43,6 +51,11 @@ OPAL.Modifier = SMODS.Center:extend{
             local colour = self.opal_alignment == 'bad' and G.C.RED or OPAL.badge_colour
             badges[#badges+1] = create_badge(localize("k_opalmodifier"), colour, G.C.WHITE)
         end
+    end,
+    in_pool = function(self, args)
+        local duplicates = true
+        if G.pack_cards and G.opal_booster_mods and G.opal_booster_mods[self.key] then duplicates = false end
+        return true, {allow_duplicates = duplicates}
     end,
 }
 
@@ -220,6 +233,10 @@ OPAL.Modifier{ -- Astronomy
     can_apply = function(self)
         OPAL.existing_modifiers = OPAL.existing_modifiers or {}
         return not(OPAL.existing_modifiers['md_opal_astronomy'])
+    end,
+    in_pool = function(self, args)
+        OPAL.existing_modifiers = OPAL.existing_modifiers or {}
+        return not(OPAL.existing_modifiers['md_opal_astronomy'])
     end
 }
 
@@ -237,7 +254,7 @@ OPAL.Modifier{ -- Running Yolk
     pos = {x = 4, y = 0},
     config = {extra = {item = nil, text = 'value', colour = G.C.SECONDARY_SET.Tarot}},
     loc_vars = function(self, info_queue, card)
-        return{vars = {card.ability.extra.text, card.ability.extra.item and 2^G.GAME.opal_ry_scaling[card.ability.extra.item[1]] or 2, colours = {card.ability.extra.colour}}}
+        return{vars = {card.ability.extra.text, 2^((G.GAME.opal_ry_scaling and card.ability.extra.item) and G.GAME.opal_ry_scaling[card.ability.extra.item[1]] or 1), colours = {card.ability.extra.colour}}}
     end,
     apply = function(self, card)
         for k, v in ipairs(card.ability.extra.item) do
@@ -332,16 +349,16 @@ OPAL.Modifier{ -- Sticky
         if card.ability.extra.sticker then info_queue[#info_queue+1] = {key = card.ability.extra.sticker, set = "Other", vars = {}} end
         return{vars = {card.ability.extra.sticker and localize(card.ability.extra.sticker, 'labels') or 'A Random Sticker'}}
     end,
-    can_apply = function(self)
+    in_pool = function(self)
          local possibleStickers = {}
         for k, v in pairs(SMODS.Stickers) do
             if not (G.GAME.modifiers['enable_'..k] or G.GAME.modifiers['enable_'..k..'s_in_shop']) and not (k == 'pinned') and not v.opal_good then
                 possibleStickers[#possibleStickers+1] = k
             end
         end
-        return #possibleStickers > 0
+        return #possibleStickers > 0, {allow_duplicates = true}
     end,
-    apply = function(self, card)
+    pre_apply = function(self, card)
         local possibleStickers = {}
         for k, v in pairs(SMODS.Stickers) do
             if not (G.GAME.modifiers['enable_'..k] or G.GAME.modifiers['enable_'..k..'s_in_shop'] or v.opal_good or k == 'pinned') then
@@ -349,6 +366,8 @@ OPAL.Modifier{ -- Sticky
             end
         end
         card.ability.extra.sticker = pseudorandom_element(possibleStickers)
+    end,
+    apply = function(self, card)
         if SMODS.Stickers[card.ability.extra.sticker].rarity then OPAL.BStickers[card.ability.extra.sticker]:get_bsticker_rate(5) end
         if card.ability.extra.sticker == 'eternal' or card.ability.extra.sticker == 'perishable' or card.ability.extra.sticker == 'rental' then 
             G.GAME.modifiers['enable_'..card.ability.extra.sticker..'s_in_shop'] = true
@@ -384,8 +403,8 @@ OPAL.Modifier{ -- Skipless
     unapply = function(self, card)
         G.GAME.modifiers.opal_disable_skipping = false
     end,
-    can_apply = function(self)
-        return not G.GAME.modifiers.opal_disable_skipping
+    in_pool = function(self)
+        return not(G.GAME.modifiers.opal_disable_skipping), {allow_duplicates = false}
     end,
     calculate = function(self, card, context)
         if context.ante_change and G.GAME.round_resets.ante >= card.ability.extra.ante then
@@ -409,10 +428,10 @@ OPAL.Modifier{ -- Raiser
         if card.ability.extra.stake then info_queue[#info_queue+1] = {key = G.P_STAKES[card.ability.extra.stake].key, set = 'Other', vars = {1}}  end
         return{vars = {card.ability.extra.stake and G.localization.descriptions.Stake[card.ability.extra.stake].name or 'A Random Stake'}}
     end,
-    can_apply = function(self)
-        return #G.P_CENTER_POOLS['Stake'] > #G.GAME.applied_stakes
+    in_pool = function(self)
+        return #G.P_CENTER_POOLS['Stake'] > #G.GAME.applied_stakes, {allow_duplicates = true}
     end,
-    apply = function(self, card)
+    pre_apply = function(self, card)
         local possibleStakes = {}
         for k, v in pairs(G.P_STAKES) do
             local stakeApplied = false
@@ -425,12 +444,6 @@ OPAL.Modifier{ -- Raiser
         end
 
         card.ability.extra.stake = pseudorandom_element(possibleStakes, pseudoseed('opal_raiser'))
-
-        if card.ability.extra.stake then
-            if G.P_STAKES[card.ability.extra.stake].order then table.insert(G.GAME.applied_stakes, G.P_STAKES[card.ability.extra.stake].order) end
-            if G.P_STAKES[card.ability.extra.stake].modifiers then
-                OPAL.raiser_update_game(card)
-            end
             local _size = G.opal_mod_size == 1 and 0.4 or 0.6
             card.children.opal_raiser_sprite = UIBox{
                 definition = {n = G.UIT.R, config = {colour = G.C.CLEAR, align = "cm", padding = 0, r = 0}, nodes = {
@@ -438,6 +451,14 @@ OPAL.Modifier{ -- Raiser
                 }},
                 config = {align = "cm", offset = {x=0, y=0}, parent = card}
             }
+    end,
+    apply = function(self, card)
+
+        if card.ability.extra.stake then
+            if G.P_STAKES[card.ability.extra.stake].order then table.insert(G.GAME.applied_stakes, G.P_STAKES[card.ability.extra.stake].order) end
+            if G.P_STAKES[card.ability.extra.stake].modifiers then
+                OPAL.raiser_update_game(card)
+            end
         else
             OPAL.remove_modifier(card)
         end
@@ -569,84 +590,6 @@ OPAL.Modifier{
     end,
 }
 
-function OPAL.add_modifier(modifier, apply, silent, area, as_starting)
-    OPAL.existing_modifiers = OPAL.existing_modifiers or {}
-    OPAL.existing_modifiers[modifier] = true
-    local f = function()
-    if not G.GAME.modifiers.opal_no_mods then
-    local preapp_table = {}
-    if G.P_CENTERS[modifier].pre_apply then
-        preapp_table = G.P_CENTERS[modifier]:pre_apply()
-    end
-    local _area = area or G.opal_heat_mods
-    local merge_instead = nil
-    for k, v in ipairs(G.opal_heat_mods.cards) do
-        if v.config.center == G.P_CENTERS[modifier] and v.config.center.merge and
-        (not preapp_table['type'] or
-        preapp_table['type'] == 'item' and preapp_table['item'] == v.ability.extra) then
-            merge_instead = k
-        end
-    end
-    if not merge_instead then
-        local _T = _area and _area.T or {x = G.ROOM.T.w/2 - G.CARD_W/2, y = G.ROOM.T.h/2 - G.CARD_H/2}
-        local card = Card(_T.x, _T.y, G.CARD_W, G.CARD_H, G.P_CARDS.empty, G.P_CENTERS[modifier],{discover = true, bypass_discovery_center = true, bypass_discovery_ui = true, bypass_back = G.GAME.selected_back.pos })
-        card:start_materialize(nil, silent)
-        if apply then
-            if preapp_table['type'] == 'item' then
-                card.config.center:set_item(card, preapp_table['item'])
-            end
-            card.config.center:apply(card)
-        end
-        if _area and card.ability.set == 'OpalModifier' then _area:emplace(card) end
-        card.created_on_pause = nil
-        card.ability.opal_count = 1
-        card.ability.opal_is_starting_modifier = as_starting
-        card.ability.opal_md_temp_decrease = 0
-        card.opal_is_emplaced = true
-        OPAL.update_modifier_menu()
-    else -- increment existing Modifier
-        local _modifier = G.opal_heat_mods.cards[merge_instead]
-        _modifier.ability.opal_count = _modifier.ability.opal_count + 1
-        _modifier.config.center:merge(_modifier, 1)
-        _modifier:juice_up(0.6)
-        if OPAL.config.modifier_count == 1 and not (_modifier.config.center.opal_alignment == 'informational') then
-            if _modifier.children.opal_md_counter then _modifier.children.opal_md_counter:remove() end
-            _modifier.children.opal_md_counter = UIBox{
-                definition = {n = G.UIT.R, config = {colour = G.C.BLACK, align = "cm", padding = 0.05, r = 0.1}, nodes = {
-                    {n=G.UIT.T, config = {text = tostring(_modifier.ability.opal_count), scale = 0.3, colour = G.C.WHITE}}
-                }},
-                config = {align = "br", offset = {x=-0.3, y=-0.35}, parent = _modifier}
-            }
-        end
-    end
-    end
-    end
-    if not silent then
-            f()
-            play_sound('holo1', 1.2 + math.random() * 0.1, 0.4)
-    else
-        f()
-    end
-end
-
-function OPAL.random_modifier(unique, as_starting, silent)
-    silent = silent or as_starting or nil
-    if not G.GAME.modifiers.opal_no_mods then
-    G.GAME.opal_existing_mods = G.GAME.opal_existing_mods or {}
-    mod_keys = {}
-    for k, v in pairs(OPAL.Modifiers['good']) do
-        if not(unique and G.GAME.opal_existing_mods[k]) and (not v.can_apply or v:can_apply()) then
-            mod_keys[#mod_keys+1] = k
-        end
-    end
-    local modifier_chosen = pseudorandom_element(mod_keys, pseudoseed('add_opal_modifier'))
-    if modifier_chosen then
-        G.GAME.opal_existing_mods[modifier_chosen] = true
-        OPAL.add_modifier(modifier_chosen, true, silent, nil, as_starting)
-    end
-    end
-end
-
 function OPAL.remove_modifier(card)
     card.config.center:unapply(card)
     SMODS.destroy_cards(card, nil, nil, nil)
@@ -659,7 +602,6 @@ function OPAL.update_modifier_menu()
     G.opal_temperature_UI.alignment.offset.y = 1.7 - modMult*(math.floor(math.max(#G.opal_heat_mods.cards - 1, 0)/G.opal_heat_mods.config.opal_per_row)) + 0.6*(math.floor(math.max(#G.opal_indicators.cards - 1, 0)/4))
     if OPAL.config.modifier_count == 1 then
         for k, v in ipairs(G.opal_heat_mods.cards) do
-            print(v.ability.opal_count)
             if v.ability.opal_count > 1 and not v.children.opal_md_counter then
                 v.children.opal_md_counter = UIBox{
                     definition = {n = G.UIT.R, config = {colour = G.C.BLACK, align = "cm", padding = 0.05, r = 0.1}, nodes = {

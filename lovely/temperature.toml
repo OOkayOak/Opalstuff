@@ -308,46 +308,8 @@ pattern = '''card:add_to_deck()
 position = 'at'
 match_indent = true
 payload = '''if card.ability.set == 'OpalModifier' then
-    card.T.w = card.T.w/2
-    card.T.h = card.T.h/2
-    local preapp_table = {}
-    if card.config.center.pre_apply then preapp_table = card.config.center:pre_apply(card) end
-    
-    if preapp_table and preapp_table['type'] == 'item' then
-        card.config.center:set_item(card, preapp_table['item'])
-    end
-
-    local merge_instead = nil
-    for k, v in ipairs(G.opal_heat_mods.cards) do
-        if v.ability.opal_count and v.config.center == card.config.center and v.config.center.merge and
-            (not preapp_table['type'] or preapp_table['type'] == 'item' and preapp_table['item'] == v.ability.extra) then
-            merge_instead = k
-        end
-    end
-    OPAL.existing_modifiers = OPAL.existing_modifiers or {}
-    OPAL.existing_modifiers[card.config.center.key] = true
-    if merge_instead then
-        G.opal_heat_mods.cards[merge_instead].config.center:merge(G.opal_heat_mods.cards[merge_instead], 1)
-        G.opal_heat_mods.cards[merge_instead].ability.opal_count = G.opal_heat_mods.cards[merge_instead].ability.opal_count + 1
-        G.opal_heat_mods.cards[merge_instead]:juice_up()
-        SMODS.destroy_cards(card, nil, nil, nil)
-        if G.opal_heat_mods.cards[merge_instead].children.opal_md_counter then G.opal_heat_mods.cards[merge_instead].children.opal_md_counter:remove() end
-            G.opal_heat_mods.cards[merge_instead].children.opal_md_counter = UIBox{
-            definition = {n = G.UIT.R, config = {colour = G.C.BLACK, align = "cm", padding = 0.05, r = 0.1}, nodes = {
-                {n=G.UIT.T, config = {text = tostring(G.opal_heat_mods.cards[merge_instead].ability.opal_count), scale = 0.3, colour = G.C.WHITE}}
-            }},
-            config = {align = "br", offset = {x=-0.3, y=-0.35}, parent = G.opal_heat_mods.cards[merge_instead]}
-            }
-    else
-        card:add_to_deck()
-        G.opal_heat_mods:emplace(card)
-        card.config.center:apply(card)
-        card.ability.opal_count = 1
-        card.ability.opal_md_temp_decrease = 0
-        dont_dissolve = true
-    end
-    OPAL.update_modifier_menu()
-    play_sound('holo1', 1.2 + math.random() * 0.1, 0.4)
+    local ret = OPAL.add_mod({card = card})
+    dont_dissolve = ret.dont_dissolve
     delay_fac = 0.2
 else
     card:add_to_deck()
