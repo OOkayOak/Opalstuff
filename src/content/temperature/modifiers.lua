@@ -602,6 +602,7 @@ function OPAL.add_modifier(modifier, apply, silent, area, as_starting)
         card.ability.opal_count = 1
         card.ability.opal_is_starting_modifier = as_starting
         card.ability.opal_md_temp_decrease = 0
+        card.opal_is_emplaced = true
         OPAL.update_modifier_menu()
     else -- increment existing Modifier
         local _modifier = G.opal_heat_mods.cards[merge_instead]
@@ -658,6 +659,7 @@ function OPAL.update_modifier_menu()
     G.opal_temperature_UI.alignment.offset.y = 1.7 - modMult*(math.floor(math.max(#G.opal_heat_mods.cards - 1, 0)/G.opal_heat_mods.config.opal_per_row)) + 0.6*(math.floor(math.max(#G.opal_indicators.cards - 1, 0)/4))
     if OPAL.config.modifier_count == 1 then
         for k, v in ipairs(G.opal_heat_mods.cards) do
+            print(v.ability.opal_count)
             if v.ability.opal_count > 1 and not v.children.opal_md_counter then
                 v.children.opal_md_counter = UIBox{
                     definition = {n = G.UIT.R, config = {colour = G.C.BLACK, align = "cm", padding = 0.05, r = 0.1}, nodes = {

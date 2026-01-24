@@ -1,6 +1,7 @@
 SMODS.Atlas{ key = 'stakeAtlas', px = 29, py = 29, path = "stakes.png" }
 SMODS.Atlas{ key = 'opal_modicon', px = 34, py = 34, path = "modicon.png" }
 SMODS.Atlas{ key = 'sleeveAtlas', px = 73, py = 95, path = 'sleeves.png'}
+SMODS.Atlas{ key = 'boosterAtlas', px = 73, py = 95, path = 'boosters.png'}
 SMODS.Atlas{ key = "jokerAtlas", px = 71, py = 95, path = "jokers.png" }
 SMODS.Atlas{ key = "spectralAtlas", px = 71, py = 95, path = "spectrals.png" }
 SMODS.Atlas{ key = "stickerAtlas", px = 71, py = 95, path = "stickers.png" }

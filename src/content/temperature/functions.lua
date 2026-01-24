@@ -134,14 +134,17 @@ function OPAL.power_modifier_up(card, count)
     if OPAL.config.modifier_count == 1 then OPAL.update_modifier_count(card) end
 end
 
-function OPAL.fuck()
-    for i = 1, 70 do
-        G.E_MANAGER:add_event(Event({
-            trigger = 'immediate',
-            func = function()
-                OPAL.add_modifier('md_opal_recycler', true, false)
-                return true
-            end
-        }))
+function OPAL.create_mod(t)
+    t = t or {}
+    t.area = t.area or G.opal_heat_mods
+    t.type = t.type or 'good'
+
+    if not t.key then
+        t.key = pseudorandom_element(OPAL.Modifiers[t.type], pseudoseed('mod_creation')).key
     end
+
+    local _card = create_card('OpalModifier', t.area, nil, nil, t.skip_materialize, nil, t.key, t.key_append)
+    _card.T.w = _card.T.w*2
+    _card.T.h = _card.T.h*2
+    return _card
 end

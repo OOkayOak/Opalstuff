@@ -681,6 +681,13 @@ return{
                     "on Quantum Stake"
                 }
             },
+            p_opal_modifier1 = {
+                name = 'Modifier Pack',
+                text = {
+                    'Glooby'
+                },
+                group_name = 'Modifier Pack'
+            },
         },
         Partner = {
             pnr_opal_branch = {
@@ -890,6 +897,7 @@ return{
             k_opal_modifier = '+ Modifier!',
             k_opalmodifier = 'Modifier',
             k_opalindicator = 'Indicator',
+            k_opal_modifier_pack = 'Modifier Pack',
             k_opal_restart_required = 'Restart Required',
             opal_alive_save = 'One More Time!',
 
