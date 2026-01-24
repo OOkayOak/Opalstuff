@@ -48,7 +48,7 @@ OPAL.Modifier = SMODS.Center:extend{
         if self.opal_alignment == 'informational' then
             badges[#badges+1] = create_badge(localize("k_opalindicator"), G.C.FILTER, G.C.WHITE)
         else
-            local colour = self.opal_alignment == 'bad' and G.C.RED or OPAL.badge_colour
+            local colour = OPAL.C.MODIFIER
             badges[#badges+1] = create_badge(localize("k_opalmodifier"), colour, G.C.WHITE)
         end
     end,

@@ -322,3 +322,13 @@ else
     dont_dissolve = true
     delay_fac = 0.2
 end'''
+
+# Modifier Booster background
+[[patches]]
+[patches.pattern]
+target = '''functions/common_events.lua'''
+pattern = '''elseif blindname == 'Small Blind' or blindname == 'Big Blind' or blindname == '' then'''
+position = 'before'
+match_indent = true
+payload = '''elseif state == G.STATES.OPAL_MODIFIER_PACK then
+    ease_background_colour{new_colour = OPAL.C.MODIFIER, special_colour = darken(OPAL.badge_colour, 0.2), contrast = 1.5}'''

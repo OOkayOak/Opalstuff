@@ -135,8 +135,15 @@ quantum_gradient = SMODS.Gradient{ --Quantum Gradient
     }
 }
 
+OPAL.C = {
+    MODIFIER = HEX('474bad')
+}
+
 loc_colour()
 G.ARGS.LOC_COLOURS["opal_pink"] = OPAL.badge_colour
+for k, v in pairs(OPAL.C) do
+    G.ARGS.LOC_COLOURS['opal_'..string.lower(k)] = v
+end
 
 if not (CHDP or {}).can_load then -- steal the reworked force sticker/ban edition code
     local set_edition_ref = Card.set_edition

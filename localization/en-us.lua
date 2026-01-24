@@ -20,8 +20,8 @@ return{
             b_opal_modified = {
                 name = "Modified Deck",
                 text = {
-                    "Begin with {C:attention}#1# {C:opal_pink}Modifiers",
-                    "Gain a new {C:opal_pink}Modifier{C:attention} every",
+                    "Begin with {C:attention}#1# {C:opal_modifier}Modifiers",
+                    "Gain a new {C:opal_modifier}Modifier{C:attention} every",
                     "{C:attention}#2# Heat"
                 }
             }
@@ -230,7 +230,7 @@ return{
                 text = {
                     'When {C:attention}using{} a {C:spectral}Spectral{} card,',
                     '{C:green}#1# in #2#{} chance to create',
-                    'a {C:green}positive {C:opal_pink}Modifier'
+                    'a {C:green}positive {C:opal_modifier}Modifier'
                 }
             },
             j_opal_party_mix = {
@@ -285,7 +285,7 @@ return{
                     },
                     {
                         'You may only have {C:attention}1',
-                        'of this {C:opal_pink}Modifier'
+                        'of this {C:opal_modifier}Modifier'
                     }
                 }
             },
@@ -371,7 +371,7 @@ return{
             md_opal_temp_decrease = {
                 name = 'Temporarily Depowered',
                 text = {
-                    'This {C:opal_pink}Modifier{} is',
+                    'This {C:opal_modifier}Modifier{} is',
                     '{C:red}temporarily depowered',
                     'by {C:attention}#1#'
                 }
@@ -684,9 +684,10 @@ return{
             p_opal_modifier1 = {
                 name = 'Modifier Pack',
                 text = {
-                    'Glooby'
-                },
-                group_name = 'Modifier Pack'
+                    'Choose {C:attention}1#{} of up to',
+                    '{C:attention}#2#{C:opal_modifier} Modifiers{} to',
+                    'add to your deck'
+                }
             },
         },
         Partner = {
@@ -769,15 +770,15 @@ return{
             sleeve_opal_modified = {
                 name = "Modified Sleeve",
                 text = {
-                    "Begin with {C:attention}#1# {C:opal_pink}Modifiers",
-                    "Gain a new {C:opal_pink}Modifier{C:attention} every",
+                    "Begin with {C:attention}#1# {C:opal_modifier}Modifiers",
+                    "Gain a new {C:opal_modifier}Modifier{C:attention} every",
                     "{C:attention}#2# Heat"
                 }
             },
             sleeve_opal_modified_alt = {
                 name = "Modified Sleeve",
                 text = {
-                    "Begin with {C:attention}#1#{} more {C:opal_pink}Modifiers",
+                    "Begin with {C:attention}#1#{} more {C:opal_modifier}Modifiers",
                     "Gain {C:red}+#2# Heat{} when a {C:attention}Blind{} is",
                     "defeated"
                 }
@@ -860,6 +861,15 @@ return{
                     "{s:0.8}(Applies Heavy Stake, {C:dark_edition,s:0.8}Opalstuff{s:0.8} Stake)"
                 }
             }
+        },
+        Tag = {
+            tag_opal_modified = {
+                name = 'Modified Tag',
+                text = {
+                    "Gives a free",
+                    "{C:opal_modifier}Modifier Pack"
+                }
+            },
         },
         Tarot = {
             c_opal_churn = {
