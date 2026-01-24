@@ -139,7 +139,7 @@ if CardSleeves then
         for i = 1, self.config.extra.starting_mods do
             G.E_MANAGER:add_event(Event({
                 func = function()
-                    OPAL.random_modifier(true, true)
+                    OPAL.add_mod({type = 'good', unique = true, silent = true, as_starting = true})
                 return true end
             }))
         end

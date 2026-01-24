@@ -123,14 +123,18 @@ function OPAL.create_mod(t)
     t.area = t.area or G.opal_heat_mods
     t.type = t.type or 'good'
 
+    G.opal_existing_mods = G.opal_existing_mods or {}
+
     if not t.key then
         t.key = pseudorandom_element(get_current_pool('OpalModifier_'..t.type), pseudoseed('mod_creation'))
         local it = 1
-        while t.key == 'UNAVAILABLE' do
+        while t.key == 'UNAVAILABLE' or (t.unique and G.opal_existing_mods[t.key]) do
             it = it + 1
             t.key = pseudorandom_element(get_current_pool('OpalModifier_'..t.type), pseudoseed('mod_creation_resample_'..it))
         end
     end
+
+    G.opal_existing_mods[t.key] = true
 
     local _T = t.area.T
     local _card = Card(_T.x, _T.y, G.CARD_W, G.CARD_H, G.P_CARDS.empty, G.P_CENTERS[t.key],{discover = t.bypass_discovery or true, bypass_discovery_center = t.bypass_discovery or true, bypass_discovery_ui = t.bypass_discovery or true, bypass_back = G.GAME.selected_back.pos })
@@ -197,6 +201,8 @@ function OPAL.add_mod(t)
             if card.from_booster then
                 card.ability.count_from_booster = 1
                 ret.dont_dissolve = true
+            elseif t.as_starting then
+                card.ability.opal_is_starting_modifier = true
             end
         end
     end
