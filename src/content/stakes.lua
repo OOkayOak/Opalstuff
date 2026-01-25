@@ -118,7 +118,7 @@ SMODS.Stake{ -- Hyperdeath
     calculate = function(self, context)
         if context.beat_boss and not G.GAME.opal_hyperdeath_triggered then
             G.GAME.opal_hyperdeath_triggered = true
-            OPAL.add_mod({type = 'bad'})
+            OPAL.add_mod({type = 'bad', dont_create = true})
         end
         if context.ending_shop and G.GAME.opal_hyperdeath_triggered then
             G.GAME.opal_hyperdeath_triggered = nil

@@ -252,13 +252,15 @@ OPAL.Modifier{ -- Running Yolk
     calculate = function(self, card, context)
         if context.end_of_round and context.game_over == false then
             local _joker = pseudorandom_element(G.jokers.cards, pseudoseed('opal_running_yolk'))
-            _joker.ability.extra_value = _joker.ability.extra_value + card.ability.extra.increase
-            _joker:set_cost()
-            return {
-                message = localize('k_val_up'),
-                colour = G.C.MONEY,
-                card = _joker
-            }
+            if _joker then
+                G.E_MANAGER:add_event(Event({
+                    func = function()
+                        _joker.ability.extra_value = _joker.ability.extra_value + card.ability.extra.increase
+                        _joker:set_cost()
+                        card:juice_up(0.3, 0.3)
+                        card_eval_status_text(_joker, 'extra', nil, nil, nil, {message = localize('k_val_up'), colour = G.C.MONEY, card = card})
+                    return true end}))
+            end
         end
     end,
     merge = function(self, card, count)
@@ -287,42 +289,6 @@ OPAL.Modifier{ -- Rigged
     end
 }
 
---[[
-OPAL.Modifier{ -- Experimental (does random shit)
-    key = "experimental",
-    name = 'Experimental',
-    atlas = 'modifierAtlas',
-    pos = {x = 0, y = 0},
-    config = {extra = 1},
-    calculate = function(self, card, context)
-        if context.individual and context.full_hand and context.cardarea == G.play and not context.other_card.opal_experimental_used then
-
-            local change_card = context.other_card -- function violently ripped from Strength tarot
-            context.other_card.opal_experimental_used = true
-                G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() change_card:flip();play_sound('card1', percent);change_card:juice_up(0.3, 0.3);return true end }))
-                G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.1,func = function()
-                    local card = change_card
-                    local suit_prefix = string.sub(card.base.suit, 1, 1)..'_'
-                    local possible_changes = {card.base.id+1, card.base.id-1}
-                    local rank_suffix = pseudorandom_element(possible_changes, pseudoseed('opx'))
-                    if rank_suffix == 15 then rank_suffix = 2; elseif rank_suffix == 1 then rank_suffix = 14 end
-                    if rank_suffix < 10 then rank_suffix = tostring(rank_suffix)
-                    elseif rank_suffix == 10 then rank_suffix = 'T'
-                    elseif rank_suffix == 11 then rank_suffix = 'J'
-                    elseif rank_suffix == 12 then rank_suffix = 'Q'
-                    elseif rank_suffix == 13 then rank_suffix = 'K'
-                    elseif rank_suffix == 14 then rank_suffix = 'A'
-                    end
-                    card:set_base(G.P_CARDS[suit_prefix..rank_suffix])
-                return true end }))
-                G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() change_card:flip();play_sound('card1', percent);change_card:juice_up(0.3, 0.3);return true end }))
-        end
-        if context.individual and context.end_of_round and context.other_card.opal_experimental_used then
-            context.other_card.opal_experimental_used = false
-        end
-    end
-}]]
-
 -- Bad Modifiers
 OPAL.Modifier{ -- Sticky
     key = "sticky",
@@ -345,14 +311,17 @@ OPAL.Modifier{ -- Sticky
         end
         return #possibleStickers > 0, {allow_duplicates = true}
     end,
-    pre_apply = function(self, card)
+    pre_apply = function(self)
         local possibleStickers = {}
         for k, v in pairs(SMODS.Stickers) do
             if not (G.GAME.modifiers['enable_'..k] or G.GAME.modifiers['enable_'..k..'s_in_shop'] or v.opal_good or k == 'pinned') then
                 possibleStickers[#possibleStickers+1] = k
             end
         end
-        card.ability.extra.sticker = pseudorandom_element(possibleStickers)
+        return{type = 'item', item = pseudorandom_element(possibleStickers)}
+    end,
+    set_item = function(self, card, item)
+        card.ability.extra.sticker = item
     end,
     apply = function(self, card)
         if SMODS.Stickers[card.ability.extra.sticker].rarity then OPAL.BStickers[card.ability.extra.sticker]:get_bsticker_rate(5) end
@@ -418,7 +387,7 @@ OPAL.Modifier{ -- Raiser
     in_pool = function(self)
         return #G.P_CENTER_POOLS['Stake'] > #G.GAME.applied_stakes, {allow_duplicates = true}
     end,
-    pre_apply = function(self, card)
+    pre_apply = function(self)
         local possibleStakes = {}
         for k, v in pairs(G.P_STAKES) do
             local stakeApplied = false
@@ -429,8 +398,10 @@ OPAL.Modifier{ -- Raiser
                 possibleStakes[#possibleStakes+1] = k
             end
         end
-
-        card.ability.extra.stake = pseudorandom_element(possibleStakes, pseudoseed('opal_raiser'))
+        return{type = 'item', item = pseudorandom_element(possibleStakes, pseudoseed('opal_raiser'))}
+    end,
+    set_item = function(self, card, item)
+        card.ability.extra.stake = item
             local _size = G.opal_mod_size == 1 and 0.4 or 0.6
             card.children.opal_raiser_sprite = UIBox{
                 definition = {n = G.UIT.R, config = {colour = G.C.CLEAR, align = "cm", padding = 0, r = 0}, nodes = {
@@ -641,7 +612,7 @@ function OPAL.handleKeys(controller, key)
             end
             if key == "3" or key == "c" then
                 if G.STAGE == G.STAGES.RUN and G.opal_heat_mods then
-                    OPAL.add_modifier(_modifier.key, true, false)
+                    OPAL.add_mod({key = _modifier.key, dont_create = true, silent = true, uncounted = true})
                 end
             end
             if G.STAGE == G.STAGES.RUN then

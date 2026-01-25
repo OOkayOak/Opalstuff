@@ -61,12 +61,12 @@ function OPAL.check_heat() -- Checks if you need a modifier/level up
     for i = 1, mods_to_create do
     G.E_MANAGER:add_event(Event({
     trigger = 'before',
-    delay = 0.3,
+    delay = 1,
     func = function()
         if G.GAME.opal_tag_instead_of_mod then
             add_tag({key = 'tag_opal_modified'})
         else
-            OPAL.add_mod({type = 'good', silent = (i ~= mods_to_create)})
+            OPAL.add_mod({type = 'good', silent = (i ~= mods_to_create), dont_create = true})
         end
     return true end}))
     end
@@ -142,51 +142,59 @@ function OPAL.create_mod(t)
 
     local _T = t.area.T
     local _card = Card(_T.x, _T.y, G.CARD_W, G.CARD_H, G.P_CARDS.empty, G.P_CENTERS[t.key],{discover = t.bypass_discovery or true, bypass_discovery_center = t.bypass_discovery or true, bypass_discovery_ui = t.bypass_discovery or true, bypass_back = G.GAME.selected_back.pos })
-    if _card.config.center.pre_apply then _card.preapp_table = _card.config.center:pre_apply(_card) end
-    if _card.preapp_table and _card.preapp_table['type'] == 'item' then
-        _card.config.center:set_item(_card, _card.preapp_table['item'])
+    if not t.no_preapp then
+        if _card.config.center.pre_apply then _card.preapp_table = _card.config.center:pre_apply() end
+        if _card.preapp_table and _card.preapp_table['type'] == 'item' then
+            _card.config.center:set_item(_card, _card.preapp_table['item'])
+        end
     end
     if t.from_booster then 
         _card.T.w = _card.T.w*2
         _card.T.h = _card.T.h*2
         _card.from_booster = true 
+    elseif t.uncounted then
+        _card.from_booster = true
     end
+    _card:set_sprites(nil, nil)
     return _card
 end
 
 function OPAL.add_mod(t)
     local ret = {}
-    local card = t.card or OPAL.create_mod(t)
+    local card = t.card and t.card or not(t.dont_create) and OPAL.create_mod(t) or nil
     t.area = t.area or G.opal_heat_mods
 
-    if card.from_booster then 
-        card.T.w = card.T.w/2
-        card.T.h = card.T.h/2
-        G.opal_booster_mods = nil
-    end
-
-    local preapp_table = card.preapp_table or {}
-
     local merge_instead = nil
-    for k, v in ipairs(G.opal_heat_mods.cards) do
-        if v.ability.opal_count and v.config.center == card.config.center and v.config.center.merge and
-            (not preapp_table['type'] or preapp_table['type'] == 'item' and preapp_table['item'] == v.ability.extra) then
-            merge_instead = k
+    local preapp_table = nil
+    if not(t.dont_create) then
+        if card.from_booster then 
+            card.T.w = card.T.w/2
+            card.T.h = card.T.h/2
+            G.opal_booster_mods = nil
         end
+        local preapp_table = card.preapp_table or {}
+        for k, v in ipairs(G.opal_heat_mods.cards) do
+            if v.ability.opal_count and v.config.center == card.config.center and v.config.center.merge and
+                (not preapp_table['type'] or preapp_table['type'] == 'item' and preapp_table['item'] == v.ability.extra) then
+                merge_instead = k
+            end
+        end
+    else
+        merge_instead, preapp_table = OPAL.pre_poll_mod(t)
     end
     OPAL.existing_modifiers = OPAL.existing_modifiers or {}
-    OPAL.existing_modifiers[card.config.center.key] = true
+    if card then OPAL.existing_modifiers[card.config.center.key] = true end
 
     if merge_instead then
         local _card = G.opal_heat_mods.cards[merge_instead]
         _card.config.center:merge(_card, 1)
         _card.ability.opal_count = _card.ability.opal_count + 1
         _card:juice_up()
-        if card.from_booster then 
+        if card and card.from_booster then 
             _card.ability.count_from_booster = _card.ability.count_from_booster and _card.ability.count_from_booster + 1 or 1
             ret.dont_dissolve = false
         end
-        SMODS.destroy_cards(card, nil, nil, nil)
+        if card then SMODS.destroy_cards(card, nil, nil, nil) end
         if _card.children.opal_md_counter then _card.children.opal_md_counter:remove() end
             _card.children.opal_md_counter = UIBox{
             definition = {n = G.UIT.R, config = {colour = G.C.BLACK, align = "cm", padding = 0.05, r = 0.1}, nodes = {
@@ -195,6 +203,14 @@ function OPAL.add_mod(t)
             config = {align = "br", offset = {x=-0.3, y=-0.35}, parent = _card}
             }
     else
+        if t.dont_create then
+            local _t = t
+            _t.no_preapp = true
+            card = OPAL.create_mod(_t)
+            if preapp_table and preapp_table['type'] == 'item' then
+                card.config.center:set_item(card, preapp_table['item'])
+            end
+        end
         card:start_materialize(nil, t.silent)
         card:add_to_deck()
         t.area:emplace(card)
@@ -213,4 +229,30 @@ function OPAL.add_mod(t)
     OPAL.update_modifier_menu()
     if not t.silent then play_sound('holo1', 1.2 + math.random() * 0.1, 0.4) end
     return ret
+end
+
+function OPAL.pre_poll_mod(t)
+    if not t.key then
+        t.key = pseudorandom_element(get_current_pool('OpalModifier_'..t.type), pseudoseed('mod_creation'))
+        local it = 1
+        while t.key == 'UNAVAILABLE' or (t.unique and G.opal_existing_mods[t.key]) do
+            it = it + 1
+            t.key = pseudorandom_element(get_current_pool('OpalModifier_'..t.type), pseudoseed('mod_creation_resample_'..it))
+        end
+    end
+
+    local card = G.P_CENTERS[t.key]
+    local preapp_table = {}
+    if card.pre_apply then preapp_table = card:pre_apply() end
+
+    local merge_instead = nil
+    for k, v in ipairs(G.opal_heat_mods.cards) do
+        if v.ability.opal_count and v.config.center == card and v.config.center.merge and
+            (not preapp_table['type'] or preapp_table['type'] == 'item' and preapp_table['item'] == v.ability.extra) then
+            merge_instead = k
+        end
+    end
+    OPAL.existing_modifiers = OPAL.existing_modifiers or {}
+    OPAL.existing_modifiers[card.key] = true
+    return merge_instead, preapp_table
 end
