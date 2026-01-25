@@ -240,42 +240,29 @@ OPAL.Modifier{ -- Astronomy
     end
 }
 
-OPAL.running_yolk_modifiers = {
-    {item = {'mult'}, text = localize('k_mult'), colour = G.C.MULT},
-    {item = {'chips'}, text = 'Chips', colour = G.C.CHIPS},
-    {item = {'xmult', 'Xmult', 'x_mult'}, text = 'XMult', colour = G.C.MULT},
-    {item = {'dollars', 'money'}, text = 'Money', colour = G.C.MONEY}
-}
-
 OPAL.Modifier{ -- Running Yolk
     key = "running_yolk",
     name = 'Running Yolk',
     atlas = 'modifierAtlas',
     pos = {x = 4, y = 0},
-    config = {extra = {item = nil, text = 'value', colour = G.C.SECONDARY_SET.Tarot}},
+    config = {extra = {increase = 1}},
     loc_vars = function(self, info_queue, card)
-        return{vars = {card.ability.extra.text, 2^((G.GAME.opal_ry_scaling and card.ability.extra.item) and G.GAME.opal_ry_scaling[card.ability.extra.item[1]] or 1), colours = {card.ability.extra.colour}}}
+        return{vars = {card.ability.extra.increase}}
     end,
-    apply = function(self, card)
-        for k, v in ipairs(card.ability.extra.item) do
-            G.GAME.opal_ry_scaling[v] = G.GAME.opal_ry_scaling[v] and G.GAME.opal_ry_scaling[v]+1 or 1
+    calculate = function(self, card, context)
+        if context.end_of_round and context.game_over == false then
+            local _joker = pseudorandom_element(G.jokers.cards, pseudoseed('opal_running_yolk'))
+            _joker.ability.extra_value = _joker.ability.extra_value + card.ability.extra.increase
+            _joker:set_cost()
+            return {
+                message = localize('k_val_up'),
+                colour = G.C.MONEY,
+                card = _joker
+            }
         end
-    end,
-    unapply = function(self, card)
-        for k, v in ipairs(card.ability.extra.item) do
-            G.GAME.opal_ry_scaling[v] = G.GAME.opal_ry_scaling[v] - 1
-        end
-    end,
-    pre_apply = function(self, card)
-        return {type = 'item', item = pseudorandom_element(OPAL.running_yolk_modifiers, pseudoseed('op_ry'))}
-    end,
-    set_item = function(self, card, inp)
-        card.ability.extra = inp
     end,
     merge = function(self, card, count)
-        for k, v in ipairs(card.ability.extra.item) do
-            G.GAME.opal_ry_scaling[v] = G.GAME.opal_ry_scaling[v] + count
-        end
+        card.ability.extra.increase = card.ability.extra.increase + count
     end
 }
 

@@ -292,16 +292,16 @@ return{
             md_opal_running_yolk = {
                 name = 'Running Yolk',
                 text = {
-                    'Jokers with Scaling {V:1}#1#{}',
-                    'gain {C:attention}X#2#{} as much'
+                    'At end of round,',
+                    'gives a random {C:attention}Joker',
+                    '{C:money}+$#1#{} Sell Value'
                 }
             },
             md_opal_rigged = {
                 name = 'Rigged',
                 text = {
                     '{X:green,C:white}X#1#{} to all listed',
-                    '{C:green,E:1,S:1.1}probabilities',
-                    '{C:inactive}(ex: {C:green}1 in 3{C:inactive} -> {C:green}1.25 in 3{C:inactive})'
+                    '{C:green,E:1,S:1.1}probabilities'
                 }
             },
             md_opal_sticky = {
