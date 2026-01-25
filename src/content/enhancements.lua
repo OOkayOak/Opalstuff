@@ -27,7 +27,7 @@ SMODS.Enhancement{ -- Cookie
                 G.E_MANAGER:add_event(Event({trigger = 'immediate', func = function()
 
                     card.ability.extra.bites_left = card.ability.extra.bites_left - 1
-                    if card.ability.extra.bites_left ~= 0 then
+                    if card.ability.extra.bites_left > 0 then
                         card.children.center:set_sprite_pos({x = math.min((3-card.ability.extra.bites_left),2), y=1})
                     end
                 return true end}))
