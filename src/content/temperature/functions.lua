@@ -187,11 +187,12 @@ function OPAL.add_mod(t)
 
     if merge_instead then
         local _card = G.opal_heat_mods.cards[merge_instead]
-        _card.config.center:merge(_card, 1)
-        _card.ability.opal_count = _card.ability.opal_count + 1
+        local _count = t.count or 1
+        _card.config.center:merge(_card, _count)
+        _card.ability.opal_count = _card.ability.opal_count + _count
         _card:juice_up()
         if card and card.from_booster then 
-            _card.ability.count_from_booster = _card.ability.count_from_booster and _card.ability.count_from_booster + 1 or 1
+            _card.ability.count_from_booster = _card.ability.count_from_booster and _card.ability.count_from_booster + _count or _count
             ret.dont_dissolve = false
         end
         if card then SMODS.destroy_cards(card, nil, nil, nil) end

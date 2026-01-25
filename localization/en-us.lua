@@ -294,7 +294,7 @@ return{
                 text = {
                     'At end of round,',
                     'gives a random {C:attention}Joker',
-                    '{C:money}+$#1#{} Sell Value'
+                    '{C:money}+$#1#{C:attention} sell value'
                 }
             },
             md_opal_rigged = {
@@ -985,6 +985,7 @@ return{
         v_dictionary = {
             a_xdollars = 'X#1# Dollars',
             a_money = '+$#1# Dollars',
+            a_sell_value = '+$#1# Sell Value',
             a_antes_left = '#1# Ante Remaining',
             a_heat = '+#1# Heat'
         },

@@ -258,7 +258,7 @@ OPAL.Modifier{ -- Running Yolk
                         _joker.ability.extra_value = _joker.ability.extra_value + card.ability.extra.increase
                         _joker:set_cost()
                         card:juice_up(0.3, 0.3)
-                        card_eval_status_text(_joker, 'extra', nil, nil, nil, {message = localize('k_val_up'), colour = G.C.MONEY, card = card})
+                        card_eval_status_text(_joker, 'extra', nil, nil, nil, {message = localize{type='variable',key='a_sell_value',vars={card.ability.extra.increase}}, colour = G.C.MONEY, card = card})
                     return true end}))
             end
         end
@@ -577,10 +577,7 @@ function OPAL.handleKeys(controller, key)
         local _card = controller.hovering.target
         if _card.ability.set == 'OpalModifier' then
             if key == 'c' then
-                local new_card = copy_card(_card, nil, nil)
-                new_card:add_to_deck()
-                new_card.config.center:apply(new_card)
-                G.opal_heat_mods:emplace(new_card)
+                OPAL.add_mod({key = _card.config.center.key, dont_create = true, silent = true, uncounted = true, count = _card.ability.opal_count})
             end
             if key == "r" then
                 OPAL.remove_modifier(_card)
