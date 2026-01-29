@@ -186,9 +186,13 @@ return{
                             'random {C:attention}Tag'
                         }}
             },
-            j_opal_sombre = {
-                name = 'Sombre Joker',
+            j_opal_buckley = {
+                name = "You Should've Come Over",
                 text = {
+                    'When {C:attention}hand{} scores',
+                    '{C:attention}X#1#{} of the {C:attention}Blind',
+                    '{C:attention}Requirement{}, creates a',
+                    '{C:tarot,T:c_lovers}The Lovers'
 
                 }
             },
@@ -918,6 +922,7 @@ return{
             b_opal_modifiers_count3 = 'a Modifier should show',
             b_opal_temp_info = 'Set Score on fire to gain Heat!',
             b_opal_open_temp = 'TAB to open Heat',
+            k_opal_buckley = 'Lover...',
             k_opal_chomp = 'Chomp!',
             k_opal_eaten = 'Eaten!',
             k_opal_modifier = '+ Modifier!',

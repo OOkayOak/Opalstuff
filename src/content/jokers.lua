@@ -428,23 +428,36 @@ SMODS.Joker { -- Flat White
     end
 }
 
---[[SMODS.Joker { --Sombre Joker
-    key = 'sombre',
-    config = {extra = {}},
+SMODS.Joker { -- Lover, You Should've Come Over
+    key = 'buckley',
+    config = {extra = {mult = 0.5}},
     rarity = 2,
     atlas = "jokerAtlas",
     pos = {x = 0, y = 3},
-    cost = 6,
+    cost = 5,
     blueprint_compat = true,
     loc_vars = function(self, info_queue, card)
-    end,
-    add_to_deck = function(self, card, from_debuff)
-    end,
-    remove_from_deck = function(self, card, from_debuff)
+        info_queue[#info_queue+1] = G.P_CENTERS.c_lovers
+        return{vars = {card.ability.extra.mult}}
     end,
     calculate = function(self, card, context)
+        if context.after then
+            if card.ability.extra.mult*G.GAME.blind.chips <= G.GAME.opal_strong_score and
+            #G.consumeables.cards < G.consumeables.config.card_limit then
+                G.E_MANAGER:add_event(Event({
+                    func = function()
+                        play_sound('timpani')
+                        SMODS.add_card({ key = 'c_lovers' })
+                        card:juice_up(0.3, 0.5)
+                    return true end
+                }))
+                return{
+                    message = localize('k_opal_buckley')
+                }
+            end
+        end
     end
-}]]
+}
 
 SMODS.Joker{ -- Wonkee Loves U
     key = 'wonkee',
@@ -670,6 +683,25 @@ SMODS.Joker { -- Party Mix
         if context.post_joker and card.ability.extra.hands <= 0 then
             SMODS.destroy_cards(card, nil, nil, true)
         end 
+    end
+}
+
+SMODS.Joker { -- PUSH UR T3MPRR
+    key = 'a',
+    config = {extra = {prob_mod = 30/3}},
+    rarity = 1,
+    atlas = "jokerAtlas",
+    pos = {x = 3, y = 4},
+    cost = 4,
+    blueprint_compat = true,
+    loc_vars = function(self, info_queue, card)
+        return { vars = {card.ability.extra.prob_mod}}
+    end,
+    add_to_deck = function(self, card, from_debuff)
+    end,
+    remove_from_deck = function(self, card, from_debuff)
+    end,
+    calculate = function(self, card, context)
     end
 }
 
