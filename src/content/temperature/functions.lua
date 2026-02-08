@@ -275,6 +275,12 @@ function OPAL.remove_mod(t)
     else
         t.card.config.center:merge(t.card, -(t.num))
         t.card.ability.opal_count = t.card.ability.opal_count - t.num
+        if t.card.children.opal_md_counter then t.card.children.opal_md_counter:remove() end
+            t.card.children.opal_md_counter = UIBox{
+            definition = {n = G.UIT.R, config = {colour = G.C.BLACK, align = "cm", padding = 0.05, r = 0.1}, nodes = {
+                {n=G.UIT.T, config = {text = tostring(t.card.ability.opal_count), scale = 0.3, colour = G.C.WHITE}}
+            }},
+            config = {align = "br", offset = {x=-0.3, y=-0.35}, parent = t.card}
+            }
     end
-    OPAL.update_modifier_menu()
 end
