@@ -569,22 +569,25 @@ SMODS.Joker { -- Alive 2007
     calculate = function(self, card, context)
         if context.end_of_round and context.game_over and not context.blueprint then
             local removable_mods = {}
+            local remove_nums = {}
             for k, v in ipairs(G.opal_heat_mods.cards) do
                 if OPAL.Modifiers['good'][v.config.center.key] then
-                    removable_mods[#removable_mods+1] = v
+                    for i = 1, v.ability.opal_count do
+                        removable_mods[#removable_mods+1] = k
+                    end
+                    remove_nums[#remove_nums+1] = 0
                 end
             end
             local remove_num = math.min(math.ceil(card.ability.extra.remove_decimal*#removable_mods), card.ability.extra.max_remove)
             for i = 1, remove_num do
-                removable_mods = {}
-                for k, v in ipairs(G.opal_heat_mods.cards) do
-                    if OPAL.Modifiers['good'][v.config.center.key] then
-                        removable_mods[#removable_mods+1] = v
-                    end
-                end
-                local removeThisGuy = pseudorandom_element(removable_mods, pseudoseed('opal_alive'))
-                OPAL.remove_modifier(removeThisGuy)
+                local removeThis = pseudorandom_element(removable_mods)
+                remove_nums[removeThis] = remove_nums[removeThis] + 1
             end
+            for k, v in ipairs(remove_nums) do
+                OPAL.remove_mod({card = G.opal_heat_mods.cards[k], num = v})
+            end
+            SMODS.destroy_cards(card, nil, nil, nil)
+
             return{
                 saved = "opal_alive_save"
             }
@@ -686,16 +689,16 @@ SMODS.Joker { -- Party Mix
     end
 }
 
-SMODS.Joker { -- PUSH UR T3MPRR
-    key = 'a',
-    config = {extra = {prob_mod = 30/3}},
-    rarity = 1,
+--[[SMODS.Joker { -- PUSH UR T3MPRR
+    key = 'femtanyl',
+    config = {extra = {req_mod = 2}},
+    rarity = 2,
     atlas = "jokerAtlas",
-    pos = {x = 3, y = 4},
-    cost = 4,
+    pos = {x = 2, y = 4},
+    cost = 5,
     blueprint_compat = true,
     loc_vars = function(self, info_queue, card)
-        return { vars = {card.ability.extra.prob_mod}}
+        return { vars = {card.ability.extra.req_mod, card.ability.extra.heat_req}}
     end,
     add_to_deck = function(self, card, from_debuff)
     end,
@@ -703,7 +706,7 @@ SMODS.Joker { -- PUSH UR T3MPRR
     end,
     calculate = function(self, card, context)
     end
-}
+}]]
 
 --[[SMODS.Joker { --
     key = 'a',
