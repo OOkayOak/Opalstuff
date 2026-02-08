@@ -1,4 +1,4 @@
-SMODS.Consumable{
+SMODS.Consumable{ -- Voodoo
     key = 'voodoo',
     set = 'Spectral',
     atlas = 'spectralAtlas', pos = {x=0,y=0},
@@ -40,10 +40,60 @@ SMODS.Consumable{
     end
 }
 
+SMODS.Consumable{ -- Modify
+    key = 'modify',
+    set = 'Spectral',
+    atlas = 'spectralAtlas', pos = {x=1,y=0},
+    config = {extra = {max_removed = 3}},
+    cost = 4,
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.max_removed}}
+    end,
+    use = function(self, card, area)
+        G.opal_heat_mods.config.highlighted_limit = 0
+        local stackToRemove = math.min(card.ability.extra.max_removed, (G.consumeables.config.card_limit - #G.consumeables.cards), G.opal_heat_mods.highlighted[1].ability.opal_count)
+
+        G.E_MANAGER:add_event(Event({
+            func = function()
+                local pleaseKill = G.opal_heat_mods.highlighted[1]
+                G.opal_heat_mods:unhighlight_all()
+                print(pleaseKill)
+                OPAL.remove_mod({card = pleaseKill, num = stackToRemove})
+            return true end
+        }))
+        for i = 1, stackToRemove do
+            G.E_MANAGER:add_event(Event({
+                trigger = 'after',
+                delay = 0.4,
+                func = function()
+                    if G.consumeables.config.card_limit > #G.consumeables.cards then
+                        play_sound('timpani')
+                        SMODS.add_card({set = 'Spectral'})
+                        card:juice_up(0.3, 0.5)
+                    end
+                    return true
+                end
+            }))
+        end
+        delay(0.6)
+    end,
+    calculate = function(self, card, context)
+        G.opal_heat_mods.config.highlighted_limit = 1
+    end,
+    can_use = function(self, card)
+        if #G.consumeables.cards < G.consumeables.config.card_limit and
+            #G.opal_heat_mods.highlighted == 1 then
+            return true
+        else
+            return false
+        end
+    end
+}
+
 SMODS.Consumable{ -- The Milk Churn
     key = 'churn',
     set = 'Tarot',
-    atlas = 'spectralAtlas', pos = {x=1,y=0},
+    atlas = 'spectralAtlas', pos = {x=0,y=1},
     config = {max_highlighted = 2, mod_conv = 'm_opal_cookie'},
     loc_vars = function(self, info_queue, card)
         info_queue[#info_queue+1] = G.P_CENTERS[card.ability.mod_conv]

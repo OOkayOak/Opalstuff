@@ -796,6 +796,20 @@ return{
                     '{C:attention}Pinned{} to a',
                     'random {C:attention}Joker',
                 }
+            },
+            c_opal_modify = {
+                name = 'Modify',
+                text = {
+                    {
+                        'Remove up to {C:attention}#1#{}',
+                        '{C:attention}Power{} from a selected',
+                        '{C:opal_modifier}Modifier{}',
+                    },
+                    {
+                        'Create as many {C:spectral}Spectral{}',
+                        'cards as {C:attention}Power{} removed'
+                    }
+                }
             }
         },
         Stake = {
