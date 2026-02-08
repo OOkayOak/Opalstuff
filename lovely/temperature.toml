@@ -107,7 +107,8 @@ match_indent = true
 target = 'functions/state_events.lua'
 position = 'after'
 pattern = '''-- TARGET: main end_of_round evaluation'''
-payload = '''OPAL.ease_temp(G.GAME.modifiers.opal_heat_per_round + G.GAME.modifiers.opal_heat_increase)
+payload = '''G.GAME.modifiers.opal_heat_increase = G.GAME.modifiers.opal_heat_increase or 0
+OPAL.ease_temp(G.GAME.modifiers.opal_heat_per_round + G.GAME.modifiers.opal_heat_increase)
 G.GAME.modifiers.opal_heat_increase = 0'''
 match_indent = true
 
@@ -261,6 +262,48 @@ position = 'after'
 match_indent = true
 payload = '''self.config.opal_per_row = config.opal_per_row or 4
 self.config.opal_type = config.opal_type or 'square' '''
+
+# Rewards 11/ - cardarea shenanigans
+[[patches]]
+[patches.pattern]
+target = 'cardarea.lua'
+pattern = '''(self.config.type == 'shop' and self.config.highlighted_limit > 0)'''
+position = 'before'
+match_indent = true
+payload = '''(self.config.type == 'opal_mods' and self.config.highlighted_limit > 0) or'''
+
+# Rewards 12/ - card shenanigans
+[[patches]]
+[patches.pattern]
+target = 'card.lua'
+pattern = '''self.highlighted = is_higlighted'''
+position = 'after'
+match_indent = true
+payload = '''if self.area == G.opal_heat_mods then
+    if self.highlighted then
+        self.T.h = self.T.h*1.2
+        self.T.w = self.T.w*1.2
+    else
+        self.T.h = self.T.h/1.2
+        self.T.w = self.T.w/1.2
+    end
+end'''
+
+# Rewards 13/ - cardarea shenanigans
+[[patches]]
+[patches.pattern]
+target = 'cardarea.lua'
+pattern = '''if self.config.type == 'shop' then'''
+position = 'at'
+match_indent = true
+payload = '''if self.config.type == 'opal_mods' then
+    if #self.highlighted >= self.config.highlighted_limit then
+            self:remove_from_highlighted(self.highlighted[1])
+        end
+        self.highlighted[#self.highlighted+1] = card
+        card:highlight(true)
+        if not silent then play_sound('cardSlide1') end
+elseif self.config.type == 'shop' then'''
 
 # DebugPlus stuff for modifiers
 [[patches]]

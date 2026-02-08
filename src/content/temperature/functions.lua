@@ -45,6 +45,7 @@ function OPAL.ease_temp(mod, instant)
 end
 
 function OPAL.check_heat() -- Checks if you need a modifier/level up
+    G.GAME.opal_mtags_made = G.GAME.opal_mtags_made or 0
     local count = 0
     for k, v in ipairs(G.opal_heat_mods.cards) do
         if OPAL.Modifiers['good'][v.config.center.key] then
@@ -57,7 +58,7 @@ function OPAL.check_heat() -- Checks if you need a modifier/level up
             count = count - v.ability.count_from_booster
         end
     end
-    local mods_to_create = math.floor((G.GAME.opal_temperature/G.GAME.modifiers.opal_heat_for_mods) - count)
+    local mods_to_create = math.floor((G.GAME.opal_temperature/G.GAME.modifiers.opal_heat_for_mods) - (count+G.GAME.opal_mtags_made))
     for i = 1, mods_to_create do
     G.E_MANAGER:add_event(Event({
     trigger = 'before',
@@ -65,8 +66,9 @@ function OPAL.check_heat() -- Checks if you need a modifier/level up
     func = function()
         if G.GAME.opal_tag_instead_of_mod then
             add_tag({key = 'tag_opal_modified'})
+            G.GAME.opal_mtags_made = G.GAME.opal_mtags_made + 1
         else
-            OPAL.add_mod({type = 'good', silent = (i ~= mods_to_create), dont_create = true})
+            OPAL.add_mod({type = 'good', silent = (i ~= mods_to_create and mods_to_create<=5), dont_create = true})
         end
     return true end}))
     end
@@ -148,6 +150,9 @@ function OPAL.create_mod(t)
             _card.config.center:set_item(_card, _card.preapp_table['item'])
         end
     end
+    if t.from_tag then
+        _card.from_tag = true
+    end
     if t.from_booster then 
         _card.T.w = _card.T.w*2
         _card.T.h = _card.T.h*2
@@ -192,7 +197,7 @@ function OPAL.add_mod(t)
         _card.ability.opal_count = _card.ability.opal_count + _count
         _card:juice_up()
         if card and card.from_booster then 
-            _card.ability.count_from_booster = _card.ability.count_from_booster and _card.ability.count_from_booster + _count or _count
+            if not card.from_tag then _card.ability.count_from_booster = _card.ability.count_from_booster and _card.ability.count_from_booster + _count or _count end
             ret.dont_dissolve = false
         end
         if card then SMODS.destroy_cards(card, nil, nil, nil) end
@@ -220,7 +225,7 @@ function OPAL.add_mod(t)
             card.ability.opal_count = 1
             card.ability.opal_md_temp_decrease = 0
             if card.from_booster then
-                card.ability.count_from_booster = 1
+                if not card.from_tag then card.ability.count_from_booster = 1 end
                 ret.dont_dissolve = true
             elseif t.as_starting then
                 card.ability.opal_is_starting_modifier = true
@@ -256,4 +261,20 @@ function OPAL.pre_poll_mod(t)
     OPAL.existing_modifiers = OPAL.existing_modifiers or {}
     OPAL.existing_modifiers[card.key] = true
     return merge_instead, preapp_table
+end
+
+function OPAL.remove_mod(t)
+    t.num = t.num or 1
+    if not t.card then
+        t.card = pseudorandom_element(G.opal_heat_mods.cards, 'mod_removal')
+    end
+
+    if t.num >= t.card.ability.opal_count or not(t.card.config.center.merge and type(t.card.config.center.merge) == "function") then
+        t.card.config.center:unapply(t.card)
+        SMODS.destroy_cards(t.card, nil, nil, nil)
+    else
+        t.card.config.center:merge(t.card, -(t.num))
+        t.card.ability.opal_count = t.card.ability.opal_count - t.num
+    end
+    OPAL.update_modifier_menu()
 end

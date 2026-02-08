@@ -548,12 +548,6 @@ OPAL.Modifier{
     end,
 }
 
-function OPAL.remove_modifier(card)
-    card.config.center:unapply(card)
-    SMODS.destroy_cards(card, nil, nil, nil)
-    OPAL.update_modifier_menu()
-end
-
 function OPAL.update_modifier_menu()
     local modMult = G.opal_mod_shape == 1 and 0.56 or 0.6
     modMult = G.opal_mod_size == 2 and 1.35*modMult or modMult
