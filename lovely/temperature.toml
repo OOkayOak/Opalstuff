@@ -279,7 +279,7 @@ target = 'card.lua'
 pattern = '''self.highlighted = is_higlighted'''
 position = 'after'
 match_indent = true
-payload = '''if self.area == G.opal_heat_mods then
+payload = '''if self.ability.set == 'OpalModifier' then
     if self.highlighted then
         self.T.h = self.T.h*1.2
         self.T.w = self.T.w*1.2
