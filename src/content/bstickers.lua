@@ -19,12 +19,6 @@ function OPAL.BSticker:get_bsticker_rate(augment)
         end
     end
 
-    if self.key == 'opal_overloaded' then
-        return 1
-    else
-        return 0
-    end
-
     return math.min(1, augment*OPAL.Bsticker_rarities[self.rarity]/same_rarity_stickers)
 end
 
