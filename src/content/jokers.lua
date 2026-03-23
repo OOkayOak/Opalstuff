@@ -89,7 +89,7 @@ SMODS.Joker { --Shiny Rock
         return { vars = {numerator, denominator}}
     end,
     calculate = function(self, card, context)
-        if context.cardarea == G.play then
+        if context.individual and context.cardarea == G.play then
             local chosencard = context.other_card
             if chosencard and not chosencard.edition and not chosencard.being_opaled and SMODS.pseudorandom_probability(card, 'opal_sr2', 1, card.ability.extra.odds) then
                 chosencard.being_opaled = true
