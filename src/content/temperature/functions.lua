@@ -58,7 +58,7 @@ function OPAL.check_heat() -- Checks if you need a modifier/level up
             count = count - v.ability.count_from_booster
         end
     end
-    local mods_to_create = math.floor((G.GAME.opal_temperature/G.GAME.modifiers.opal_heat_for_mods) - (count+G.GAME.opal_mtags_made))
+    local mods_to_create = to_number(math.floor((G.GAME.opal_temperature/G.GAME.modifiers.opal_heat_for_mods) - (count+G.GAME.opal_mtags_made)))
     for i = 1, mods_to_create do
     G.E_MANAGER:add_event(Event({
     trigger = 'before',
