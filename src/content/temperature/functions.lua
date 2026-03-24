@@ -15,6 +15,10 @@ function OPAL.ease_temp(mod, instant)
         --check_for_unlock({type = 'money'})
         opal_temp_UI.config.object:update()
         opal_temp_UI.config.object.colours = {OPAL.get_temp_colour()}
+        for k, v in ipairs(opal_temp_UI.config.object.colours[1]) do
+            v = to_number(v)
+            print(type(v))
+        end
         G.HUD:recalculate()
         --Popup text next to the chips in UI showing number of chips gained/lost
         
@@ -81,15 +85,32 @@ function OPAL.check_heat() -- Checks if you need a modifier/level up
 end
 
 function OPAL.get_temp_colour()
+    local _colour = nil
     if G.GAME.opal_temperature < 10 then
-        return(mix_colours(G.C.RED, G.C.WHITE, math.max(0,math.min((G.GAME.opal_temperature)/10,1))))
+        _colour = (OPAL.mix_colours(G.C.RED, G.C.WHITE, math.max(0,math.min((G.GAME.opal_temperature)/10,1))))
     elseif G.GAME.opal_temperature < 25 then
-        return(mix_colours(G.C.ORANGE, G.C.RED, math.max(0,math.min((G.GAME.opal_temperature-10)/15,1))))
+        _colour = (OPAL.mix_colours(G.C.FILTER, G.C.RED, math.max(0,math.min((G.GAME.opal_temperature-10)/15,1))))
     elseif G.GAME.opal_temperature < 50 then
-        return(mix_colours(G.C.BLUE, G.C.ORANGE, math.max(0,math.min((G.GAME.opal_temperature-25)/25,1))))
+        _colour = (OPAL.mix_colours(G.C.BLUE, G.C.FILTER, math.max(0,math.min((G.GAME.opal_temperature-25)/25,1))))
     else
-        return(mix_colours(mix_colours(G.C.PURPLE, G.C.WHITE, 0.7), G.C.BLUE, math.max(0,math.min((G.GAME.opal_temperature-50)/25,1))))
+        _colour = (OPAL.mix_colours(OPAL.mix_colours(G.C.PURPLE, G.C.WHITE, 0.7), G.C.BLUE, math.max(0,math.min((G.GAME.opal_temperature-50)/25,1))))
     end
+    return(_colour)
+end
+
+function OPAL.mix_colours(C1, C2, proportionC1)
+    proportionC1 = to_number(proportionC1)
+    for k, v in ipairs({C1, C2}) do
+        for k2, v2 in ipairs(v) do
+            v2 = to_number(v2)
+        end
+    end
+  return {
+    to_number(C1[1] or 0.5)*proportionC1 + to_number(C2[1] or 0.5)*to_number(1-proportionC1),
+    to_number(C1[2] or 0.5)*proportionC1 + to_number(C2[2] or 0.5)*to_number(1-proportionC1),
+    to_number(C1[3] or 0.5)*proportionC1 + to_number(C2[3] or 0.5)*to_number(1-proportionC1),
+    to_number(C1[4] or 1)*proportionC1 + to_number(C2[4] or 1)*to_number(1-proportionC1),
+  }
 end
 
 function OPAL.add_indicators()
