@@ -177,7 +177,11 @@ function OPAL.add_mod(t)
         if card.from_booster then 
             card.T.w = card.T.w/2
             card.T.h = card.T.h/2
-            G.opal_booster_mods = nil
+            if G.STATE == G.STATES.OPAL_MODIFIER_PACK and G.GAME.pack_choices == 1 then
+                for k, v in ipairs(G.pack_cards) do
+                    v:start_dissolve(nil, true)
+                end
+            end
         end
         local preapp_table = card.preapp_table or {}
         for k, v in ipairs(G.opal_heat_mods.cards) do
@@ -202,7 +206,7 @@ function OPAL.add_mod(t)
             if not card.from_tag then _card.ability.count_from_booster = _card.ability.count_from_booster and _card.ability.count_from_booster + _count or _count end
             ret.dont_dissolve = false
         end
-        if card then SMODS.destroy_cards(card, nil, nil, nil) end
+        if card then card:start_dissolve(nil, t.silent) end
         if _card.children.opal_md_counter then _card.children.opal_md_counter:remove() end
             _card.children.opal_md_counter = UIBox{
             definition = {n = G.UIT.R, config = {colour = G.C.BLACK, align = "cm", padding = 0.05, r = 0.1}, nodes = {

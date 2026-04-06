@@ -11,8 +11,7 @@ SMODS.Booster{ -- Modifier Booster
     create_card = function(self, card, i)
         if i == 1 then G.opal_booster_mods = {} end
         local newMod = OPAL.create_mod({type = 'good', from_booster = true, from_tag = card.from_tag})
-        G.opal_booster_mods = G.opal_booster_mods or {}
-        G.opal_booster_mods[newMod.config.center.key] = true
+        G.pack_cards[newMod.config.center.key] = true
         return newMod
     end,
     ease_background_colour = function(self)
