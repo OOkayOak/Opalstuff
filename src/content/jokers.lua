@@ -4,6 +4,7 @@ SMODS.Joker{ --Joost
     rarity = 2,
     cost = 5,
     blueprint_compat = true,
+    attributes = {'retrigger'},
     calculate = function(self, card, context)
         if context.cardarea == G.play and context.repetition and not context.repetition_only then
             if context.other_card == context.scoring_hand[#context.scoring_hand] then
@@ -25,6 +26,7 @@ SMODS.Joker{ --Hardlight
     cost = 7,
     blueprint_compat = true,
     config = {duplicator = true, extra = { last_dupe = 'None' }},
+    attributes = {'generation', 'destroy_card'},
     calculate = function(self, card, context)
         if context.end_of_round then
             if G.GAME.opal_dupes > 0 then
@@ -84,6 +86,7 @@ SMODS.Joker { --Shiny Rock
     pos = {x = 1, y = 0},
     cost = 7,
     blueprint_compat = true,
+    attributes = {'editions', 'chance'},
     loc_vars = function(self, info_queue, card)
         local numerator, denominator = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, 'opal_sr1')
         return { vars = {numerator, denominator}}
@@ -111,6 +114,7 @@ SMODS.Joker {--Kimochi Warui
     pos = {x = 2, y = 1},
     cost = 7,
     blueprint_compat = true,
+    attributes = {'joker', 'chance'},
     loc_vars = function(self, info_queue, card)
         local numerator, denominator = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, 'opal_kw1')
         return { vars = { numerator, denominator }}
@@ -180,6 +184,7 @@ SMODS.Joker {--Holy, Holy
     pos = {x = 3, y = 1},
     cost = 4,
     blueprint_compat = true,
+    attributes = {'mult', 'chips', 'tarot', 'scaling'},
     loc_vars = function(self, info_queue, card)
         info_queue[#info_queue+1] = {key = "c_magician", set = "Tarot", vars = {2,'Lucky Card'}}
         return { vars = {card.ability.extra.chip_mod, card.ability.extra.mult_mod, card.ability.extra.count*card.ability.extra.chip_mod, card.ability.extra.count*card.ability.extra.mult_mod}}
@@ -209,6 +214,7 @@ SMODS.Joker { --Oops! All 1/3s
     pos = {x = 4, y = 1},
     cost = 4,
     blueprint_compat = true,
+    attributes = {'mod_chance', 'passive'},
     loc_vars = function(self, info_queue, card)
         return { vars = {card.ability.extra.prob_mod}}
     end,
@@ -228,6 +234,7 @@ SMODS.Joker { -- Cultist
     pos = {x = 5, y = 1},
     cost = 5,
     blueprint_compat = true,
+    attributes = {'spectral', 'generation'},
     calculate = function(self, card, context)
         if context.open_booster and context.card.ability.name:find('Arcana') then
             G.E_MANAGER:add_event(Event({ trigger = "after", func = function()
@@ -247,6 +254,7 @@ SMODS.Joker { --Rolodex
     pos = {x = 0, y = 2},
     cost = 7,
     blueprint_compat = true,
+    attributes = {'hand_size', 'scaling', 'reset', 'reroll'},
     loc_vars = function(self, info_queue, card)
         return { vars = {card.ability.extra.rerolls_required, card.ability.extra.rerolls_left, card.ability.extra.handsize_mod}}
     end,
@@ -289,6 +297,7 @@ SMODS.Joker { --Corkboard
     pos = {x = 1, y = 2},
     cost = 7,
     blueprint_compat = true,
+    attributes = {'xmult'},
     loc_vars = function(self, info_queue, card)
         return { vars = {card.ability.extra}}
     end,
@@ -325,6 +334,7 @@ SMODS.Joker { -- Grandma
     pos = {x = 2, y = 2},
     cost = 4,
     blueprint_compat = true,
+    attributes = {'enhancements', 'mult', 'scaling'},
     loc_vars = function(self, info_queue, card)
         info_queue[#info_queue+1] = G.P_CENTERS.m_opal_cookie
         return { vars = {card.ability.extra.mult, localize{type = 'name_text', set = 'Enhanced', key = 'm_opal_cookie'}, card.ability.extra.mult*card.ability.extra.count}}
@@ -355,6 +365,7 @@ SMODS.Joker { -- Biscuit Tin
     pixel_size = {h = 79},
     cost = 9,
     blueprint_compat = true,
+    attributes = {'enhancements', 'retrigger'},
     loc_vars = function(self, info_queue, card)
         info_queue[#info_queue+1] = G.P_CENTERS.m_opal_cookie
         return { vars = {localize{type = 'name_text', set = 'Enhanced', key = 'm_opal_cookie'}}}
@@ -386,6 +397,7 @@ SMODS.Joker { -- Flat White
     cost = 7,
     blueprint_compat = false,
     eternal_compat = false,
+    attributes = {'food', 'enhancements', 'destroy_card', 'tag'},
     loc_vars = function(self, info_queue, card)
         info_queue[#info_queue+1] = G.P_CENTERS.m_opal_cookie
         return { vars = {card.ability.extra.count, localize{type = 'name_text', set = 'Enhanced', key = 'm_opal_cookie'}, (card.ability.extra.count > 1 and 's' or '')}}
@@ -436,6 +448,7 @@ SMODS.Joker { -- Lover, You Should've Come Over
     pos = {x = 0, y = 3},
     cost = 5,
     blueprint_compat = true,
+    attributes = {'generation', 'tarot'},
     loc_vars = function(self, info_queue, card)
         info_queue[#info_queue+1] = G.P_CENTERS.c_lovers
         return{vars = {card.ability.extra.mult}}
@@ -467,6 +480,7 @@ SMODS.Joker{ -- Wonkee Loves U
     pos = {x = 1, y = 3},
     cost = 7,
     blueprint_compat = true,
+    attributes = {'suit', 'hearts', 'generation'},
     loc_vars = function(self, info_queue, card)
         return { vars = {card.ability.extra.create_num, card.ability.extra.create_num > 1 and 'cards' or 'card', card.ability.extra.req}}
     end,
@@ -530,6 +544,7 @@ SMODS.Joker { -- Hot Chip
     cost = 4,
     blueprint_compat = true,
     eternal_compat = false,
+    attributes = {'opal_heat', 'food', 'scaling'},
     loc_vars = function(self, info_queue, card)
         return { vars = {card.ability.extra.heat_mod, card.ability.extra.heat_sub}}
     end,
@@ -563,6 +578,7 @@ SMODS.Joker { -- Alive 2007
     cost = 7,
     blueprint_compat = false,
     eternal_compat = false,
+    attributes = {'opal_modifier', 'prevents_death', 'destroy_card'},
     loc_vars = function(self, info_queue, card)
         return { vars = {100*card.ability.extra.remove_decimal, card.ability.extra.max_remove}}
     end,
@@ -598,7 +614,7 @@ SMODS.Joker { -- Alive 2007
     end
 }
 
-SMODS.Joker { -- Hot Water Bottle
+SMODS.Joker { -- Fadeoutz
     key = 'jr',
     config = {extra = 2},
     rarity = 1,
@@ -606,6 +622,7 @@ SMODS.Joker { -- Hot Water Bottle
     pos = {x = 4, y = 3},
     cost = 4,
     blueprint_compat = true,
+    attributes = {'mult', 'opal_heat', 'scaling'},
     loc_vars = function(self, info_queue, card)
         return { vars = {card.ability.extra, math.floor(G.GAME.opal_temperature/card.ability.extra)}}
     end,
@@ -630,6 +647,7 @@ SMODS.Joker { -- Philosopher's Stone
     pos = {x = 5, y = 2},
     cost = 7,
     blueprint_compat = true,
+    attributes = {'spectral', 'chance', 'opal_modifier', 'generation'},
     loc_vars = function(self, info_queue, card)
         local numerator, denominator = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, 'opal_os1')
         return { vars = {numerator, denominator}}
@@ -656,6 +674,7 @@ SMODS.Joker { -- Party Mix
     cost = 6,
     blueprint_compat = true,
     eternal_compat = false,
+    attributes = {'chance', 'perma_bonus', 'modify_card', 'chips', 'mult', 'economy', 'food'},
     loc_vars = function(self, info_queue, card)
         local numerator, denominator = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, 'opal_pm1')
         return { vars = {numerator, denominator, card.ability.extra.mods.bonus, card.ability.extra.mods.mult, card.ability.extra.mods.p_dollars, card.ability.extra.hands}}
@@ -755,6 +774,7 @@ SMODS.Joker { --Intrusive Joker
     cost = 5,
     blueprint_compat = true,
     eternal_compat = false,
+    attributes = {'xmult', 'suit', 'scaling', 'diamonds'},
     loc_vars = function(self, info_queue, card)
         return { vars = { card.ability.extra.Xmult, card.ability.extra.Xmult_mod }}
     end,
@@ -798,6 +818,7 @@ SMODS.Joker { --Egocentric Joker
     cost = 5,
     blueprint_compat = true,
     eternal_compat = false,
+    attributes = {'xmult', 'suit', 'scaling', 'hearts'},
     loc_vars = function(self, info_queue, card)
         return { vars = { card.ability.extra.Xmult, card.ability.extra.Xmult_mod }}
     end,
@@ -841,6 +862,7 @@ SMODS.Joker {--Irritating Joker
     cost = 5,
     blueprint_compat = true,
     eternal_compat = false,
+    attributes = {'xmult', 'suit', 'scaling', 'spades'},
     loc_vars = function(self, info_queue, card)
         return { vars = { card.ability.extra.Xmult, card.ability.extra.Xmult_mod }}
     end,
@@ -884,6 +906,7 @@ SMODS.Joker {--Wreckless Joker
     cost = 5,
     blueprint_compat = true,
     eternal_compat = false,
+    attributes = {'xmult', 'suit', 'scaling', 'clubs'},
     loc_vars = function(self, info_queue, card)
         return { vars = { card.ability.extra.Xmult, card.ability.extra.Xmult_mod }}
     end,
