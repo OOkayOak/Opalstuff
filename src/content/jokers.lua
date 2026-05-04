@@ -636,7 +636,7 @@ SMODS.Joker { -- Philosopher's Stone
     end,
     calculate = function(self, card, context)
         if context.using_consumeable and context.consumeable.ability.set == 'Spectral' and SMODS.pseudorandom_probability(card, 'opal_os2', 1, card.ability.extra.odds) then
-            OPAL.random_modifier(false, false)
+            OPAL.add_mod({type = 'good'})
             return{
                 message = localize('k_opal_modifier')
             }
