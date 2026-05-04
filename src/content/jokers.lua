@@ -106,6 +106,179 @@ SMODS.Joker { --Shiny Rock
     end
   }
 
+SMODS.Joker { --Intrusive Joker
+    key = 'intrusive',
+    config = { extra = { Xmult = 2.5, Xmult_mod = 0.05, suit = 'Diamonds' }},
+    rarity = 2,
+    atlas = 'jokerAtlas',
+    pos = { x = 2, y = 0 },
+    cost = 5,
+    blueprint_compat = true,
+    eternal_compat = false,
+    attributes = {'xmult', 'suit', 'scaling', 'diamonds'},
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.Xmult, card.ability.extra.Xmult_mod }}
+    end,
+    calculate = function(self, card, context)
+        if context.hand_drawn then
+            local suit_count = 0
+            for k, v in ipairs(context.hand_drawn) do
+                if v:is_suit(card.ability.extra.suit) then
+                    suit_count = suit_count + 1
+                end
+            end
+            if suit_count > 0 then
+                card.ability.extra.Xmult = card.ability.extra.Xmult - (suit_count * card.ability.extra.Xmult_mod)
+                if card.ability.extra.Xmult <= 1 then
+                    SMODS.destroy_cards(card, nil, nil, true)
+                else
+                    return{
+                        message = localize { type = 'variable', key = 'a_xmult', vars = { - (suit_count * card.ability.extra.Xmult_mod) } }
+                    }
+                end
+            end
+        end
+        if context.joker_main then
+            return {
+                Xmult_mod = card.ability.extra.Xmult,
+                message = localize { type = 'variable', key = 'a_xmult', vars = { card.ability.extra.Xmult } }
+            }
+        end
+        if context.destroy_card and context.destroy_card == card and card.ability.extra.Xmult <= 1 then -- KILL cards
+            return {remove = true}
+        end
+    end
+}
+  
+SMODS.Joker { --Egocentric Joker
+    key = 'egocentric',
+    config = { extra = { Xmult = 2.5, Xmult_mod = 0.05, suit = 'Hearts' }},
+    rarity = 2,
+    atlas = 'jokerAtlas',
+    pos = { x = 3, y = 0 },
+    cost = 5,
+    blueprint_compat = true,
+    eternal_compat = false,
+    attributes = {'xmult', 'suit', 'scaling', 'hearts'},
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.Xmult, card.ability.extra.Xmult_mod }}
+    end,
+    calculate = function(self, card, context)
+        if context.hand_drawn then
+            local suit_count = 0
+            for k, v in ipairs(context.hand_drawn) do
+                if v:is_suit(card.ability.extra.suit) then
+                    suit_count = suit_count + 1
+                end
+            end
+            if suit_count > 0 then
+                card.ability.extra.Xmult = card.ability.extra.Xmult - (suit_count * card.ability.extra.Xmult_mod)
+                if card.ability.extra.Xmult <= 1 then
+                    SMODS.destroy_cards(card, nil, nil, true)
+                else
+                    return{
+                        message = localize { type = 'variable', key = 'a_xmult', vars = { - (suit_count * card.ability.extra.Xmult_mod) } }
+                    }
+                end
+            end
+        end
+        if context.joker_main then
+            return {
+                Xmult_mod = card.ability.extra.Xmult,
+                message = localize { type = 'variable', key = 'a_xmult', vars = { card.ability.extra.Xmult } }
+            }
+        end
+        if context.destroy_card and context.destroy_card == card and card.ability.extra.Xmult <= 1 then -- KILL cards
+            return {remove = true}
+        end
+    end
+}
+  
+SMODS.Joker {--Irritating Joker
+    key = 'irritating',
+    config = { extra = { Xmult = 2.5, Xmult_mod = 0.05, suit = 'Spades' }},
+    rarity = 2,
+    atlas = 'jokerAtlas',
+    pos = { x = 4, y = 0 },
+    cost = 5,
+    blueprint_compat = true,
+    eternal_compat = false,
+    attributes = {'xmult', 'suit', 'scaling', 'spades'},
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.Xmult, card.ability.extra.Xmult_mod }}
+    end,
+    calculate = function(self, card, context)
+        if context.hand_drawn then
+            local suit_count = 0
+            for k, v in ipairs(context.hand_drawn) do
+                if v:is_suit(card.ability.extra.suit) then
+                    suit_count = suit_count + 1
+                end
+            end
+            if suit_count > 0 then
+                card.ability.extra.Xmult = card.ability.extra.Xmult - (suit_count * card.ability.extra.Xmult_mod)
+                if card.ability.extra.Xmult <= 1 then
+                    SMODS.destroy_cards(card, nil, nil, true)
+                else
+                    return{
+                        message = localize { type = 'variable', key = 'a_xmult', vars = { - (suit_count * card.ability.extra.Xmult_mod) } }
+                    }
+                end
+            end
+        end
+        if context.joker_main then
+            return {
+                Xmult_mod = card.ability.extra.Xmult,
+                message = localize { type = 'variable', key = 'a_xmult', vars = { card.ability.extra.Xmult } }
+            }
+        end
+        if context.destroy_card and context.destroy_card == card and card.ability.extra.Xmult <= 1 then -- KILL cards
+            return {remove = true}
+        end
+    end
+}
+  
+SMODS.Joker {--Wreckless Joker
+    key = 'wreckless',
+    config = { extra = { Xmult = 2.5, Xmult_mod = 0.05, suit = 'Clubs' }},
+    rarity = 2,
+    atlas = 'jokerAtlas',
+    pos = { x = 5, y = 0 },
+    cost = 5,
+    blueprint_compat = true,
+    eternal_compat = false,
+    attributes = {'xmult', 'suit', 'scaling', 'clubs'},
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.Xmult, card.ability.extra.Xmult_mod }}
+    end,
+    calculate = function(self, card, context)
+        if context.hand_drawn then
+            local suit_count = 0
+            for k, v in ipairs(context.hand_drawn) do
+                if v:is_suit(card.ability.extra.suit) then
+                    suit_count = suit_count + 1
+                end
+            end
+            if suit_count > 0 then
+                card.ability.extra.Xmult = card.ability.extra.Xmult - (suit_count * card.ability.extra.Xmult_mod)
+                if card.ability.extra.Xmult <= 1 then
+                    SMODS.destroy_cards(card, nil, nil, true)
+                else
+                    return{
+                        message = localize { type = 'variable', key = 'a_xmult', vars = { - (suit_count * card.ability.extra.Xmult_mod) } }
+                    }
+                end
+            end
+        end
+        if context.joker_main then
+            return {
+                Xmult_mod = card.ability.extra.Xmult,
+                message = localize { type = 'variable', key = 'a_xmult', vars = { card.ability.extra.Xmult } }
+            }
+        end
+    end
+}
+
 SMODS.Joker {--Kimochi Warui
     key = 'kimochi_warui',
     config = {extra = {odds = 3}},
@@ -760,180 +933,3 @@ SMODS.Joker { -- Party Mix
     cost = 20,
     blueprint_compat = true
 }]]
-
-
--- ANNOYING SUIT JOKERS
-
-
-SMODS.Joker { --Intrusive Joker
-    key = 'intrusive',
-    config = { extra = { Xmult = 2.5, Xmult_mod = 0.05, suit = 'Diamonds' }},
-    rarity = 2,
-    atlas = 'jokerAtlas',
-    pos = { x = 2, y = 0 },
-    cost = 5,
-    blueprint_compat = true,
-    eternal_compat = false,
-    attributes = {'xmult', 'suit', 'scaling', 'diamonds'},
-    loc_vars = function(self, info_queue, card)
-        return { vars = { card.ability.extra.Xmult, card.ability.extra.Xmult_mod }}
-    end,
-    calculate = function(self, card, context)
-        if context.hand_drawn then
-            local suit_count = 0
-            for k, v in ipairs(context.hand_drawn) do
-                if v:is_suit(card.ability.extra.suit) then
-                    suit_count = suit_count + 1
-                end
-            end
-            if suit_count > 0 then
-                card.ability.extra.Xmult = card.ability.extra.Xmult - (suit_count * card.ability.extra.Xmult_mod)
-                if card.ability.extra.Xmult <= 1 then
-                    SMODS.destroy_cards(card, nil, nil, true)
-                else
-                    return{
-                        message = localize { type = 'variable', key = 'a_xmult', vars = { - (suit_count * card.ability.extra.Xmult_mod) } }
-                    }
-                end
-            end
-        end
-        if context.joker_main then
-            return {
-                Xmult_mod = card.ability.extra.Xmult,
-                message = localize { type = 'variable', key = 'a_xmult', vars = { card.ability.extra.Xmult } }
-            }
-        end
-        if context.destroy_card and context.destroy_card == card and card.ability.extra.Xmult <= 1 then -- KILL cards
-            return {remove = true}
-        end
-    end
-}
-  
-SMODS.Joker { --Egocentric Joker
-    key = 'egocentric',
-    config = { extra = { Xmult = 2.5, Xmult_mod = 0.05, suit = 'Hearts' }},
-    rarity = 2,
-    atlas = 'jokerAtlas',
-    pos = { x = 3, y = 0 },
-    cost = 5,
-    blueprint_compat = true,
-    eternal_compat = false,
-    attributes = {'xmult', 'suit', 'scaling', 'hearts'},
-    loc_vars = function(self, info_queue, card)
-        return { vars = { card.ability.extra.Xmult, card.ability.extra.Xmult_mod }}
-    end,
-    calculate = function(self, card, context)
-        if context.hand_drawn then
-            local suit_count = 0
-            for k, v in ipairs(context.hand_drawn) do
-                if v:is_suit(card.ability.extra.suit) then
-                    suit_count = suit_count + 1
-                end
-            end
-            if suit_count > 0 then
-                card.ability.extra.Xmult = card.ability.extra.Xmult - (suit_count * card.ability.extra.Xmult_mod)
-                if card.ability.extra.Xmult <= 1 then
-                    SMODS.destroy_cards(card, nil, nil, true)
-                else
-                    return{
-                        message = localize { type = 'variable', key = 'a_xmult', vars = { - (suit_count * card.ability.extra.Xmult_mod) } }
-                    }
-                end
-            end
-        end
-        if context.joker_main then
-            return {
-                Xmult_mod = card.ability.extra.Xmult,
-                message = localize { type = 'variable', key = 'a_xmult', vars = { card.ability.extra.Xmult } }
-            }
-        end
-        if context.destroy_card and context.destroy_card == card and card.ability.extra.Xmult <= 1 then -- KILL cards
-            return {remove = true}
-        end
-    end
-}
-  
-SMODS.Joker {--Irritating Joker
-    key = 'irritating',
-    config = { extra = { Xmult = 2.5, Xmult_mod = 0.05, suit = 'Spades' }},
-    rarity = 2,
-    atlas = 'jokerAtlas',
-    pos = { x = 4, y = 0 },
-    cost = 5,
-    blueprint_compat = true,
-    eternal_compat = false,
-    attributes = {'xmult', 'suit', 'scaling', 'spades'},
-    loc_vars = function(self, info_queue, card)
-        return { vars = { card.ability.extra.Xmult, card.ability.extra.Xmult_mod }}
-    end,
-    calculate = function(self, card, context)
-        if context.hand_drawn then
-            local suit_count = 0
-            for k, v in ipairs(context.hand_drawn) do
-                if v:is_suit(card.ability.extra.suit) then
-                    suit_count = suit_count + 1
-                end
-            end
-            if suit_count > 0 then
-                card.ability.extra.Xmult = card.ability.extra.Xmult - (suit_count * card.ability.extra.Xmult_mod)
-                if card.ability.extra.Xmult <= 1 then
-                    SMODS.destroy_cards(card, nil, nil, true)
-                else
-                    return{
-                        message = localize { type = 'variable', key = 'a_xmult', vars = { - (suit_count * card.ability.extra.Xmult_mod) } }
-                    }
-                end
-            end
-        end
-        if context.joker_main then
-            return {
-                Xmult_mod = card.ability.extra.Xmult,
-                message = localize { type = 'variable', key = 'a_xmult', vars = { card.ability.extra.Xmult } }
-            }
-        end
-        if context.destroy_card and context.destroy_card == card and card.ability.extra.Xmult <= 1 then -- KILL cards
-            return {remove = true}
-        end
-    end
-}
-  
-SMODS.Joker {--Wreckless Joker
-    key = 'wreckless',
-    config = { extra = { Xmult = 2.5, Xmult_mod = 0.05, suit = 'Clubs' }},
-    rarity = 2,
-    atlas = 'jokerAtlas',
-    pos = { x = 5, y = 0 },
-    cost = 5,
-    blueprint_compat = true,
-    eternal_compat = false,
-    attributes = {'xmult', 'suit', 'scaling', 'clubs'},
-    loc_vars = function(self, info_queue, card)
-        return { vars = { card.ability.extra.Xmult, card.ability.extra.Xmult_mod }}
-    end,
-    calculate = function(self, card, context)
-        if context.hand_drawn then
-            local suit_count = 0
-            for k, v in ipairs(context.hand_drawn) do
-                if v:is_suit(card.ability.extra.suit) then
-                    suit_count = suit_count + 1
-                end
-            end
-            if suit_count > 0 then
-                card.ability.extra.Xmult = card.ability.extra.Xmult - (suit_count * card.ability.extra.Xmult_mod)
-                if card.ability.extra.Xmult <= 1 then
-                    SMODS.destroy_cards(card, nil, nil, true)
-                else
-                    return{
-                        message = localize { type = 'variable', key = 'a_xmult', vars = { - (suit_count * card.ability.extra.Xmult_mod) } }
-                    }
-                end
-            end
-        end
-        if context.joker_main then
-            return {
-                Xmult_mod = card.ability.extra.Xmult,
-                message = localize { type = 'variable', key = 'a_xmult', vars = { card.ability.extra.Xmult } }
-            }
-        end
-    end
-}
