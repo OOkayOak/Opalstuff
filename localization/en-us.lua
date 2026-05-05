@@ -251,7 +251,14 @@ return{
                         'hands'
                     }
                 }
-            }
+            },
+            j_opal_femtanyl = {
+                name = 'PUSH UR T3MPRR',
+                text = {
+                    '{X:blind,C:white}X#1#{} Blind Requirement,',
+                    '{X:red,C:white}X#2#{C:attention} Base {C:red}Heat{} per Round'
+                }
+            },
         },
         OpalModifier = {
             md_opal_recycler = {

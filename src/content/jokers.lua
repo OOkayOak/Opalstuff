@@ -4,7 +4,7 @@ SMODS.Joker{ --Joost
     rarity = 2,
     cost = 5,
     blueprint_compat = true,
-    attributes = {'retrigger'},
+    attributes = {'retrigger', 'music'},
     calculate = function(self, card, context)
         if context.cardarea == G.play and context.repetition and not context.repetition_only then
             if context.other_card == context.scoring_hand[#context.scoring_hand] then
@@ -104,7 +104,7 @@ SMODS.Joker { --Shiny Rock
             end
         end
     end
-  }
+}
 
 SMODS.Joker { --Intrusive Joker
     key = 'intrusive',
@@ -287,7 +287,7 @@ SMODS.Joker {--Kimochi Warui
     pos = {x = 2, y = 1},
     cost = 7,
     blueprint_compat = true,
-    attributes = {'joker', 'chance'},
+    attributes = {'joker', 'chance', 'music'},
     loc_vars = function(self, info_queue, card)
         local numerator, denominator = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, 'opal_kw1')
         return { vars = { numerator, denominator }}
@@ -357,7 +357,7 @@ SMODS.Joker {--Holy, Holy
     pos = {x = 3, y = 1},
     cost = 4,
     blueprint_compat = true,
-    attributes = {'mult', 'chips', 'tarot', 'scaling'},
+    attributes = {'mult', 'chips', 'tarot', 'scaling', 'music'},
     loc_vars = function(self, info_queue, card)
         info_queue[#info_queue+1] = {key = "c_magician", set = "Tarot", vars = {2,'Lucky Card'}}
         return { vars = {card.ability.extra.chip_mod, card.ability.extra.mult_mod, card.ability.extra.count*card.ability.extra.chip_mod, card.ability.extra.count*card.ability.extra.mult_mod}}
@@ -621,7 +621,7 @@ SMODS.Joker { -- Lover, You Should've Come Over
     pos = {x = 0, y = 3},
     cost = 5,
     blueprint_compat = true,
-    attributes = {'generation', 'tarot'},
+    attributes = {'generation', 'tarot', 'music'},
     loc_vars = function(self, info_queue, card)
         info_queue[#info_queue+1] = G.P_CENTERS.c_lovers
         return{vars = {card.ability.extra.mult}}
@@ -751,7 +751,7 @@ SMODS.Joker { -- Alive 2007
     cost = 7,
     blueprint_compat = false,
     eternal_compat = false,
-    attributes = {'opal_modifier', 'prevents_death', 'destroy_card'},
+    attributes = {'opal_modifier', 'prevents_death', 'destroy_card', 'music'},
     loc_vars = function(self, info_queue, card)
         return { vars = {100*card.ability.extra.remove_decimal, card.ability.extra.max_remove}}
     end,
@@ -795,7 +795,7 @@ SMODS.Joker { -- Fadeoutz
     pos = {x = 4, y = 3},
     cost = 4,
     blueprint_compat = true,
-    attributes = {'mult', 'opal_heat', 'scaling'},
+    attributes = {'mult', 'opal_heat', 'scaling', 'music'},
     loc_vars = function(self, info_queue, card)
         return { vars = {card.ability.extra, math.floor(G.GAME.opal_temperature/card.ability.extra)}}
     end,
@@ -881,24 +881,39 @@ SMODS.Joker { -- Party Mix
     end
 }
 
---[[SMODS.Joker { -- PUSH UR T3MPRR
+SMODS.Joker { -- PUSH UR T3MPRR
     key = 'femtanyl',
-    config = {extra = {req_mod = 2}},
+    config = {extra = {req_mult = 1.5, heat_mult = 2}},
     rarity = 2,
     atlas = "jokerAtlas",
     pos = {x = 2, y = 4},
     cost = 5,
     blueprint_compat = true,
+    attributes = {'xblindsize', 'opal_heat', 'music'},
     loc_vars = function(self, info_queue, card)
-        return { vars = {card.ability.extra.req_mod, card.ability.extra.heat_req}}
+        return { vars = {card.ability.extra.req_mult, card.ability.extra.heat_mult}}
     end,
     add_to_deck = function(self, card, from_debuff)
+        G.GAME.modifiers.opal_heat_per_round = G.GAME.modifiers.opal_heat_per_round * card.ability.extra.heat_mult
     end,
     remove_from_deck = function(self, card, from_debuff)
+        G.GAME.modifiers.opal_heat_per_round = G.GAME.modifiers.opal_heat_per_round / card.ability.extra.heat_mult
     end,
     calculate = function(self, card, context)
-    end
-}]]
+        if context.setting_blind then
+            G.E_MANAGER:add_event(Event({trigger = 'after', func = function() card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize{type='variable',key='a_xblind_size',vars={card.ability.extra.req_mult}}, colour = G.C.DYN_UI.DARK, sound_override = 'xblindsize', update_blind_size = true}) return true end}))
+            return{
+                xblindsize = card.ability.extra.req_mult,
+                remove_default_message = true,
+            }
+        end
+    end,
+    draw = function(self, card, layer)
+        if (layer == "card" or layer == "both") and card.sprite_facing == "front" then
+            card.children.center:draw_shader('opal_femtanyl', nil, card.ARGS.send_to_shader)
+        end
+    end,
+}
 
 --[[SMODS.Joker { --
     key = 'a',
@@ -908,6 +923,7 @@ SMODS.Joker { -- Party Mix
     pos = {x = 3, y = 4},
     cost = 4,
     blueprint_compat = true,
+    attributes = {},
     loc_vars = function(self, info_queue, card)
         return { vars = {card.ability.extra.prob_mod}}
     end,
