@@ -22,7 +22,7 @@ return{
                 text = {
                     "Begin with {C:attention}#1# {C:opal_modifier}Modifiers",
                     "Gain a new {C:opal_modifier}Modifier{C:attention} every",
-                    "{C:attention}#2# Heat"
+                    "{C:red}#2# Heat"
                 }
             }
         },
@@ -225,7 +225,7 @@ return{
                 name = 'Fadeoutz',
                 text = {
                     'Gives {C:mult}+1{} Mult for',
-                    'every {C:attention}#1#{} Heat',
+                    'every {C:red}#1# Heat',
                     '{C:inactive,S:0.8}(Currently {C:mult,S:0.8}+#2#{C:inactive,S:0.8})'
                 }
             },
@@ -776,7 +776,7 @@ return{
                 text = {
                     "Begin with {C:attention}#1# {C:opal_modifier}Modifiers",
                     "Gain a new {C:opal_modifier}Modifier{C:attention} every",
-                    "{C:attention}#2# Heat"
+                    "{C:red}#2# Heat"
                 }
             },
             sleeve_opal_modified_alt = {
