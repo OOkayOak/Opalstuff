@@ -152,3 +152,14 @@ SMODS.Back{
     end
 }
 end
+
+SMODS.Back{
+    key = 'selector',
+    atlas = 'cardAtlas', pos = {x=3, y=0},
+    loc_vars = function(self, info_queue, back)
+        return{vars = {}}
+    end,
+    apply = function(self, back)
+        G.GAME.modifiers.opal_alt_blinds = {'Boss'}
+    end
+}

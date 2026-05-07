@@ -24,6 +24,13 @@ return{
                     "Gain a new {C:opal_modifier}Modifier{C:attention} every",
                     "{C:red}#2# Heat"
                 }
+            },
+            b_opal_selector = {
+                name = 'Selector Deck',
+                text = {
+                    "You may {C:attention}choose{} between",
+                    "{C:attention}2 Boss Blinds{}"
+                }
             }
         },
         Blind = {
@@ -792,6 +799,21 @@ return{
                     "Begin with {C:attention}#1#{} more {C:opal_modifier}Modifiers",
                     "Gain {C:red}+#2# Heat{} when a {C:attention}Blind{} is",
                     "defeated"
+                }
+            },
+            sleeve_opal_selector = {
+                name = 'Selector Sleeve',
+                text = {
+                    "You may {C:attention}choose{} between",
+                    "{C:attention}2 Boss Blinds{}"
+                }
+            },
+            sleeve_opal_selector_alt = {
+                name = 'Selector Sleeve',
+                text = {
+                    '{C:attention}Instead{} of facing',
+                    'the {C:attention}Big Blind{}, you',
+                    'may face a {C:attention}Boss Blind'
                 }
             }
         },

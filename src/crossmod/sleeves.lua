@@ -136,6 +136,7 @@ if CardSleeves then
         return { key = key, vars = vars }
     end,
     apply = function(self, sleeve)
+        CardSleeves.Sleeve.apply(self)
         for i = 1, self.config.extra.starting_mods do
             G.E_MANAGER:add_event(Event({
                 func = function()
@@ -148,4 +149,31 @@ if CardSleeves then
         G.GAME.modifiers.opal_starting_mods = G.GAME.modifiers.opal_starting_mods and G.GAME.modifiers.opal_starting_mods + 2 or 2
     end
 }
+
+    CardSleeves.Sleeve{
+        key = 'selector',
+        atlas = 'sleeveAtlas', pos = {x=3, y=0},
+        unlocked = false,
+        unlock_condition = {deck = 'b_opal_selector', stake = 'stake_opal_sour'},
+        loc_vars = function(self, info_queue, sleeve)
+            local key = self.key
+            local vars = {}
+            if self.get_current_deck_key() == "b_opal_selector" then
+                key = key.."_alt"
+                self.config.extra = {}
+                vars = {}
+            else
+                key = key
+                vars = {}
+            end
+            return { key = key, vars = vars }
+        end,
+        apply = function(self, sleeve)
+            CardSleeves.Sleeve.apply(self)
+            G.GAME.modifiers.opal_alt_blinds = {'Boss'}
+            if self.get_current_deck_key() == "b_opal_selector" then
+                table.insert(G.GAME.modifiers.opal_alt_blinds, 'Big')
+            end
+        end
+    }
 end
