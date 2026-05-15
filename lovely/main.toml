@@ -119,25 +119,6 @@ payload = """if type == 'Small' then
     if not (G.GAME.modifiers.opal_disable_skipping) and
     not G.GAME.akyrs_no_skips then"""
 
-# display Opalstuff stakes correctly 1/2
-[[patches]]
-[patches.pattern]
-target = """=[SMODS _ "src/overrides.lua"]"""
-pattern = "function SMODS.applied_stakes_UI(i, stake_desc_rows, num_added)"
-position = "after"
-match_indent = true
-payload = """local opalstuff_stakes_info = OPAL.opalstuff_stakes()
-local is_opalstuff_stake = (opalstuff_stakes_info.min <= G.GAME.stake and opalstuff_stakes_info.max >= G.GAME.stake)"""
-
-# 2/2
-[[patches]]
-[patches.pattern]
-target = """=[SMODS _ "src/overrides.lua"]"""
-pattern = """local _stake_center = G.P_CENTER_POOLS.Stake[i]"""
-position = "before"
-match_indent = true
-payload = """if is_opalstuff_stake and i > 1 then i = i + (opalstuff_stakes_info.min - 2) end"""
-
 # Cookie CardSleeve functionality
 [[patches]]
 [patches.pattern]

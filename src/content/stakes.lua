@@ -116,7 +116,7 @@ SMODS.Stake{ -- Hyperdeath
     colour = HEX('ff0000'),
     opalstuff_alt = true,
     calculate = function(self, context)
-        if context.beat_boss and not G.GAME.opal_hyperdeath_triggered then
+        if context.beat_boss and not (G.GAME.opal_hyperdeath_triggered) then
             G.GAME.opal_hyperdeath_triggered = true
             OPAL.add_mod({type = 'bad', dont_create = true})
         end
@@ -125,16 +125,3 @@ SMODS.Stake{ -- Hyperdeath
         end
     end
 }
-
-function OPAL.opalstuff_stakes()
-    local min = 0
-    local max = 0
-    for k, v in pairs(G.P_CENTER_POOLS.Stake) do
-        if v.key and v.key == 'stake_opal_travel' then
-            min = k
-        elseif v.key and v.key == 'stake_opal_hyperdeath' then
-            max = k
-        end
-    end
-    return {min = min, max = max}
-end
