@@ -915,9 +915,61 @@ SMODS.Joker { -- PUSH UR T3MPRR
     end,
 }
 
+SMODS.Joker { -- Dual Wield
+    key = 'dual_wield',
+    config = {extra = {xmult = 1, xmult_mod = 0.5}},
+    rarity = 3,
+    atlas = "jokerAtlas",
+    pos = {x = 5, y = 4},
+    cost = 7,
+    blueprint_compat = true,
+    attributes = {'music', 'scaling', 'xmult'},
+    loc_vars = function(self, info_queue, card)
+        return { vars = {card.ability.extra.xmult_mod, card.ability.extra.xmult}}
+    end,
+    add_to_deck = function(self, card, from_debuff)
+        if not G.GAME.modifiers.opal_alt_blinds['Big'] then
+            G.GAME.modifiers.opal_alt_blinds.Big = true
+            G.E_MANAGER:add_event(Event({
+            trigger = 'immediate',
+            func = (function()
+                local par = G.blind_select_opts.big.parent
+                G.GAME.round_resets.alt_blind_choices.Big = get_new_boss()
+
+                G.blind_select_opts.big:remove()
+                G.blind_select_opts.big = UIBox{
+                T = {par.T.x, 0, 0, 0, },
+                definition =
+                    {n=G.UIT.ROOT, config={align = "cm", colour = G.C.CLEAR}, nodes={
+                        UIBox_dyn_container({create_UIBox_blind_choice('Big')},false,G.C.BLACK, mix_colours(G.C.BLACK, G.C.BLACK, 0.8))
+                    }},
+                config = {align="bmi",
+                        offset = {x=0,y=G.ROOM.T.y + 9},
+                        major = par,
+                        xy_bond = 'Weak'
+                    }
+                }
+                par.config.object = G.blind_select_opts.big
+                par.config.object:recalculate()
+                G.blind_select_opts.big.parent = par
+                G.blind_select_opts.big.alignment.offset.y = 0
+
+                save_run()
+                    return true
+                end)
+            }))
+        end
+    end,
+    remove_from_deck = function(self, card, from_debuff)
+        OPAL.calculate_alt_blinds()
+    end,
+    calculate = function(self, card, context)
+    end
+}
+
 --[[SMODS.Joker { --
     key = 'a',
-    config = {extra = {prob_mod = 30/3}},
+    config = {extra = {prob_mod = 1/3}},
     rarity = 1,
     atlas = "jokerAtlas",
     pos = {x = 3, y = 4},

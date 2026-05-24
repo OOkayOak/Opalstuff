@@ -266,6 +266,22 @@ return{
                     '{X:red,C:white}X#2#{C:attention} Base {C:red}Heat{} per Round'
                 }
             },
+            j_opal_dual_wield = {
+                name = 'Dual Wield',
+                text = {
+                    {
+                        'You may choose to',
+                        'face a {C:attention}Boss Blind',
+                        'instead of the {C:attention}Big Blind'
+                    },
+                    {
+                        'For every additional {C:attention}Boss Blind',
+                        'faced, this Joker gains',
+                        '{X:mult,C:white}X#1#{} Mult',
+                        '{C:inactive}(Currently {X:mult,C:white}X#2#{C:inactive} Mult)'
+                    }
+                }
+            },
         },
         OpalModifier = {
             md_opal_recycler = {

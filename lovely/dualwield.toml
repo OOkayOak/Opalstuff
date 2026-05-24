@@ -38,10 +38,7 @@ target = 'game.lua'
 pattern = '''self.GAME.round_resets.blind_choices.Boss = get_new_boss()'''
 position = 'after'
 match_indent = true
-payload = '''G.GAME.modifiers.opal_alt_blinds = G.GAME.modifiers.opal_alt_blinds or {}
-for k, v in ipairs(G.GAME.modifiers.opal_alt_blinds) do
-    G.GAME.round_resets.alt_blind_choices[v] = get_new_boss()
-end'''
+payload = '''G.GAME.modifiers.opal_alt_blinds = G.GAME.modifiers.opal_alt_blinds or {}'''
 
 # Add alt_blind_choices to starting stuff
 [[patches]]
@@ -122,7 +119,7 @@ payload = '''G.GAME.round_resets.alt_blind_choices[type] and {n=G.UIT.R, config=
                             {n=G.UIT.T, config={text = number_format(blind_amt), scale = score_number_scale(0.7, blind_amt), colour = disabled and G.C.UI.TEXT_INACTIVE or G.C.RED, shadow =  not disabled}}
                         }},
                         _reward and {n=G.UIT.R, config={align = "cm"}, nodes={
-                            {n=G.UIT.T, config={text = string.rep(localize("$"), blind_choice.config.dollars)..'+', scale = 0.35, colour = disabled and G.C.UI.TEXT_INACTIVE or G.C.MONEY, shadow = not disabled}}
+                            {n=G.UIT.T, config={text = blind_choice.config.dollars < 6 and (string.rep(localize("$"), blind_choice.config.dollars)..'+') or (localize("$")..blind_choice.config.dollars..'+'), scale = 0.35, colour = disabled and G.C.UI.TEXT_INACTIVE or G.C.MONEY, shadow = not disabled}}
                         }} or nil,
                     }},
                 }},
@@ -163,7 +160,7 @@ target = 'functions/state_events.lua'
 pattern = '''G.GAME.voucher_restock = nil'''
 position = 'before'
 match_indent = true
-payload = '''if OPAL.should_move_on() then'''
+payload = '''if G.GAME.round_resets.blind_states.Boss == 'Current' then'''
 
 # 2/
 [[patches]]
@@ -229,3 +226,12 @@ match_indent = true
 payload = '''else
     G.GAME.round_resets.blind_states[G.GAME.in_alt_blind] = 'Defeated'
 end'''
+
+# Stop alt blinds from having boss = true
+[[patches]]
+[patches.pattern]
+target = 'blind.lua'
+pattern = """G.ARGS.spin.real = (G.SETTINGS.reduced_motion and 0 or 1)*(self.config.blind.boss and (self.config.blind.boss.showdown and 0.5 or 0.25) or 0)"""
+position = 'after'
+match_indent = true
+payload = '''if G.GAME.in_alt_blind and not G.GAME.round_resets.blind_states.Boss == "Current" then self.boss = false end'''

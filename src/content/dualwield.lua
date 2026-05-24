@@ -1,6 +1,6 @@
 function OPAL.reset_alt_blinds() -- Reset alternative Blinds.
-    for k, v in ipairs(G.GAME.modifiers.opal_alt_blinds) do
-        G.GAME.round_resets.alt_blind_choices[v] = get_new_boss()
+    for k, v in pairs(G.GAME.modifiers.opal_alt_blinds) do
+        G.GAME.round_resets.alt_blind_choices[k] = get_new_boss()
     end
 end
 
@@ -84,18 +84,13 @@ function create_UIBox_opal_alt_blind(type, run_info)
                             {n=G.UIT.T, config={text = number_format(blind_amt), scale = score_number_scale(0.7, blind_amt), colour = disabled and G.C.UI.TEXT_INACTIVE or G.C.RED, shadow =  not disabled}}
                         }},
                         _reward and {n=G.UIT.R, config={align = "cm"}, nodes={
-                            {n=G.UIT.T, config={text = string.rep(localize("$"), blind_choice.config.dollars)..'+', scale = 0.35, colour = disabled and G.C.UI.TEXT_INACTIVE or G.C.MONEY, shadow = not disabled}}
+                            {n=G.UIT.T, config={text = blind_choice.config.dollars < 6 and (string.rep(localize("$"), blind_choice.config.dollars)..'+') or (localize("$")..blind_choice.config.dollars..'+'), scale = 0.35, colour = disabled and G.C.UI.TEXT_INACTIVE or G.C.MONEY, shadow = not disabled}}
                         }} or nil,
                     }},
                 }},
             }},
         }}
     }}
-end
-
-function OPAL.should_move_on()
-    
-    return G.GAME.round_resets.blind_states.Boss == 'Current'
 end
 
 function OPAL.get_alt_blind_colour(blind)
@@ -112,5 +107,57 @@ function OPAL.get_alt_blind_colour(blind)
     blind == 'bl_big' and mix_colours(G.C.ORANGE, G.C.BLACK, 0.6)) or G.C.BLACK
 end
 
-function OPAL.reset_blinds() -- Reset ALL Blinds.
+function OPAL.calculate_alt_blinds()
+    print('FUCK')
+    local _ret = {}
+    if G.GAME and (G.GAME.selected_back_key.key == 'b_opal_selector' or G.GAME.selected_sleeve == 'sleeve_opal_selector') then
+        _ret.Boss = true
+    end
+    if G.GAME and (G.GAME.selected_back_key.key == 'b_opal_selector' and G.GAME.selected_sleeve == 'sleeve_opal_selector') then
+        _ret.Big = true
+    end
+    for k, v in ipairs(G.jokers.cards) do
+        if v.config.center.key == 'j_opal_dual_wield' then
+            _ret.Big = true
+        end
+    end
+    G.GAME.modifiers.opal_alt_blinds = _ret
+    OPAL.remove_missing_alt_blinds()
+end
+
+function OPAL.remove_missing_alt_blinds()
+    for k, v in pairs(G.GAME.round_resets.alt_blind_choices) do
+        if not G.GAME.modifiers.opal_alt_blinds[k] then
+            G.GAME.bosses_used[G.GAME.round_resets.alt_blind_choices[k]] = G.GAME.bosses_used[G.GAME.round_resets.alt_blind_choices[k]] - 1
+            G.GAME.round_resets.alt_blind_choices[k] = nil
+            local lower = string.lower(k)
+            G.E_MANAGER:add_event(Event({
+            trigger = 'immediate',
+            func = (function()
+                local par = G.blind_select_opts[lower].parent
+
+                G.blind_select_opts[lower]:remove()
+                G.blind_select_opts[lower] = UIBox{
+                T = {par.T.x, 0, 0, 0, },
+                definition =
+                    {n=G.UIT.ROOT, config={align = "cm", colour = G.C.CLEAR}, nodes={
+                        UIBox_dyn_container({create_UIBox_blind_choice(k)},false,get_blind_main_colour(k), k == 'Boss' and mix_colours(G.C.BLACK, get_blind_main_colour('Boss'), 0.8) or nil)
+                    }},
+                config = {align="bmi",
+                        offset = {x=0,y=G.ROOM.T.y + 9},
+                        major = par,
+                        xy_bond = 'Weak'
+                    }
+                }
+                par.config.object = G.blind_select_opts[lower]
+                par.config.object:recalculate()
+                G.blind_select_opts[lower].parent = par
+                G.blind_select_opts[lower].alignment.offset.y = 0
+
+                save_run()
+                    return true
+                end)
+            }))
+        end
+    end
 end

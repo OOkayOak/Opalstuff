@@ -160,6 +160,6 @@ SMODS.Back{
         return{vars = {}}
     end,
     apply = function(self, back)
-        G.GAME.modifiers.opal_alt_blinds = {'Boss'}
+        G.GAME.modifiers.opal_alt_blinds = {Boss = true}
     end
 }

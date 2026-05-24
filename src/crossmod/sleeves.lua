@@ -170,9 +170,9 @@ if CardSleeves then
         end,
         apply = function(self, sleeve)
             CardSleeves.Sleeve.apply(self)
-            G.GAME.modifiers.opal_alt_blinds = {'Boss'}
+            G.GAME.modifiers.opal_alt_blinds = {Boss = true}
             if self.get_current_deck_key() == "b_opal_selector" then
-                table.insert(G.GAME.modifiers.opal_alt_blinds, 'Big')
+                G.GAME.modifiers.opal_alt_blinds.Big = true
             end
         end
     }
