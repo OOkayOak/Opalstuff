@@ -16,8 +16,7 @@ payload = '''OPAL.reset_alt_blinds()'''
 [[patches]]
 [patches.pattern]
 target = 'functions/common_events.lua'
-pattern = '''G.GAME.round_resets.blind_choices.Boss = get_new_boss()
-        G.GAME.round_resets.boss_rerolled = false'''
+pattern = '''G.GAME.round_resets.blind_choices.Boss = get_new_boss()'''
 position = 'after'
 match_indent = true
 payload = '''OPAL.reset_alt_blinds()'''
@@ -235,3 +234,13 @@ pattern = """G.ARGS.spin.real = (G.SETTINGS.reduced_motion and 0 or 1)*(self.con
 position = 'after'
 match_indent = true
 payload = '''if G.GAME.in_alt_blind and not G.GAME.round_resets.blind_states.Boss == "Current" then self.boss = false end'''
+
+# HI NOTMARIO :D
+[[patches]]
+[patches.pattern]
+target = '=[SMODS MoreFluff "other/superboss.lua"]'
+pattern = '''G.GAME.round_resets.blind_choices.Boss = G.get_new_superboss()'''
+position = 'after'
+match_indent = true
+payload = '''if G.GAME.round_resets.alt_blind_choices.Big then G.GAME.round_resets.alt_blind_choices.Big = get_new_boss() end
+if G.GAME.round_resets.alt_blind_choices.Big then G.GAME.round_resets.alt_blind_choices.Boss = G.get_new_superboss() end'''

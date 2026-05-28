@@ -1,6 +1,7 @@
 function OPAL.reset_alt_blinds() -- Reset alternative Blinds.
     for k, v in pairs(G.GAME.modifiers.opal_alt_blinds) do
-        G.GAME.round_resets.alt_blind_choices[k] = get_new_boss()
+        print(k ~= 'Boss')
+        G.GAME.round_resets.alt_blind_choices[k] = OPAL.get_new_boss(k ~= 'Boss')
     end
 end
 
@@ -108,7 +109,6 @@ function OPAL.get_alt_blind_colour(blind)
 end
 
 function OPAL.calculate_alt_blinds()
-    print('FUCK')
     local _ret = {}
     if G.GAME and (G.GAME.selected_back_key.key == 'b_opal_selector' or G.GAME.selected_sleeve == 'sleeve_opal_selector') then
         _ret.Boss = true
@@ -160,4 +160,70 @@ function OPAL.remove_missing_alt_blinds()
             }))
         end
     end
+end
+
+function OPAL.get_new_boss(non_showdown)
+    G.GAME.perscribed_bosses = G.GAME.perscribed_bosses or {
+    }
+    if G.GAME.perscribed_bosses and G.GAME.perscribed_bosses[G.GAME.round_resets.ante] then 
+        local ret_boss = G.GAME.perscribed_bosses[G.GAME.round_resets.ante] 
+        G.GAME.perscribed_bosses[G.GAME.round_resets.ante] = nil
+        G.GAME.bosses_used[ret_boss] = G.GAME.bosses_used[ret_boss] + 1
+        return ret_boss
+    end
+    if G.FORCE_BOSS then return G.FORCE_BOSS end
+    
+    -- Use SMODS object weight system when enabled
+    if SMODS.optional_features.object_weights then
+        local ret_boss = SMODS.poll_object({type = 'Blind', seed = 'boss'})
+        G.GAME.bosses_used[ret_boss] = G.GAME.bosses_used[ret_boss] + 1
+        return ret_boss
+    end
+    local eligible_bosses = {}
+    for k, v in pairs(G.P_BLINDS) do
+        local res, options = SMODS.add_to_pool(v)
+        options = options or {}
+        if not v.boss then
+        
+        elseif options.ignore_showdown_check then
+            eligible_bosses[k] = res and true or nil
+        elseif v.in_pool and type(v.in_pool) == 'function' then
+            if
+                (
+                    ((G.GAME.round_resets.ante)%G.GAME.win_ante == 0 and G.GAME.round_resets.ante >= 2) ==
+                    (v.boss.showdown or false)
+                )
+            then
+                eligible_bosses[k] = res and true or nil
+            end
+        elseif not v.boss.showdown and (non_showdown or (v.boss.min <= math.max(1, G.GAME.round_resets.ante) and ((math.max(1, G.GAME.round_resets.ante))%G.GAME.win_ante ~= 0 or G.GAME.round_resets.ante < 2))) then
+            eligible_bosses[k] = res and true or nil
+        elseif v.boss.showdown and ((G.GAME.round_resets.ante)%G.GAME.win_ante == 0 and G.GAME.round_resets.ante >= 2 and not non_showdown) then
+            eligible_bosses[k] = res and true or nil
+        end
+    end
+    for k, v in pairs(G.GAME.banned_keys) do
+        if eligible_bosses[k] then eligible_bosses[k] = nil end
+    end
+
+    local min_use = 100
+    for k, v in pairs(G.GAME.bosses_used) do
+        if eligible_bosses[k] then
+            eligible_bosses[k] = v
+            if eligible_bosses[k] <= min_use then 
+                min_use = eligible_bosses[k]
+            end
+        end
+    end
+    for k, v in pairs(eligible_bosses) do
+        if eligible_bosses[k] then
+            if eligible_bosses[k] > min_use then 
+                eligible_bosses[k] = nil
+            end
+        end
+    end
+    local _, boss = pseudorandom_element(eligible_bosses, pseudoseed('boss'))
+    G.GAME.bosses_used[boss] = G.GAME.bosses_used[boss] + 1
+    
+    return boss
 end
