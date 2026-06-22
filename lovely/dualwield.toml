@@ -16,7 +16,7 @@ payload = '''OPAL.reset_alt_blinds()'''
 [[patches]]
 [patches.pattern]
 target = 'functions/common_events.lua'
-pattern = '''G.GAME.round_resets.blind_choices.Boss = get_new_boss()'''
+pattern = '''SMODS.reset_blind_choices(G.GAME.round_resets.blind_choices)'''
 position = 'after'
 match_indent = true
 payload = '''OPAL.reset_alt_blinds()'''
@@ -174,7 +174,7 @@ payload = '''end'''
 [[patches]]
 [patches.pattern]
 target = 'functions/state_events.lua'
-pattern = """if G.GAME.round_resets.blind == G.P_BLINDS.bl_small then
+pattern = """if G.GAME.round_resets.blind_states.Small == 'Current' then
                 G.GAME.round_resets.blind_states.Small = 'Current'"""
 position = 'before'
 match_indent = true
@@ -207,7 +207,7 @@ else
 [[patches]]
 [patches.pattern]
 target = 'functions/state_events.lua'
-pattern = """if G.GAME.round_resets.blind == G.P_BLINDS.bl_small then
+pattern = """if G.GAME.round_resets.blind_states.Small == 'Current' then
                             G.GAME.round_resets.blind_states.Small = 'Defeated'"""
 position = 'before'
 match_indent = true
@@ -244,3 +244,14 @@ position = 'after'
 match_indent = true
 payload = '''if G.GAME.round_resets.alt_blind_choices.Big then G.GAME.round_resets.alt_blind_choices.Big = get_new_boss() end
 if G.GAME.round_resets.alt_blind_choices.Big then G.GAME.round_resets.alt_blind_choices.Boss = G.get_new_superboss() end'''
+
+# Fix blind UI with the new Smods stuff
+[[patches]]
+[patches.pattern]
+target = """=[SMODS _ "src/ui.lua"]"""
+position = 'at'
+pattern = '''box.nodes[1].nodes[3].config.padding = 0.1'''
+payload = '''if not G.GAME.round_resets.alt_blind_choices[type] then
+    box.nodes[1].nodes[3].config.padding = 0.1
+end'''
+match_indent = true

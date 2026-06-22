@@ -1,6 +1,5 @@
 function OPAL.reset_alt_blinds() -- Reset alternative Blinds.
     for k, v in pairs(G.GAME.modifiers.opal_alt_blinds) do
-        print(k ~= 'Boss')
         G.GAME.round_resets.alt_blind_choices[k] = OPAL.get_new_boss(k ~= 'Boss')
     end
 end
@@ -207,7 +206,7 @@ function OPAL.get_new_boss(non_showdown)
     end
 
     local min_use = 100
-    for k, v in pairs(G.GAME.bosses_used) do
+    for k, v in pairs(G.GAME.bosses_used.boss) do
         if eligible_bosses[k] then
             eligible_bosses[k] = v
             if eligible_bosses[k] <= min_use then 
