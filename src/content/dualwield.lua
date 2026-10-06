@@ -1,10 +1,3 @@
-function OPAL.reset_alt_blinds() -- Reset alternative Blinds.
-    for k, v in pairs(G.GAME.modifiers.opal_alt_blinds) do
-        print(k ~= 'Boss')
-        G.GAME.round_resets.alt_blind_choices[k] = OPAL.get_new_boss(k ~= 'Boss')
-    end
-end
-
 function create_UIBox_opal_alt_blind(type, run_info)
     local disabled = false
     type = type or 'Small'
@@ -123,6 +116,16 @@ function OPAL.calculate_alt_blinds()
     end
     G.GAME.modifiers.opal_alt_blinds = _ret
     OPAL.remove_missing_alt_blinds()
+end
+
+function OPAL.reset_alt_blind_choices(choices)
+    G.GAME.modifiers.opal_alt_blinds = G.GAME.modifiers.opal_alt_blinds or {}
+    for _, k in ipairs(G.GAME.round_resets.blind_order) do
+        if G.GAME.modifiers.opal_alt_blinds[k] then choices[k] = nil end
+    end
+    for _, k in ipairs(G.GAME.round_resets.blind_order) do
+        if G.GAME.modifiers.opal_alt_blinds[k] then choices[k] = SMODS.get_new_blind('boss') end
+    end
 end
 
 function OPAL.remove_missing_alt_blinds()

@@ -10,16 +10,16 @@ target = 'game.lua'
 pattern = '''reset_blinds()'''
 position = 'after'
 match_indent = true
-payload = '''OPAL.reset_alt_blinds()'''
+payload = '''OPAL.reset_alt_blind_choices(self.GAME.round_resets.alt_blind_choices)'''
 
 # Have alt blind reset follow blind reset
 [[patches]]
 [patches.pattern]
 target = 'functions/common_events.lua'
-pattern = '''G.GAME.round_resets.blind_choices.Boss = get_new_boss()'''
-position = 'after'
+pattern = '''G.GAME.round_resets.boss_rerolled = false'''
+position = 'before'
 match_indent = true
-payload = '''OPAL.reset_alt_blinds()'''
+payload = '''OPAL.reset_alt_blind_choices(G.GAME.round_resets.alt_blind_choices)'''
 
 # Add alt blind to UI
 [[patches]]
@@ -37,7 +37,7 @@ target = 'game.lua'
 pattern = '''self.GAME.round_resets.blind_choices.Boss = get_new_boss()'''
 position = 'after'
 match_indent = true
-payload = '''G.GAME.modifiers.opal_alt_blinds = G.GAME.modifiers.opal_alt_blinds or {}'''
+payload = '''OPAL.reset_alt_blind_choices(self.GAME.round_resets.alt_blind_choices)'''
 
 # Add alt_blind_choices to starting stuff
 [[patches]]
@@ -174,7 +174,7 @@ payload = '''end'''
 [[patches]]
 [patches.pattern]
 target = 'functions/state_events.lua'
-pattern = """if G.GAME.round_resets.blind == G.P_BLINDS.bl_small then
+pattern = """if G.GAME.round_resets.blind_states.Small == 'Current' then
                 G.GAME.round_resets.blind_states.Small = 'Current'"""
 position = 'before'
 match_indent = true
@@ -207,7 +207,7 @@ else
 [[patches]]
 [patches.pattern]
 target = 'functions/state_events.lua'
-pattern = """if G.GAME.round_resets.blind == G.P_BLINDS.bl_small then
+pattern = """if G.GAME.round_resets.blind_states.Small == 'Current' then
                             G.GAME.round_resets.blind_states.Small = 'Defeated'"""
 position = 'before'
 match_indent = true
