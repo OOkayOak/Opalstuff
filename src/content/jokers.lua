@@ -349,36 +349,6 @@ SMODS.Joker {--Kimochi Warui
     end,
 }
 
-SMODS.Joker {--Holy, Holy
-    key = 'holy_holy',
-    config = {extra = {count = 0, chip_mod = 20, mult_mod = 5}},
-    rarity = 1,
-    atlas = "jokerAtlas",
-    pos = {x = 3, y = 1},
-    cost = 4,
-    blueprint_compat = true,
-    attributes = {'mult', 'chips', 'tarot', 'scaling', 'music'},
-    loc_vars = function(self, info_queue, card)
-        info_queue[#info_queue+1] = {key = "c_magician", set = "Tarot", vars = {2,'Lucky Card'}}
-        return { vars = {card.ability.extra.chip_mod, card.ability.extra.mult_mod, card.ability.extra.count*card.ability.extra.chip_mod, card.ability.extra.count*card.ability.extra.mult_mod}}
-    end,
-    calculate = function(self, card, context)
-        if context.using_consumeable and context.consumeable.ability.name == "The Magician" then
-            card.ability.extra.count = card.ability.extra.count + to_big(1)
-            return {
-                message = "Holy, Holy!"
-            }
-        end
-        if context.joker_main and to_big(card.ability.extra.count) > to_big(0) then
-            return {
-                chip_mod = card.ability.extra.count*card.ability.extra.chip_mod,
-                mult_mod = card.ability.extra.count*card.ability.extra.mult_mod,
-                message = "+"..card.ability.extra.count*card.ability.extra.chip_mod.." Chips, +"..card.ability.extra.count*card.ability.extra.mult_mod.." Mult"
-            }
-        end
-    end
-}
-
 SMODS.Joker { --Oops! All 1/3s
     key = 'potluck',
     config = {extra = {prob_mod = 1/3}},

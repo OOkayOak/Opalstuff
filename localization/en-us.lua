@@ -127,14 +127,6 @@ return{
                     '{C:attention}Playing Card{} held in Hand'
                 }}
             },
-            j_opal_holy_holy = {
-                name = 'Holy, Holy',
-                text = {
-                    'Gains {C:chips}+#1#{} Chips and {C:mult}+#2#{} Mult when',
-                    '{C:attention,T:c_magician}The Magician{} is used',
-                    '{C:inactive,s:0.8}(Currently {C:chips,s:0.8}+#3#{C:inactive,s:0.8} and {C:mult,s:0.8}+#4#{C:inactive,s:0.8})'
-                }
-            },
             j_opal_potluck = {
                 name = 'Oops! All 1/3s',
                 text = {
